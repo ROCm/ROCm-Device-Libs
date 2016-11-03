@@ -150,13 +150,19 @@ define i32 @__atomic_wrapinc_global(i32 addrspace(1)* nocapture %addr, i32 %val)
 
 declare i32 @llvm.amdgcn.atomic.inc.i32.p1i32(i32 addrspace(1)* nocapture, i32) #4
 
-; Function Attrs: nounwind argmemonly
 define i32 @__atomic_wrapinc_local(i32 addrspace(3)* nocapture %addr, i32 %val) #1 {
   %ret = tail call i32 @llvm.amdgcn.atomic.inc.i32.p3i32(i32 addrspace(3)* nocapture %addr, i32 %val) 
   ret i32 %ret
 }
 
 declare i32 @llvm.amdgcn.atomic.inc.i32.p3i32(i32 addrspace(3)* nocapture, i32) #4
+
+define i32 @__atomic_wrapinc_generic(i32 addrspace(4)* nocapture %addr, i32 %val) #1 {
+  %ret = tail call i32 @llvm.amdgcn.atomic.inc.i32.p4i32(i32 addrspace(4)* nocapture %addr, i32 %val) 
+  ret i32 %ret
+}
+
+declare i32 @llvm.amdgcn.atomic.inc.i32.p4i32(i32 addrspace(4)* nocapture, i32) #4
 
 define i32 @__atomic_wrapdec_global(i32 addrspace(1)* nocapture %addr, i32 %val) #1 {
   %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p1i32(i32 addrspace(1)* nocapture %addr, i32 %val) 
@@ -171,6 +177,13 @@ define i32 @__atomic_wrapdec_local(i32 addrspace(3)* nocapture %addr, i32 %val) 
 }
 
 declare i32 @llvm.amdgcn.atomic.dec.i32.p3i32(i32 addrspace(3)* nocapture, i32) #4
+
+define i32 @__atomic_wrapdec_generic(i32 addrspace(4)* nocapture %addr, i32 %val) #1 {
+  %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p4i32(i32 addrspace(4)* nocapture %addr, i32 %val) 
+  ret i32 %ret
+}
+
+declare i32 @llvm.amdgcn.atomic.dec.i32.p4i32(i32 addrspace(4)* nocapture, i32) #4
 
 define i64 @__clock_u64() #1 {
   %ret = tail call i64 @llvm.amdgcn.s.memrealtime()
