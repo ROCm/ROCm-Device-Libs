@@ -48,9 +48,12 @@
   FUNC3(__hc_##name##_double, __ocml_##name##_f64, double)
 
 #define FUNC4(name, ocml_name, T) \
-  ATTR T name(T x, int* y) \
+  ATTR T name(T x, int *y) \
   { \
-    return ocml_name(x, y); \
+    int _y; \
+    T r = ocml_name(x, &_y); \
+    *y = _y; \
+    return r; \
   }
 
 #define FUNC4A(name) \
@@ -58,9 +61,12 @@
   FUNC4(__hc_##name##_double, __ocml_##name##_f64, double)
 
 #define FUNC5(name, ocml_name, T) \
-  ATTR T name(T x, T* y) \
+  ATTR T name(T x, T *y) \
   { \
-    return ocml_name(x, y); \
+    T _y; \
+    T r = ocml_name(x, &_y); \
+    *y = _y; \
+    return r; \
   }
 
 #define FUNC5A(name) \
@@ -68,9 +74,12 @@
   FUNC5(__hc_##name##_double, __ocml_##name##_f64, double)
 
 #define FUNC6(name, ocml_name, T) \
-  ATTR T name(T x, T y, int* z) \
+  ATTR T name(T x, T y, int *z) \
   { \
-    return ocml_name(x, y, z); \
+    int _z; \
+    T r = ocml_name(x, y, &_z); \
+    *z = _z; \
+    return r; \
   }
 
 #define FUNC6A(name) \
