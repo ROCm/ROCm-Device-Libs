@@ -9,7 +9,7 @@
 #include "trigredF.h"
 
 INLINEATTR float
-MATH_MANGLE(sincos)(float x, __private float *cp)
+MATH_MANGLE(sincos)(float x, float *cp)
 {
     int ix = AS_INT(x);
     int ax = ix & 0x7fffffff;

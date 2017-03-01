@@ -8,7 +8,7 @@
 #include "mathF.h"
 
 INLINEATTR float
-MATH_MANGLE(modf)(float x, __private float *iptr)
+MATH_MANGLE(modf)(float x, float *iptr)
 {
     float tx = BUILTIN_TRUNC_F32(x);
     float ret = x - tx;

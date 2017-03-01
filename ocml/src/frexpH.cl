@@ -8,7 +8,7 @@
 #include "mathH.h"
 
 INLINEATTR half
-MATH_MANGLE(frexp)(half x, __private int *ep)
+MATH_MANGLE(frexp)(half x, int *ep)
 {
     if (AMD_OPT()) {
         int e = (int)BUILTIN_FREXP_EXP_F16(x);

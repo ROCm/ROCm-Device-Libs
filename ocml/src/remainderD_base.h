@@ -37,7 +37,7 @@ CONSTATTR double
 MATH_MANGLE(fmod)(double x, double y)
 #elif defined(COMPILING_REMQUO)
 double
-MATH_MANGLE(remquo)(double x, double y, __private int *q7p)
+MATH_MANGLE(remquo)(double x, double y, int *q7p)
 #else
 CONSTATTR double
 MATH_MANGLE(remainder)(double x, double y)

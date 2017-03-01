@@ -115,7 +115,7 @@ DECL_CONST_OCML_BINARY_F32(fmin)
 DECL_CONST_OCML_BINARY_F32(fmod)
 DECL_CONST_OCML_UNARYPRED_F32(fpclassify)
 extern float OCML_MANGLE_F32(fract)(float, __private float *);
-extern float OCML_MANGLE_F32(frexp)(float, __private int *);
+extern float OCML_MANGLE_F32(frexp)(float, int *);
 DECL_CONST_OCML_BINARY_F32(hypot)
 DECL_CONST_OCML_UNARYPRED_F32(ilogb)
 DECL_CONST_OCML_UNARYPRED_F32(isfinite)
@@ -131,7 +131,7 @@ DECL_CONST_OCML_TERNARY_F32(len3)
 extern __attribute__((const)) float OCML_MANGLE_F32(len4)(float, float, float, float);
 DECL_CONST_OCML_TERNARY_F32(fma)
 DECL_OCML_UNARY_F32(lgamma)
-extern float OCML_MANGLE_F32(lgamma_r)(float, __private int *);
+extern float OCML_MANGLE_F32(lgamma_r)(float, int *);
 DECL_PURE_OCML_UNARY_F32(log)
 DECL_PURE_OCML_UNARY_F32(log2)
 DECL_PURE_OCML_UNARY_F32(log10)
@@ -142,7 +142,7 @@ DECL_CONST_OCML_BINARY_F32(max)
 DECL_CONST_OCML_BINARY_F32(min)
 DECL_CONST_OCML_BINARY_F32(maxmag)
 DECL_CONST_OCML_BINARY_F32(minmag)
-extern float OCML_MANGLE_F32(modf)(float, __private float *);
+extern float OCML_MANGLE_F32(modf)(float, float *);
 extern __attribute__((const)) float OCML_MANGLE_F32(nan)(uint);
 DECL_PURE_OCML_UNARY_F32(ncdf)
 DECL_PURE_OCML_UNARY_F32(ncdfinv)
@@ -153,7 +153,7 @@ DECL_PURE_OCML_BINARY_F32(powr)
 extern __attribute__((pure)) float OCML_MANGLE_F32(pown)(float, int);
 extern __attribute__((pure)) float OCML_MANGLE_F32(rootn)(float, int);
 DECL_CONST_OCML_BINARY_F32(remainder)
-extern float OCML_MANGLE_F32(remquo)(float, float, __private int *);
+extern float OCML_MANGLE_F32(remquo)(float, float, int *);
 DECL_CONST_OCML_UNARY_F32(rint)
 DECL_CONST_OCML_UNARY_F32(round)
 DECL_PURE_OCML_UNARY_F32(rcbrt)
@@ -164,7 +164,7 @@ DECL_CONST_OCML_UNARYPRED_F32(signbit)
 DECL_OCML_UNARY_F32(sin)
 DECL_PURE_OCML_UNARY_F32(sinh)
 DECL_OCML_UNARY_F32(sinpi)
-extern float OCML_MANGLE_F32(sincos)(float, __private float *);
+extern float OCML_MANGLE_F32(sincos)(float, float *);
 DECL_CONST_OCML_UNARY_F32(sqrt)
 DECL_OCML_UNARY_F32(tan)
 DECL_CONST_OCML_UNARY_F32(tanpi)
@@ -240,7 +240,7 @@ DECL_CONST_OCML_BINARY_F64(fmin)
 DECL_CONST_OCML_BINARY_F64(fmod)
 DECL_CONST_OCML_UNARYPRED_F64(fpclassify)
 extern double OCML_MANGLE_F64(fract)(double, __private double *);
-extern double OCML_MANGLE_F64(frexp)(double, __private int *);
+extern double OCML_MANGLE_F64(frexp)(double, int *);
 DECL_CONST_OCML_BINARY_F64(hypot)
 DECL_CONST_OCML_UNARYPRED_F64(ilogb)
 DECL_CONST_OCML_UNARYPRED_F64(isfinite)
@@ -255,7 +255,7 @@ extern __attribute__((const)) double OCML_MANGLE_F64(ldexp)(double, int);
 DECL_CONST_OCML_TERNARY_F64(len3)
 extern __attribute__((const)) double OCML_MANGLE_F64(len4)(double, double, double, double);
 DECL_OCML_UNARY_F64(lgamma)
-extern double OCML_MANGLE_F64(lgamma_r)(double, __private int *);
+extern double OCML_MANGLE_F64(lgamma_r)(double, int *);
 DECL_PURE_OCML_UNARY_F64(log)
 DECL_PURE_OCML_UNARY_F64(log2)
 DECL_PURE_OCML_UNARY_F64(log10)
@@ -266,7 +266,7 @@ DECL_CONST_OCML_BINARY_F64(max)
 DECL_CONST_OCML_BINARY_F64(min)
 DECL_CONST_OCML_BINARY_F64(maxmag)
 DECL_CONST_OCML_BINARY_F64(minmag)
-extern double OCML_MANGLE_F64(modf)(double, __private double *);
+extern double OCML_MANGLE_F64(modf)(double, double *);
 extern __attribute__((const)) double OCML_MANGLE_F64(nan)(ulong);
 DECL_PURE_OCML_UNARY_F64(ncdf)
 DECL_PURE_OCML_UNARY_F64(ncdfinv)
@@ -277,7 +277,7 @@ DECL_PURE_OCML_BINARY_F64(powr)
 extern __attribute__((pure)) double OCML_MANGLE_F64(pown)(double, int);
 extern __attribute__((pure)) double OCML_MANGLE_F64(rootn)(double, int);
 DECL_CONST_OCML_BINARY_F64(remainder)
-extern double OCML_MANGLE_F64(remquo)(double, double, __private int *);
+extern double OCML_MANGLE_F64(remquo)(double, double, int *);
 DECL_CONST_OCML_UNARY_F64(rint)
 DECL_CONST_OCML_UNARY_F64(round)
 DECL_PURE_OCML_UNARY_F64(rcbrt)
@@ -286,7 +286,7 @@ DECL_CONST_OCML_BINARY_F64(scalb)
 extern __attribute__((const)) double OCML_MANGLE_F64(scalbn)(double, int);
 DECL_CONST_OCML_UNARYPRED_F64(signbit)
 DECL_OCML_UNARY_F64(sin)
-extern double OCML_MANGLE_F64(sincos)(double, __private double *);
+extern double OCML_MANGLE_F64(sincos)(double, double *);
 DECL_PURE_OCML_UNARY_F64(sinh)
 DECL_OCML_UNARY_F64(sinpi)
 DECL_CONST_OCML_UNARY_F64(sqrt)
@@ -368,7 +368,7 @@ DECL_CONST_OCML_BINARY_F16(fmin)
 DECL_CONST_OCML_BINARY_F16(fmod)
 DECL_CONST_OCML_UNARYPRED_F16(fpclassify)
 extern half OCML_MANGLE_F16(fract)(half, __private half *);
-extern half OCML_MANGLE_F16(frexp)(half, __private int *);
+extern half OCML_MANGLE_F16(frexp)(half, int *);
 DECL_CONST_OCML_BINARY_F16(hypot)
 DECL_CONST_OCML_UNARYPRED_F16(ilogb)
 DECL_CONST_OCML_UNARYPRED_F16(isfinite)
@@ -383,7 +383,7 @@ extern __attribute__((const)) half OCML_MANGLE_F16(ldexp)(half, int);
 DECL_CONST_OCML_TERNARY_F16(len3)
 extern __attribute__((const)) half OCML_MANGLE_F16(len4)(half, half, half, half);
 DECL_OCML_UNARY_F16(lgamma)
-extern half OCML_MANGLE_F16(lgamma_r)(half, __private int *);
+extern half OCML_MANGLE_F16(lgamma_r)(half, int *);
 DECL_PURE_OCML_UNARY_F16(log)
 DECL_CONST_OCML_UNARY_F16(logb)
 DECL_PURE_OCML_UNARY_F16(log2)
@@ -394,7 +394,7 @@ DECL_CONST_OCML_BINARY_F16(max)
 DECL_CONST_OCML_BINARY_F16(min)
 DECL_CONST_OCML_BINARY_F16(maxmag)
 DECL_CONST_OCML_BINARY_F16(minmag)
-extern half OCML_MANGLE_F16(modf)(half, __private half *);
+extern half OCML_MANGLE_F16(modf)(half, half *);
 extern __attribute__((const)) half OCML_MANGLE_F16(nan)(ushort);
 DECL_PURE_OCML_UNARY_F16(ncdf)
 DECL_PURE_OCML_UNARY_F16(ncdfinv)
@@ -406,7 +406,7 @@ extern __attribute__((pure)) half OCML_MANGLE_F16(pown)(half, int);
 extern __attribute__((pure)) half OCML_MANGLE_F16(rootn)(half, int);
 DECL_PURE_OCML_UNARY_F16(rcbrt)
 DECL_CONST_OCML_BINARY_F16(remainder)
-extern half OCML_MANGLE_F16(remquo)(half, half, __private int *);
+extern half OCML_MANGLE_F16(remquo)(half, half, int *);
 DECL_CONST_OCML_UNARY_F16(rint)
 DECL_CONST_OCML_UNARY_F16(round)
 DECL_CONST_OCML_UNARY_F16(rsqrt)
@@ -416,7 +416,7 @@ DECL_CONST_OCML_UNARYPRED_F16(signbit)
 DECL_OCML_UNARY_F16(sin)
 DECL_PURE_OCML_UNARY_F16(sinh)
 DECL_OCML_UNARY_F16(sinpi)
-extern half OCML_MANGLE_F16(sincos)(half, __private half *);
+extern half OCML_MANGLE_F16(sincos)(half, half *);
 DECL_CONST_OCML_UNARY_F16(sqrt)
 DECL_CONST_OCML_UNARY_F16(sqrt_rte)
 DECL_CONST_OCML_UNARY_F16(sqrt_rtp)
