@@ -8,7 +8,7 @@
 #include "mathD.h"
 
 INLINEATTR double
-MATH_MANGLE(frexp)(double x, int *ep)
+MATH_MANGLE(frexp)(double x, __private int *ep)
 {
     if (AMD_OPT()) {
         int e = BUILTIN_FREXP_EXP_F64(x);

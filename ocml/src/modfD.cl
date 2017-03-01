@@ -8,7 +8,7 @@
 #include "mathD.h"
 
 INLINEATTR double
-MATH_MANGLE(modf)(double x, double *iptr)
+MATH_MANGLE(modf)(double x, __private double *iptr)
 {
     double tx = BUILTIN_TRUNC_F64(x);
     double ret = x - tx;

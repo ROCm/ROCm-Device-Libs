@@ -9,7 +9,7 @@
 #include "trigredH.h"
 
 INLINEATTR half
-MATH_MANGLE(sincos)(half x, half *cp)
+MATH_MANGLE(sincos)(half x, __private half *cp)
 {
     half y = BUILTIN_ABS_F16(x);
 

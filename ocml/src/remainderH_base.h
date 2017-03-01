@@ -18,7 +18,7 @@ CONSTATTR half
 MATH_MANGLE(fmod)(half x, half y)
 #elif defined(COMPILING_REMQUO)
 half
-MATH_MANGLE(remquo)(half x, half y, int *q7p)
+MATH_MANGLE(remquo)(half x, half y, __private int *q7p)
 #else
 CONSTATTR half
 MATH_MANGLE(remainder)(half x, half y)

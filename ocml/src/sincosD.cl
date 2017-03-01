@@ -9,7 +9,7 @@
 #include "trigredD.h"
 
 INLINEATTR double
-MATH_MANGLE(sincos)(double x, double * cp)
+MATH_MANGLE(sincos)(double x, __private double * cp)
 {
     double y = BUILTIN_ABS_F64(x);
 

@@ -8,7 +8,7 @@
 #include "mathH.h"
 
 INLINEATTR half
-MATH_MANGLE(modf)(half x, half *iptr)
+MATH_MANGLE(modf)(half x, __private half *iptr)
 {
     half tx = BUILTIN_TRUNC_F16(x);
     half ret = x - tx;

@@ -88,7 +88,7 @@
  */
 
 float
-MATH_MANGLE(lgamma_r)(float x, int *signp)
+MATH_MANGLE(lgamma_r)(float x, __private int *signp)
 {
     const float two52 =  4.50359962737049600000e+15f;
     const float pi  =  3.14159265358979311600e+00f;

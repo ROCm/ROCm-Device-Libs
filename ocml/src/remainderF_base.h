@@ -38,7 +38,7 @@ CONSTATTR float
 MATH_MANGLE(fmod)(float x, float y)
 #elif defined(COMPILING_REMQUO)
 float
-MATH_MANGLE(remquo)(float x, float y, int *q7p)
+MATH_MANGLE(remquo)(float x, float y, __private int *q7p)
 #else
 CONSTATTR float
 MATH_MANGLE(remainder)(float x, float y)

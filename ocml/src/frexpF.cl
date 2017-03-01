@@ -8,7 +8,7 @@
 #include "mathF.h"
 
 INLINEATTR float
-MATH_MANGLE(frexp)(float x, int *ep)
+MATH_MANGLE(frexp)(float x, __private int *ep)
 {
     if (AMD_OPT()) {
         int e = BUILTIN_FREXP_EXP_F32(x);
