@@ -13,7 +13,7 @@ UGEN(tan)
 INLINEATTR half
 MATH_MANGLE(tan)(half x)
 {
-    half r;
+    __private half r;
     short i = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
 
     short t = AS_SHORT(MATH_PRIVATE(tanred)(r, i & 1));

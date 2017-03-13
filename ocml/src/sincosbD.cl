@@ -24,7 +24,7 @@
 INLINEATTR double
 MATH_PRIVATE(sincosb)(double x, int n, __private double * cp)
 {
-    double r0, r1;
+    __private double r0, r1;
     int regn = MATH_PRIVATE(trigred)(&r0, &r1, BUILTIN_ABS_F64(x));
 
     // adjust reduced argument by -pi/4 (n=0) or -3pi/4 (n=1)
@@ -42,7 +42,7 @@ MATH_PRIVATE(sincosb)(double x, int n, __private double * cp)
     rt += st;
     FSUM2(rh, rt, r0, r1);
 
-    double cc;
+    __private double cc;
     double ss = MATH_PRIVATE(sincosred2)(r0, r1, &cc);
 
     int flip = regn > 1 ? (int)0x80000000 : 0;

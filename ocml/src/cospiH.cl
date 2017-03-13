@@ -13,10 +13,10 @@ UGEN(cospi)
 INLINEATTR half
 MATH_MANGLE(cospi)(half x)
 {
-    half t;
+    __private half t;
     int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F16(x), &t);
 
-    half cc;
+    __private half cc;
     half ss = -MATH_PRIVATE(sincospired)(t, &cc);
 
     short c =  AS_SHORT((i & (short)1) == (short)0 ? cc : ss);

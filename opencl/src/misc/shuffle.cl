@@ -34,7 +34,7 @@
 IATTR T##N \
 sh_##N##T##M(T##M x, C(T##_utype,N) m) \
 { \
-    __attribute__((aligned(sizeof(T##M)))) T t[M]; \
+    __attribute__((aligned(sizeof(T##M)))) __private T t[M]; \
     *(__private T##M *)t = x; \
     m &= (C(T##_utype,N))(M-1); \
     return (T##N) ( LIST##N ); \
@@ -45,7 +45,7 @@ extern AATTR(S(sh_##N##T##M)) u##T##N shuffle(u##T##M, C(T##_utype,N)); \
 IATTR T##N \
 sh2_##N##T##M(T##M x, T##M y, C(T##_utype,N) m) \
 { \
-    __attribute__((aligned(sizeof(T##M)))) T t[2*M]; \
+    __attribute__((aligned(sizeof(T##M)))) __private T t[2*M]; \
     *(__private T##M *)t = x; \
     *(__private T##M *)(t + M) = y; \
     m &= (C(T##_utype,N))(2*M-1); \
@@ -75,7 +75,7 @@ GENI(long)
 ATTR T##N \
 shuffle(T##M x, C(T##_utype,N) m) \
 { \
-    __attribute__((aligned(sizeof(T##M)))) T t[M]; \
+    __attribute__((aligned(sizeof(T##M)))) __private T t[M]; \
     *(__private T##M *)t = x; \
     m &= (C(T##_utype,N))(M-1); \
     return (T##N) ( LIST##N ); \
@@ -84,7 +84,7 @@ shuffle(T##M x, C(T##_utype,N) m) \
 ATTR T##N \
 shuffle2(T##M x, T##M y, C(T##_utype,N) m) \
 { \
-    __attribute__((aligned(sizeof(T##M)))) T t[2*M]; \
+    __attribute__((aligned(sizeof(T##M)))) __private T t[2*M]; \
     *(__private T##M *)t = x; \
     *(__private T##M *)(t + M) = y; \
     m &= (C(T##_utype,N))(2*M-1); \

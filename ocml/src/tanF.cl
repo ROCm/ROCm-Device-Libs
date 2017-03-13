@@ -15,12 +15,12 @@ MATH_MANGLE(tan)(float x)
     int ax = ix & 0x7fffffff;
 
 #if defined EXTRA_PRECISION
-    float r0, r1;
+    __private float r0, r1;
     int regn = MATH_PRIVATE(trigred)(&r0, &r1, AS_FLOAT(ax));
 
     float t = MATH_PRIVATE(tanred)(r0 + r1, regn & 1);
 #else
-    float r;
+    __private float r;
     int regn = MATH_PRIVATE(trigred)(&r, AS_FLOAT(ax));
 
     float t = MATH_PRIVATE(tanred)(r, regn & 1);

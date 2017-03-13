@@ -14,10 +14,10 @@ MATH_MANGLE(sincospi)(float x, __private float *cp)
     int ix = AS_INT(x);
     int ax = ix & 0x7fffffff;
 
-    float t;
+    __private float t;
     int i = MATH_PRIVATE(trigpired)(AS_FLOAT(ax), &t);
 
-    float cc;
+    __private float cc;
     float ss = MATH_PRIVATE(sincospired)(t, &cc);
 
     int flip = i > 1 ? 0x80000000 : 0;

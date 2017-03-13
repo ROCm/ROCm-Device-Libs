@@ -11,10 +11,10 @@
 INLINEATTR double
 MATH_MANGLE(sincospi)(double x, __private double * cp)
 {
-    double t;
+    __private double t;
     int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x), &t);
 
-    double cc;
+    __private double cc;
     double ss = MATH_PRIVATE(sincospired)(t, &cc);
 
     int flip = i > 1 ? (int)0x80000000 : 0;

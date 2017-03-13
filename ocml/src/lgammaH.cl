@@ -12,7 +12,7 @@ UGEN(lgamma)
 INLINEATTR half
 MATH_MANGLE(lgamma)(half x)
 {
-    int s;
+    __private int s;
     return MATH_MANGLE(lgamma_r)(x, &s);
 }
 

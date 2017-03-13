@@ -11,8 +11,8 @@
 INLINEATTR half2
 MATH_MANGLE2(sincos)(half2 x, __private half2 *cp)
 {
-    half2 s;
-    half clo, chi;
+    __private half2 s;
+    __private half clo, chi;
     s.lo = MATH_MANGLE(sincos)(x.lo, &clo);
     s.hi = MATH_MANGLE(sincos)(x.hi, &chi);
     *cp = (half2)(clo, chi);
@@ -22,10 +22,10 @@ MATH_MANGLE2(sincos)(half2 x, __private half2 *cp)
 INLINEATTR half
 MATH_MANGLE(sincos)(half x, __private half *cp)
 {
-    half r;
+    __private half r;
     short regn = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
 
-    half cc;
+    __private half cc;
     half ss = MATH_PRIVATE(sincosred)(r, &cc);
 
     short flip = regn > (short)1 ? (short)0x8000 : (short)0;

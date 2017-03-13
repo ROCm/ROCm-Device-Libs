@@ -13,10 +13,10 @@ UGEN(sinpi)
 INLINEATTR half
 MATH_MANGLE(sinpi)(half x)
 {
-    half t;
+    __private half t;
     short i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F16(x), &t);
 
-    half cc;
+    __private half cc;
     half ss = MATH_PRIVATE(sincospired)(t, &cc);
 
     short s = AS_SHORT((i & (short)1) == (short)0 ? ss : cc);
