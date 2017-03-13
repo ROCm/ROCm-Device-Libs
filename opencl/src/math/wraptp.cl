@@ -23,11 +23,11 @@
 #define PNAME(F,T) C(__ocml_,C(F,T##_psuf))
 
 #define SEVN(N,F,T,P) \
-    P v##N; \
+    __private P v##N; \
     T r##N = SNAME(F,T)(x.s##N, y.s##N, &v##N)
 
 #define PEVN(N,F,T,P) \
-    P##2 v##N; \
+    __private P##2 v##N; \
     T##2 r##N = PNAME(F,T)(x.s##N, y.s##N, &v##N)
 
 #define SEVAL2(F,T,P) SEVN(0,F,T,P); SEVN(1,F,T,P)
@@ -74,7 +74,7 @@ F(T##N x, T##N y, A P##N * v) \
 ATTR T \
 F(T x, T y, A P * v) \
 { \
-    P v0; \
+    __private P v0; \
     T r0 = SNAME(F,T)(x, y, &v0); \
     *v = v0; \
     return r0; \
@@ -84,7 +84,7 @@ F(T x, T y, A P * v) \
 ATTR T##2 \
 F(T##2 x, T##2 y, A P##2 * v) \
 { \
-    P##2 v01; \
+    __private P##2 v01; \
     T##2 r01 = PNAME(F,T)(x, y, &v01); \
     *v = v01; \
     return r01; \

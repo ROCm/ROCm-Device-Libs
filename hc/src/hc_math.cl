@@ -50,7 +50,7 @@
 #define FUNC4(name, ocml_name, T) \
   ATTR T name(T x, int *y) \
   { \
-    int _y; \
+    __private int _y; \
     T r = ocml_name(x, &_y); \
     *y = _y; \
     return r; \
@@ -63,7 +63,7 @@
 #define FUNC5(name, ocml_name, T) \
   ATTR T name(T x, T *y) \
   { \
-    T _y; \
+    __private T _y; \
     T r = ocml_name(x, &_y); \
     *y = _y; \
     return r; \
@@ -76,7 +76,7 @@
 #define FUNC6(name, ocml_name, T) \
   ATTR T name(T x, T y, int *z) \
   { \
-    int _z; \
+    __private int _z; \
     T r = ocml_name(x, y, &_z); \
     *z = _z; \
     return r; \

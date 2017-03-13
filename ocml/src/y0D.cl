@@ -156,7 +156,7 @@ MATH_MANGLE(y0)(double x)
               
     } else {
         // y0(x) ~ sqrt(2 / (pi*x)) * (P0(x) sin(x-pi/4) + Q0(x) cos(x-pi/4))
-        double c;
+        __private double c;
         double s = MATH_PRIVATE(sincosb)(x, 0, &c);
         const double sqrt2bypi = 0x1.9884533d43651p-1;
         if (x > 0x1.0p+129)

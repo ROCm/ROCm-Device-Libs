@@ -31,7 +31,7 @@ MATH_PRIVATE(sincosb)(float x, int n, __private float *cp)
     const float piby4t = -0x1.777a5cp-26f;
 
 #if defined EXTRA_PRECISION
-    float r0, r1;
+    __private float r0, r1;
     int regn = MATH_PRIVATE(trigred)(&r0, &r1, AS_FLOAT(ax));
 
     // adjust reduced argument by by -pi/4 (n=0) or -3pi/4 (n=1)
@@ -46,10 +46,10 @@ MATH_PRIVATE(sincosb)(float x, int n, __private float *cp)
     rt += st;
     FSUM2(rh, rt, r0, r1);
 
-    float cc;
+    __private float cc;
     float ss = MATH_PRIVATE(sincosred2)(r0, r1, &cc);
 #else
-    float r;
+    __private float r;
     int regn = MATH_PRIVATE(trigred)(&r, AS_FLOAT(ax));
 
     regn = (regn - (r < 0.0f) - n) & 3;
@@ -60,7 +60,7 @@ MATH_PRIVATE(sincosb)(float x, int n, __private float *cp)
     rt = pt + rt;
     r = rh + rt;
 
-    float cc;
+    __private float cc;
     float ss = MATH_PRIVATE(sincosred)(r, &cc);
 #endif
 

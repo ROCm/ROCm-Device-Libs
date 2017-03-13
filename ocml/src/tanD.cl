@@ -11,7 +11,7 @@
 INLINEATTR double
 MATH_MANGLE(tan)(double x)
 {
-    double r, rr;
+    __private double r, rr;
     int i = MATH_PRIVATE(trigred)(&r, &rr, BUILTIN_ABS_F64(x));
 
     int2 t = AS_INT2(MATH_PRIVATE(tanred2)(r, rr, i & 1));

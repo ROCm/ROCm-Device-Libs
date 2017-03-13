@@ -13,10 +13,10 @@ MATH_MANGLE(cospi)(float x)
 {
     int ax = AS_INT(x) & 0x7fffffff;
 
-    float r;
+    __private float r;
     int i = MATH_PRIVATE(trigpired)(AS_FLOAT(ax), &r);
 
-    float cc;
+    __private float cc;
     float ss = -MATH_PRIVATE(sincospired)(r, &cc);
 
     float c =  (i & 1) != 0 ? ss : cc;

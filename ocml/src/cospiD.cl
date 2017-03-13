@@ -11,10 +11,10 @@
 INLINEATTR double
 MATH_MANGLE(cospi)(double x)
 {
-    double t;
+    __private double t;
     int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x), &t);
 
-    double cc;
+    __private double cc;
     double ss = -MATH_PRIVATE(sincospired)(t, &cc);
 
     int2 c = AS_INT2((i & 1) == 0 ? cc : ss);

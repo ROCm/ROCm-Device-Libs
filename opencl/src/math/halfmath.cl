@@ -93,10 +93,10 @@ half_cos(float x)
     float dx = fabs(x);
     int ax = as_int(dx);
 
-    float r0;
+    __private float r0;
     int regn = __half_red(dx, &r0);
 
-    float cc;
+    __private float cc;
     float ss = -__half_scr(r0, &cc);
 
     float c = (regn & 1) != 0 ? ss : cc;
@@ -162,10 +162,10 @@ half_sin(float x)
     float dx = fabs(x);
     int ax = as_int(dx);
 
-    float r0;
+    __private float r0;
     int regn = __half_red(dx, &r0);
 
-    float cc;
+    __private float cc;
     float ss = __half_scr(r0, &cc);
 
     float s = (regn & 1) != 0 ? cc : ss;
@@ -191,7 +191,7 @@ half_tan(float x)
     float dx = fabs(x);
     int ax = as_int(dx);
 
-    float r0;
+    __private float r0;
     int regn = __half_red(dx, &r0);
     float t = __half_tr(r0, regn);
 
