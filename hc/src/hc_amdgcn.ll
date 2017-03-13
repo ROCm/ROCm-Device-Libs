@@ -1,6 +1,6 @@
 ; ModuleID = 'hc_amdgcn.bc'
 
-target datalayout = "e-p:32:32-p1:64:64-p2:64:64-p3:32:32-p4:64:64-p5:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64"
+target datalayout = "e-p:64:64-p1:64:64-p2:64:64-p3:32:32-p4:64:64-p5:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64"
 target triple = "amdgcn--amdhsa"
 
 define i64 @__activelanemask_v4_b64_b1(i32 %input) #5 {
@@ -158,12 +158,12 @@ define i32 @__atomic_wrapinc_local(i32 addrspace(3)* nocapture %addr, i32 %val) 
 
 declare i32 @llvm.amdgcn.atomic.inc.i32.p3i32(i32 addrspace(3)* nocapture, i32) #4
 
-define i32 @__atomic_wrapinc(i32 addrspace(4)* nocapture %addr, i32 %val) #1 {
-  %ret = tail call i32 @llvm.amdgcn.atomic.inc.i32.p4i32(i32 addrspace(4)* nocapture %addr, i32 %val) 
+define i32 @__atomic_wrapinc(i32* nocapture %addr, i32 %val) #1 {
+  %ret = tail call i32 @llvm.amdgcn.atomic.inc.i32.p0i32(i32* nocapture %addr, i32 %val) 
   ret i32 %ret
 }
 
-declare i32 @llvm.amdgcn.atomic.inc.i32.p4i32(i32 addrspace(4)* nocapture, i32) #4
+declare i32 @llvm.amdgcn.atomic.inc.i32.p0i32(i32* nocapture, i32) #4
 
 define i32 @__atomic_wrapdec_global(i32 addrspace(1)* nocapture %addr, i32 %val) #1 {
   %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p1i32(i32 addrspace(1)* nocapture %addr, i32 %val) 
@@ -179,12 +179,12 @@ define i32 @__atomic_wrapdec_local(i32 addrspace(3)* nocapture %addr, i32 %val) 
 
 declare i32 @llvm.amdgcn.atomic.dec.i32.p3i32(i32 addrspace(3)* nocapture, i32) #4
 
-define i32 @__atomic_wrapdec(i32 addrspace(4)* nocapture %addr, i32 %val) #1 {
-  %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p4i32(i32 addrspace(4)* nocapture %addr, i32 %val) 
+define i32 @__atomic_wrapdec(i32* nocapture %addr, i32 %val) #1 {
+  %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32* nocapture %addr, i32 %val) 
   ret i32 %ret
 }
 
-declare i32 @llvm.amdgcn.atomic.dec.i32.p4i32(i32 addrspace(4)* nocapture, i32) #4
+declare i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32* nocapture, i32) #4
 
 define i64 @__clock_u64() #1 {
   %ret = tail call i64 @llvm.amdgcn.s.memrealtime()
@@ -207,7 +207,7 @@ define i32 @get_group_segment_size() #0 {
   ret i32 %2
 }
 
-define i8 addrspace(4)* @get_group_segment_base_pointer() #0 {
+define i8* @get_group_segment_base_pointer() #0 {
   ; XXX For some reason getreg may return strange values for LDS_BASE
   ; temporary fix as 0 for now
 
@@ -219,8 +219,8 @@ define i8 addrspace(4)* @get_group_segment_base_pointer() #0 {
   %3 = inttoptr i32 %2 to i8 addrspace(3)*
 
   ; then convert to generic address space
-  %4 = addrspacecast i8 addrspace(3)* %3 to i8 addrspace(4)*
-  ret i8 addrspace(4)* %4
+  %4 = addrspacecast i8 addrspace(3)* %3 to i8*
+  ret i8* %4
 }
 
 define i32 @get_static_group_segment_size() #1 {
@@ -228,12 +228,12 @@ define i32 @get_static_group_segment_size() #1 {
   ret i32 %ret
 }
 
-define i8 addrspace(4)* @get_dynamic_group_segment_base_pointer() #0 {
-  %1 = tail call i8 addrspace(4)* @get_group_segment_base_pointer() #0
+define i8* @get_dynamic_group_segment_base_pointer() #0 {
+  %1 = tail call i8* @get_group_segment_base_pointer() #0
   %2 = tail call i32 @get_static_group_segment_size() #1
   %3 = zext i32 %2 to i64
-  %4 = getelementptr inbounds i8, i8 addrspace(4)* %1, i64 %3
-  ret i8 addrspace(4)* %4
+  %4 = getelementptr inbounds i8, i8* %1, i64 %3
+  ret i8* %4
 }
 
 declare i32 @llvm.amdgcn.s.getreg(i32) #0
