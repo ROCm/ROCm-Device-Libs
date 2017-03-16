@@ -14,10 +14,10 @@ MATH_MANGLE(sinpi)(float x)
     int ix = AS_INT(x);
     int ax = ix & 0x7fffffff;
 
-    __private float r;
+    float r;
     int i = MATH_PRIVATE(trigpired)(AS_FLOAT(ax), &r);
 
-    __private float cc;
+    float cc;
     float ss = MATH_PRIVATE(sincospired)(r, &cc);
 
     float s = (i & 1) == 0 ? ss : cc;

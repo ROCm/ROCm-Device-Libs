@@ -15,16 +15,16 @@ MATH_MANGLE(cos)(float x)
     int ax = ix & 0x7fffffff;
 
 #if defined EXTRA_PRECISION
-    __private float r0, r1;
+    float r0, r1;
     int regn = MATH_PRIVATE(trigred)(&r0, &r1, AS_FLOAT(ax));
 
-    __private float cc;
+    float cc;
     float ss = -MATH_PRIVATE(sincosred2)(r0, r1, &cc);
 #else
-    __private float r;
+    float r;
     int regn = MATH_PRIVATE(trigred)(&r, AS_FLOAT(ax));
 
-    __private float cc;
+    float cc;
     float ss = -MATH_PRIVATE(sincosred)(r, &cc);
 #endif
 

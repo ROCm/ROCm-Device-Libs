@@ -11,8 +11,8 @@
 INLINEATTR half2
 MATH_MANGLE2(sincospi)(half2 x, __private half2 *cp)
 {
-    __private half2 s;
-    __private half clo, chi;
+    half2 s;
+    half clo, chi;
 
     s.lo = MATH_MANGLE(sincospi)(x.lo, &clo);
     s.hi = MATH_MANGLE(sincospi)(x.hi, &chi);
@@ -23,10 +23,10 @@ MATH_MANGLE2(sincospi)(half2 x, __private half2 *cp)
 INLINEATTR half
 MATH_MANGLE(sincospi)(half x, __private half *cp)
 {
-    __private half t;
+    half t;
     short i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F16(x), &t);
 
-    __private half cc;
+    half cc;
     half ss = MATH_PRIVATE(sincospired)(t, &cc);
 
     short flip = i > (short)1 ? (short)0x8000 : (short)0;

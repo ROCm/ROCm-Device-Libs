@@ -11,10 +11,10 @@
 INLINEATTR double
 MATH_MANGLE(cos)(double x)
 {
-    __private double r, rr;
+    double r, rr;
     int regn = MATH_PRIVATE(trigred)(&r, &rr, BUILTIN_ABS_F64(x));
 
-    __private double cc;
+    double cc;
     double ss = -MATH_PRIVATE(sincosred2)(r, rr, &cc);
 
     int2 c = AS_INT2((regn & 1) != 0 ? ss : cc);

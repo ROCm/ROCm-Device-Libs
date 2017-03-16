@@ -90,7 +90,7 @@ MATH_MANGLE(j0)(float x)
               p[3]), p[2]), p[1]), p[0]);
     } else {
         // j0(x) ~ sqrt(2 / (pi*x)) * (P0(x) cos(x-pi/4) - Q0(x) sin(x-pi/4))
-        __private float c;
+        float c;
         float s = MATH_PRIVATE(sincosb)(x, 0, &c);
         const float sqrt2bypi = 0x1.988454p-1f;
         if (x > 0x1.0p+17f)

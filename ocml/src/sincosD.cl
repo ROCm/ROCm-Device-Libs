@@ -11,10 +11,10 @@
 INLINEATTR double
 MATH_MANGLE(sincos)(double x, __private double * cp)
 {
-    __private double r, rr;
+    double r, rr;
     int regn = MATH_PRIVATE(trigred)(&r, &rr, BUILTIN_ABS_F64(x));
 
-    __private double cc;
+    double cc;
     double ss = MATH_PRIVATE(sincosred2)(r, rr, &cc);
 
     int flip = regn > 1 ? (int)0x80000000 : 0;

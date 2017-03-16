@@ -10,8 +10,8 @@
 INLINEATTR half2
 MATH_MANGLE2(lgamma_r)(half2 x, __private int2 *signp)
 {
-    __private int slo, shi;
-    __private half2 r;
+    int slo, shi;
+    half2 r;
     r.lo = MATH_MANGLE(lgamma_r)(x.lo, &slo);
     r.hi = MATH_MANGLE(lgamma_r)(x.hi, &shi);
     *signp = (int2)(slo, shi);

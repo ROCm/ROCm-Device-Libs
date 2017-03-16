@@ -11,7 +11,7 @@
 CONSTATTR INLINEATTR float
 MATH_MANGLE(tanpi)(float x)
 {
-    __private float r;
+    float r;
     int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F32(x), &r);
 
     int t = AS_INT(MATH_PRIVATE(tanpired)(r, i & 1));

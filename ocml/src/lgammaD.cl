@@ -10,7 +10,7 @@
 INLINEATTR double
 MATH_MANGLE(lgamma)(double x)
 {
-    __private int s;
+    int s;
     return MATH_MANGLE(lgamma_r)(x, &s);
 }
 
