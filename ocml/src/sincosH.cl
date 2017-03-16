@@ -8,34 +8,41 @@
 #include "mathH.h"
 #include "trigredH.h"
 
+INLINEATTR half2
+MATH_MANGLE2(sincos)(half2 x, __private half2 *cp)
+{
+    half2 s;
+    half clo, chi;
+    s.lo = MATH_MANGLE(sincos)(x.lo, &clo);
+    s.hi = MATH_MANGLE(sincos)(x.hi, &chi);
+    *cp = (half2)(clo, chi);
+    return s;
+}
+
 INLINEATTR half
 MATH_MANGLE(sincos)(half x, __private half *cp)
 {
-    half y = BUILTIN_ABS_F16(x);
-
     half r;
-    int regn = MATH_PRIVATE(trigred)(&r, y);
+    short regn = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
 
     half cc;
     half ss = MATH_PRIVATE(sincosred)(r, &cc);
 
-    bool flip = regn > 1;
+    short flip = regn > (short)1 ? (short)0x8000 : (short)0;
     bool odd = (regn & 1) != 0;
-    half s = odd ? cc : ss;
-    half ns = -s;
-    s = flip ^ (x < 0.0h) ? ns : s;
+    short s = AS_SHORT(odd ? cc : ss);
+    s ^= flip ^ (AS_SHORT(x) & (short)0x8000);
     ss = -ss;
-    half c = odd ? ss : cc;
-    half nc = -c;
-    c = flip ? nc : c;
+    short c = AS_SHORT(odd ? ss : cc);
+    c ^= flip;
 
     if (!FINITE_ONLY_OPT()) {
-        bool b = BUILTIN_CLASS_F16(x, CLASS_SNAN|CLASS_QNAN|CLASS_NINF|CLASS_PINF);
-        c = b ? AS_HALF((short)QNANBITPATT_HP16) : c;
-        s = b ? AS_HALF((short)QNANBITPATT_HP16) : s;
+        bool nori = BUILTIN_CLASS_F16(x, CLASS_SNAN|CLASS_QNAN|CLASS_NINF|CLASS_PINF);
+        c = nori ? (short)QNANBITPATT_HP16 : c;
+        s = nori ? (short)QNANBITPATT_HP16 : s;
     }
 
-    *cp = c;
-    return s;
+    *cp = AS_HALF(c);
+    return AS_HALF(s);
 }
 

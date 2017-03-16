@@ -11,17 +11,9 @@
 INLINEATTR half
 MATH_PRIVATE(sincosred)(half x, __private half *cp)
 {
-    const half c0 =  0x1.55554ap-5h;
-    const half c1 = -0x1.6c0c2cp-10h;
-    const half c2 =  0x1.99ebdap-16h;
-
-    const half s0 = -0x1.555544p-3h;
-    const half s1 =  0x1.11072ep-7h;
-    const half s2 = -0x1.994430p-13h;
-
-    half x2 = x*x;
-    half c = MATH_MAD(x2, MATH_MAD(x2, MATH_MAD(x2, c1, c0), -0.5h), 1.0h);
-    half s = MATH_MAD(x, x2*MATH_MAD(x2, s1, s0), x);
+    half t = x * x;
+    half s = MATH_MAD(x, t*MATH_MAD(t, 0x1.0bp-7h, -0x1.554p-3h), x);
+    half c = MATH_MAD(t, MATH_MAD(t, 0x1.4b4p-5h, -0x1.ffcp-2h), 1.0h);
 
     *cp = c;
     return s;

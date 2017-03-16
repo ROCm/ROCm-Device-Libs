@@ -147,3 +147,4 @@ FUNC1A(tan)
 FUNC1A(tanh)
 FUNC1A(tanpi)
 FUNC1A(trunc)
+

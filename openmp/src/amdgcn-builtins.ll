@@ -1,10 +1,10 @@
 ; ModuleID = 'builtins.bc'
 source_filename = "builtins.ll"
-target datalayout = "e-p:32:32-p1:64:64-p2:64:64-p3:32:32-p4:64:64-p5:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64"
+target datalayout = "e-p:64:64-p1:64:64-p2:64:64-p3:32:32-p4:64:64-p5:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64"
 target triple = "amdgcn--amdhsa"
 
 ; Function Attrs: nounwind readnone
-declare i8 addrspace(2)* @llvm.amdgcn.dispatch.ptr() #0
+declare i8 addrspace(4)* @llvm.amdgcn.dispatch.ptr() #0
 
 ; Function Attrs: nounwind readnone
 declare i32 @llvm.amdgcn.workgroup.id.x() #0
@@ -29,23 +29,23 @@ declare void @llvm.amdgcn.s.barrier() #1
 
 ; Function Attrs: alwaysinline
 define i32 @llvm_amdgcn_read_local_size_x() #2 {
-  %dispatch_ptr = call noalias nonnull dereferenceable(64) i8 addrspace(2)* @llvm.amdgcn.dispatch.ptr()
-  %dispatch_ptr_i32 = bitcast i8 addrspace(2)* %dispatch_ptr to i32 addrspace(2)*
-  %size_xy_ptr = getelementptr inbounds i32, i32 addrspace(2)* %dispatch_ptr_i32, i64 1
-  %size_xy = load i32, i32 addrspace(2)* %size_xy_ptr, align 4, !invariant.load !0
+  %dispatch_ptr = call noalias nonnull dereferenceable(64) i8 addrspace(4)* @llvm.amdgcn.dispatch.ptr()
+  %dispatch_ptr_i32 = bitcast i8 addrspace(4)* %dispatch_ptr to i32 addrspace(4)*
+  %size_xy_ptr = getelementptr inbounds i32, i32 addrspace(4)* %dispatch_ptr_i32, i64 1
+  %size_xy = load i32, i32 addrspace(4)* %size_xy_ptr, align 4, !invariant.load !0
   %1 = and i32 %size_xy, 65535
   ret i32 %1
 }
 
 ; Function Attrs: alwaysinline nounwind
 define i32 @llvm_amdgcn_read_num_groups_x() #3 {
-  %1 = tail call i8 addrspace(2)* @llvm.amdgcn.dispatch.ptr() #0
-  %2 = getelementptr inbounds i8, i8 addrspace(2)* %1, i64 12
-  %3 = bitcast i8 addrspace(2)* %2 to i32 addrspace(2)*
-  %4 = load i32, i32 addrspace(2)* %3, align 4, !tbaa !1
-  %5 = getelementptr inbounds i8, i8 addrspace(2)* %1, i64 4
-  %6 = bitcast i8 addrspace(2)* %5 to i16 addrspace(2)*
-  %7 = load i16, i16 addrspace(2)* %6, align 4, !tbaa !10
+  %1 = tail call i8 addrspace(4)* @llvm.amdgcn.dispatch.ptr() #0
+  %2 = getelementptr inbounds i8, i8 addrspace(4)* %1, i64 12
+  %3 = bitcast i8 addrspace(4)* %2 to i32 addrspace(4)*
+  %4 = load i32, i32 addrspace(4)* %3, align 4, !tbaa !1
+  %5 = getelementptr inbounds i8, i8 addrspace(4)* %1, i64 4
+  %6 = bitcast i8 addrspace(4)* %5 to i16 addrspace(4)*
+  %7 = load i16, i16 addrspace(4)* %6, align 4, !tbaa !10
   %8 = zext i16 %7 to i32
   %9 = udiv i32 %4, %8
   %10 = mul i32 %9, %8

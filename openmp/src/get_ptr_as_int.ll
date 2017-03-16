@@ -1,6 +1,6 @@
 ; ModuleID = 'get_ptr_as_int.bc'
 source_filename = "get_ptr_as_int.ll"
-target datalayout = "e-p:32:32-p1:64:64-p2:64:64-p3:32:32-p4:64:64-p5:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64"
+target datalayout = "e-p:64:64-p1:64:64-p2:64:64-p3:32:32-p4:64:64-p5:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64"
 target triple = "amdgcn--amdhsa"
 
 %class.omptarget_nvptx_ThreadPrivateContext = type { [524288 x %class.omptarget_nvptx_TaskDescr], [524288 x %class.omptarget_nvptx_TaskDescr*], [524288 x i16], [524288 x i64], [524288 x i32], [524288 x i64], [524288 x i64], [524288 x i64], [524288 x i64], %class.omptarget_nvptx_TeamDescr*, %struct.omptarget_nvptx_GlobalICV* }
