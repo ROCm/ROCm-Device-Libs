@@ -10,8 +10,8 @@
 INLINEATTR half2
 MATH_MANGLE2(frexp)(half2 x, __private int2 *ep)
 {
-    __private int elo, ehi;
-    __private half2 r;
+    int elo, ehi;
+    half2 r;
     r.lo = MATH_MANGLE(frexp)(x.lo, &elo);
     r.hi = MATH_MANGLE(frexp)(x.hi, &ehi);
     *ep = (int2)(elo, ehi);

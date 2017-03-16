@@ -141,7 +141,7 @@
     kernel void test_##func##_##type_res##_##type_res2##_##type_arg1(global type_res* out, \
       global type_res2* out2, global type_arg1* in1) \
     { \
-      __private type_res2 v; \
+      type_res2 v; \
       out[0] = func(in1[0], &v); \
       out2[0] = v; \
     }
@@ -167,7 +167,7 @@
     kernel void test_##func##_##type_res##_##type_res2##_##type_arg1##_##type_arg2(global type_res* out, \
       global type_res2* out2, global type_arg1* in1, global type_arg2* in2) \
     { \
-      __private type_res2 v; \
+      type_res2 v; \
       out[0] = func(in1[0], in2[0], &v); \
       out2[0] = v; \
     }

@@ -10,7 +10,7 @@
 INLINEATTR float
 MATH_MANGLE(lgamma)(float x)
 {
-    __private int s;
+    int s;
     return MATH_MANGLE(lgamma_r)(x, &s);
 }
 

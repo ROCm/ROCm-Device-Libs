@@ -13,10 +13,10 @@ UGEN(sin)
 INLINEATTR half
 MATH_MANGLE(sin)(half x)
 {
-    __private half r;
+    half r;
     short i = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
 
-    __private half cc;
+    half cc;
     half ss = MATH_PRIVATE(sincosred)(r, &cc);
 
     short s = AS_SHORT((i & (short)1) == (short)0 ? ss : cc);

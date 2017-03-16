@@ -13,10 +13,10 @@ UGEN(cos)
 INLINEATTR half
 MATH_MANGLE(cos)(half x)
 {
-    __private half r;
+    half r;
     short i = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
 
-    __private half cc;
+    half cc;
     half ss = -MATH_PRIVATE(sincosred)(r, &cc);
 
     short c =  AS_SHORT((i & 1) == 0 ? cc : ss);

@@ -95,7 +95,7 @@ MATH_MANGLE(j1)(double x)
               p[3]), p[2]), p[1]), p[0]);
     } else {
         // j1(x) ~ sqrt(2 / (pi*x)) * (P1(x) cos(x-3*pi/4) - Q1(x) sin(x-3*pi/4))
-        __private double c;
+        double c;
         double s = MATH_PRIVATE(sincosb)(ax, 1, &c);
         const double sqrt2bypi = 0x1.9884533d43651p-1;
         if (ax > 0x1.0p+129)

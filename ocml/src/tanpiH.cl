@@ -13,7 +13,7 @@ CONSTATTR UGEN(tanpi)
 CONSTATTR INLINEATTR half
 MATH_MANGLE(tanpi)(half x)
 {
-    __private half r;
+    half r;
     short i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F16(x), &r);
 
     short t = AS_SHORT(MATH_PRIVATE(tanpired)(r, i & (short)1));

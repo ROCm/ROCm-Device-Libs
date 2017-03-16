@@ -11,10 +11,10 @@
 INLINEATTR double
 MATH_MANGLE(sinpi)(double x)
 {
-    __private double t;
+    double t;
     int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x), &t);
 
-    __private double cc;
+    double cc;
     double ss = MATH_PRIVATE(sincospired)(t, &cc);
 
     int2 s = AS_INT2((i & 1) == 0 ? ss : cc);

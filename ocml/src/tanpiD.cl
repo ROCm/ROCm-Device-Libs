@@ -11,7 +11,7 @@
 CONSTATTR INLINEATTR double
 MATH_MANGLE(tanpi)(double x)
 {
-    __private double r;
+    double r;
     int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x), &r);
 
     int2 t = AS_INT2(MATH_PRIVATE(tanpired)(r, i & 1));
