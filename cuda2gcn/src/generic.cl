@@ -5,7 +5,7 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#define ATTR __attribute__((always_inline const))
+#define ATTR __attribute__((always_inline, const))
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
@@ -19,12 +19,6 @@ ATTR long __nv_llabs(long x) { return abs(x); }
 //-------- T __nv_max
 ATTR int __nv_max(int a, int b) { return MAX(a,b); }
 
-//-------- T __nv_fmax
-ATTR double __nv_fmax(double a, double b) { return MAX(a,b); }
-
-//-------- T __nv_fmaxf
-ATTR float __nv_fmaxf(float a, float b) { return MAX(a,b); }
-
 //-------- T __nv_llmax
 ATTR long __nv_llmax(long a, long b) { return MAX(a,b); }
 
@@ -36,12 +30,6 @@ ATTR uint __nv_umax(uint a, uint b) { return MAX(a,b); }
 
 //-------- T __nv_min
 ATTR int __nv_min(int a, int b) { return MIN(a,b); }
-
-//-------- T __nv_fmin
-ATTR double __nv_fmin(double a, double b) { return MIN(a,b); }
-
-//-------- T __nv_fminf
-ATTR float __nv_fminf(float a, float b) { return MIN(a,b); }
 
 //-------- T __nv_llmin
 ATTR long __nv_llmin(long a, long b) { return MIN(a,b); }

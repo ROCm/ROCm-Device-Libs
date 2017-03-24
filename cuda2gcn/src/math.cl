@@ -131,6 +131,14 @@ FUNC1(floor)
 //-------- T __nv_fmaf
 FUNC3(fma)
 
+//-------- T __nv_fmax
+//-------- T __nv_fmaxf
+FUNC2(fmax)
+
+//-------- T __nv_fmin
+//-------- T __nv_fminf
+FUNC2(fmin)
+
 //-------- T __nv_fmod
 //-------- T __nv_fmodf
 FUNC2(fmod)
