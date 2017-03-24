@@ -147,14 +147,6 @@ FUNC2(fmod)
 //-------- T __nv_hypotf
 FUNC2(hypot)
 
-//-------- T __nv_ilogb
-//-------- T __nv_ilogbf
-FUNC1(ilogb)
-
-//-------- T __nv_ldexp
-//-------- T __nv_ldexpf
-FUNC2(ldexp)
-
 //-------- T __nv_lgamma
 //-------- T __nv_lgammaf
 FUNC1(lgamma)
