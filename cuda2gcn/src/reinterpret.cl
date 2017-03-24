@@ -5,7 +5,7 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#define ATTR __attribute__((always_inline))
+#define ATTR __attribute__((always_inline const))
 
 //-------- T __nv_double_as_longlong
 ATTR long __nv_double_as_longlong(double x)
