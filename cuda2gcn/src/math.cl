@@ -7,25 +7,25 @@
 
 #include "ocml.h"
 
-#define ATTR __attribute__((always_inline const))
+#define ATTR __attribute__((always_inline))
 
-#define FUNC1D(root, x) \
+#define FUNC1D(root) \
   ATTR double __nv_##root(double x) { return __ocml_##root##_f64(x); }
-#define FUNC1F(root, x) \
+#define FUNC1F(root) \
   ATTR float __nv_##root##f(float x) { return __ocml_##root##_f32(x); }
-#define FUNC1(root) FUNC1D(root, x) FUNC1F(root, x)
+#define FUNC1(root) FUNC1D(root) FUNC1F(root)
 
-#define FUNC2D(root, x, y) \
+#define FUNC2D(root) \
   ATTR double __nv_##root(double x, double y) { return __ocml_##root##_f64(x, y); }
-#define FUNC2F(root, x, y) \
+#define FUNC2F(root) \
   ATTR float __nv_##root##f(float x, float y) { return __ocml_##root##_f32(x, y); }
-#define FUNC2(root) FUNC2D(root, x, y) FUNC2F(root, x, y)
+#define FUNC2(root) FUNC2D(root) FUNC2F(root)
 
-#define FUNC3D(root, x, y, z) \
+#define FUNC3D(root) \
   ATTR double __nv_##root(double x, double y, double z) { return __ocml_##root##_f64(x, y, z); }
-#define FUNC3F(root, x, y, z) \
+#define FUNC3F(root) \
   ATTR float __nv_##root##f(float x, float y, float z) { return __ocml_##root##_f32(x, y, z); }
-#define FUNC3(root) FUNC3D(root, x, y, z) FUNC3F(root, x, y, z)
+#define FUNC3(root) FUNC3D(root) FUNC3F(root)
 
 //-------- T __nv_acos
 //-------- T __nv_acosf
@@ -234,46 +234,4 @@ FUNC1(tgamma)
 //-------- T __nv_trunc
 //-------- T __nv_truncf
 FUNC1(trunc)
-
-//-------- T __nv_abs
-ATTR int __nv_abs(int x) { return abs(x); }
-
-//-------- T __nv_llabs
-ATTR long __nv_llabs(long x) { return abs(x); }
-
-//-------- T __nv_max
-ATTR int __nv_max(int a, int b) { return max(a,b); }
-
-//-------- T __nv_fmax
-ATTR double __nv_fmax(double a, double b) { return max(a,b); }
-
-//-------- T __nv_fmaxf
-ATTR float __nv_fmaxf(float a, float b) { return max(a,b); }
-
-//-------- T __nv_llmax
-ATTR long __nv_llmax(long a, long b) { return max(a,b); }
-
-//-------- T __nv_ullmax
-ATTR ulong __nv_ullmax(ulong a, ulong b) { return max(a,b); }
-
-//-------- T __nv_umax
-ATTR uint __nv_umax(uint a, uint b) { return max(a,b); }
-
-//-------- T __nv_min
-ATTR int __nv_min(int a, int b) { return min(a,b); }
-
-//-------- T __nv_fmin
-ATTR double __nv_fmin(double a, double b) { return min(a,b); }
-
-//-------- T __nv_fminf
-ATTR float __nv_fminf(float a, float b) { return min(a,b); }
-
-//-------- T __nv_llmin
-ATTR long __nv_llmin(long a, long b) { return min(a,b); }
-
-//-------- T __nv_ullmin
-ATTR ulong __nv_ullmin(ulong a, ulong b) { return min(a,b); }
-
-//-------- T __nv_umin
-ATTR uint __nv_umin(uint a, uint b) { return min(a,b); }
 
