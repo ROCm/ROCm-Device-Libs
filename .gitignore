@@ -3,27 +3,15 @@
 #==============================================================================#
 # Temp files created by most text editors.
 *~
-# Merge files created by git.
-*.orig
-# Byte compiled python modules.
-*.pyc
 # vim swap files
 .*.sw?
 .sw?
-#OS X specific files.
-.DS_store
 
 #==============================================================================#
 # Explicit files to ignore (only matches one).
 #==============================================================================#
 # Various tag programs
 /tags
-/TAGS
-/GPATH
-/GRTAGS
-/GSYMS
-/GTAGS
-.gitusers
 
 #==============================================================================#
 # Directories to ignore (do not add trailing '/'s, they skip symlinks).
