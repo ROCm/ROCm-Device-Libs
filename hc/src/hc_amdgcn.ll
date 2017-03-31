@@ -158,12 +158,12 @@ define i32 @__atomic_wrapinc_local(i32 addrspace(3)* nocapture %addr, i32 %val) 
 
 declare i32 @llvm.amdgcn.atomic.inc.i32.p3i32(i32 addrspace(3)* nocapture, i32) #4
 
-define i32 @__atomic_wrapinc(i32* nocapture %addr, i32 %val) #1 {
-  %ret = tail call i32 @llvm.amdgcn.atomic.inc.i32.p0i32(i32* nocapture %addr, i32 %val) 
+define i32 @__atomic_wrapinc(i32 addrspace(0)* nocapture %addr, i32 %val) #1 {
+  %ret = tail call i32 @llvm.amdgcn.atomic.inc.i32.p0i32(i32 addrspace(0)* nocapture %addr, i32 %val) 
   ret i32 %ret
 }
 
-declare i32 @llvm.amdgcn.atomic.inc.i32.p0i32(i32* nocapture, i32) #4
+declare i32 @llvm.amdgcn.atomic.inc.i32.p0i32(i32 addrspace(0)* nocapture, i32) #4
 
 define i32 @__atomic_wrapdec_global(i32 addrspace(1)* nocapture %addr, i32 %val) #1 {
   %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p1i32(i32 addrspace(1)* nocapture %addr, i32 %val) 
@@ -179,12 +179,12 @@ define i32 @__atomic_wrapdec_local(i32 addrspace(3)* nocapture %addr, i32 %val) 
 
 declare i32 @llvm.amdgcn.atomic.dec.i32.p3i32(i32 addrspace(3)* nocapture, i32) #4
 
-define i32 @__atomic_wrapdec(i32* nocapture %addr, i32 %val) #1 {
-  %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32* nocapture %addr, i32 %val) 
+define i32 @__atomic_wrapdec(i32 addrspace(0)* nocapture %addr, i32 %val) #1 {
+  %ret = tail call i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32 addrspace(0)* nocapture %addr, i32 %val) 
   ret i32 %ret
 }
 
-declare i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32* nocapture, i32) #4
+declare i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32 addrspace(0)* nocapture, i32) #4
 
 define i64 @__clock_u64() #1 {
   %ret = tail call i64 @llvm.amdgcn.s.memrealtime()
@@ -207,7 +207,7 @@ define i32 @get_group_segment_size() #0 {
   ret i32 %2
 }
 
-define i8* @get_group_segment_base_pointer() #0 {
+define i8 addrspace(0)* @get_group_segment_base_pointer() #0 {
   ; XXX For some reason getreg may return strange values for LDS_BASE
   ; temporary fix as 0 for now
 
@@ -219,8 +219,8 @@ define i8* @get_group_segment_base_pointer() #0 {
   %3 = inttoptr i32 %2 to i8 addrspace(3)*
 
   ; then convert to generic address space
-  %4 = addrspacecast i8 addrspace(3)* %3 to i8*
-  ret i8* %4
+  %4 = addrspacecast i8 addrspace(3)* %3 to i8 addrspace(0)*
+  ret i8 addrspace(0)* %4
 }
 
 define i32 @get_static_group_segment_size() #1 {
