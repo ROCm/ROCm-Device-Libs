@@ -147,6 +147,14 @@ FUNC2(fmod)
 //-------- T __nv_hypotf
 FUNC2(hypot)
 
+//-------- T __nv_j0
+//-------- T __nv_j0f
+FUNC1(j0)
+
+//-------- T __nv_j1
+//-------- T __nv_j1f
+FUNC1(j1)
+
 //-------- T __nv_lgamma
 //-------- T __nv_lgammaf
 FUNC1(lgamma)
@@ -191,6 +199,10 @@ FUNC1(nearbyint)
 //-------- T __nv_nextafterf
 FUNC2(nextafter)
 
+//-------- T __nv_rint
+//-------- T __nv_rintf
+FUNC1(rint)
+
 //-------- T __nv_round
 //-------- T __nv_roundf
 FUNC1(round)
@@ -234,4 +246,12 @@ FUNC1(tgamma)
 //-------- T __nv_trunc
 //-------- T __nv_truncf
 FUNC1(trunc)
+
+//-------- T __nv_y0
+//-------- T __nv_y0f
+FUNC1(y0)
+
+//-------- T __nv_y1
+//-------- T __nv_y1f
+FUNC1(y1)
 
