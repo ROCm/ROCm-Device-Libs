@@ -6,6 +6,12 @@
 ##===--------------------------------------------------------------------------
 
 file(GLOB sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cl
   ${CMAKE_CURRENT_SOURCE_DIR}/src/*.ll
 )
-clang_opencl_bc_builtins_lib(openmp ${CMAKE_CURRENT_SOURCE_DIR} ${sources})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ocml/inc)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ockl/inc)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../irif/inc)
+
+clang_opencl_bc_builtins_lib(cuda2gcn ${CMAKE_CURRENT_SOURCE_DIR} ${sources})
