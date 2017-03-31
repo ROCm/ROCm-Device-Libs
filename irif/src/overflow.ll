@@ -11,18 +11,18 @@ target triple = "amdgcn--amdhsa-amdgiz"
 declare {i16, i1} @llvm.sadd.with.overflow.i16(i16, i16)
 declare {i16, i1} @llvm.uadd.with.overflow.i16(i16, i16)
 
-define zeroext i1 @__llvm_sadd_with_overflow_i16(i16, i16, i16* nocapture) #0 {
+define zeroext i1 @__llvm_sadd_with_overflow_i16(i16, i16, i16 addrspace(0)* nocapture) #0 {
   %4 = call {i16, i1} @llvm.sadd.with.overflow.i16(i16 %0, i16 %1)
   %5 = extractvalue {i16, i1} %4, 0
-  store i16 %5, i16* %2, align 4
+  store i16 %5, i16 addrspace(0)* %2, align 4
   %6 = extractvalue {i16, i1} %4, 1
   ret i1 %6
 }
 
-define zeroext i1 @__llvm_uadd_with_overflow_i16(i16, i16, i16* nocapture) #0 {
+define zeroext i1 @__llvm_uadd_with_overflow_i16(i16, i16, i16 addrspace(0)* nocapture) #0 {
   %4 = call {i16, i1} @llvm.uadd.with.overflow.i16(i16 %0, i16 %1)
   %5 = extractvalue {i16, i1} %4, 0
-  store i16 %5, i16* %2, align 4
+  store i16 %5, i16 addrspace(0)* %2, align 4
   %6 = extractvalue {i16, i1} %4, 1
   ret i1 %6
 }
@@ -68,18 +68,18 @@ define zeroext i1 @__llvm_uadd_with_overflow_i64(i64, i64, i64 addrspace(0)* noc
 declare {i16, i1} @llvm.ssub.with.overflow.i16(i16, i16)
 declare {i16, i1} @llvm.usub.with.overflow.i16(i16, i16)
 
-define zeroext i1 @__llvm_ssub_with_overflow_i16(i16, i16, i16* nocapture) #0 {
+define zeroext i1 @__llvm_ssub_with_overflow_i16(i16, i16, i16 addrspace(0)* nocapture) #0 {
   %4 = call {i16, i1} @llvm.ssub.with.overflow.i16(i16 %0, i16 %1)
   %5 = extractvalue {i16, i1} %4, 0
-  store i16 %5, i16* %2, align 4
+  store i16 %5, i16 addrspace(0)* %2, align 4
   %6 = extractvalue {i16, i1} %4, 1
   ret i1 %6
 }
 
-define zeroext i1 @__llvm_usub_with_overflow_i16(i16, i16, i16* nocapture) #0 {
+define zeroext i1 @__llvm_usub_with_overflow_i16(i16, i16, i16 addrspace(0)* nocapture) #0 {
   %4 = call {i16, i1} @llvm.usub.with.overflow.i16(i16 %0, i16 %1)
   %5 = extractvalue {i16, i1} %4, 0
-  store i16 %5, i16* %2, align 4
+  store i16 %5, i16 addrspace(0)* %2, align 4
   %6 = extractvalue {i16, i1} %4, 1
   ret i1 %6
 }
@@ -125,18 +125,18 @@ define zeroext i1 @__llvm_usub_with_overflow_i64(i64, i64, i64 addrspace(0)* noc
 declare {i16, i1} @llvm.smul.with.overflow.i16(i16, i16)
 declare {i16, i1} @llvm.umul.with.overflow.i16(i16, i16)
 
-define zeroext i1 @__llvm_smul_with_overflow_i16(i16, i16, i16* nocapture) #0 {
+define zeroext i1 @__llvm_smul_with_overflow_i16(i16, i16, i16 addrspace(0)* nocapture) #0 {
   %4 = call {i16, i1} @llvm.smul.with.overflow.i16(i16 %0, i16 %1)
   %5 = extractvalue {i16, i1} %4, 0
-  store i16 %5, i16* %2, align 4
+  store i16 %5, i16 addrspace(0)* %2, align 4
   %6 = extractvalue {i16, i1} %4, 1
   ret i1 %6
 }
 
-define zeroext i1 @__llvm_umul_with_overflow_i16(i16, i16, i16* nocapture) #0 {
+define zeroext i1 @__llvm_umul_with_overflow_i16(i16, i16, i16 addrspace(0)* nocapture) #0 {
   %4 = call {i16, i1} @llvm.umul.with.overflow.i16(i16 %0, i16 %1)
   %5 = extractvalue {i16, i1} %4, 0
-  store i16 %5, i16* %2, align 4
+  store i16 %5, i16 addrspace(0)* %2, align 4
   %6 = extractvalue {i16, i1} %4, 1
   ret i1 %6
 }
