@@ -216,13 +216,13 @@ do.end:                                           ; preds = %do.body
 }
 
 ; Function Attrs: alwaysinline nounwind
-define float @atomic_exchange_float(float* %x, float %y) #2 {
+define float @atomic_exchange_float(float addrspace(0)* %x, float %y) #2 {
 entry:
-  %0 = bitcast float* %x to i32 addrspace(0)*
+  %0 = bitcast float addrspace(0)* %x to i32 addrspace(0)*
   br label %do.body
 
 do.body:                                          ; preds = %do.body, %entry
-  %1 = load volatile float, float* %x, align 4
+  %1 = load volatile float, float addrspace(0)* %x, align 4
   %2 = bitcast float %1 to i32
   %xchg = fadd float %y, 0.000000e+00
   %3 = bitcast float %xchg to i32
@@ -273,13 +273,13 @@ do.end:                                           ; preds = %do.body
 }
 
 ; Function Attrs: alwaysinline nounwind
-define float @atomic_add_float(float* %x, float %y) #2 {
+define float @atomic_add_float(float addrspace(0)* %x, float %y) #2 {
 entry:
-  %0 = bitcast float* %x to i32 addrspace(0)*
+  %0 = bitcast float addrspace(0)* %x to i32 addrspace(0)*
   br label %do.body
 
 do.body:                                          ; preds = %do.body, %entry
-  %1 = load volatile float, float* %x, align 4
+  %1 = load volatile float, float addrspace(0)* %x, align 4
   %2 = bitcast float %1 to i32
   %add = fadd float %1, %y
   %3 = bitcast float %add to i32
@@ -330,13 +330,13 @@ do.end:                                           ; preds = %do.body
 }
 
 ; Function Attrs: alwaysinline nounwind
-define float @atomic_sub_float(float* %x, float %y) #2 {
+define float @atomic_sub_float(float addrspace(0)* %x, float %y) #2 {
 entry:
-  %0 = bitcast float* %x to i32 addrspace(0)*
+  %0 = bitcast float addrspace(0)* %x to i32 addrspace(0)*
   br label %do.body
 
 do.body:                                          ; preds = %do.body, %entry
-  %1 = load volatile float, float* %x, align 4
+  %1 = load volatile float, float addrspace(0)* %x, align 4
   %2 = bitcast float %1 to i32
   %sub = fsub float %1, %y
   %3 = bitcast float %sub to i32
