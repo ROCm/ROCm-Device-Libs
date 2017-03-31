@@ -168,7 +168,5 @@ TEST_KERNEL_FUNC_VEC(sqrt, double, double)
 TEST_KERNEL_FUNC_VEC(tan, double, double)
 TEST_KERNEL_FUNC_VEC(tanh, double, double)
 TEST_KERNEL_FUNC_VEC(tanpi, double, double)
-// FIXME: temporarily disabled by a known issue in AMDGPU backend
-//        "Branch size exceeds simm16" would be raised by AMDGPU backend
-//TEST_KERNEL_FUNC_VEC(tgamma, double, double)
+TEST_KERNEL_FUNC_VEC(tgamma, double, double)
 TEST_KERNEL_FUNC_VEC(trunc, double, double)
