@@ -23,8 +23,20 @@ endif()
 option(GENERIC_IS_ZERO "Teach LLVM/Clang that generic address space IS address space 0 for AMDGPU target" OFF)
 if (GENERIC_IS_ZERO)
   set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa-amdgizcl")
+
+  # execute utils/change-addr-space.sh
+  # the script would apply utils/add_amdgiz.sed
+  execute_process(COMMAND "utils/change-addr-space.sh"
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
 else (GENERIC_IS_ZERO)
   set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa")
+
+  # execute utils/change-addr-space.sh x
+  # the script would apply utils/remove_amdgiz.sed
+  execute_process(COMMAND "utils/change-addr-space.sh" "x"
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
 endif (GENERIC_IS_ZERO)
 
 find_package(LLVM REQUIRED CONFIG PATHS ${LLVM_DIR} NO_DEFAULT_PATH)
