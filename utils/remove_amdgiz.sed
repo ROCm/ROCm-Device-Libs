@@ -28,3 +28,7 @@ s/\.p0i32(/\.p4i32(/g
 
 # change addrspace(0) -> addrspace(4)
 s/addrspace(0)\*/addrspace(4)*/g
+
+# change addrspace(5) -> addrspace(0)
+s/addrspace(5)\*/addrspace(0)*/g
+
