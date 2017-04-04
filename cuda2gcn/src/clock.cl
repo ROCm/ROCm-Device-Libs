@@ -9,9 +9,9 @@
 
 #define ATTR __attribute__((always_inline, const))
 
-ATTR ulong __gcn_clock64() { return __llvm_amdgcn_s_memrealtime(); }
+ATTR ulong __clock64() { return __llvm_amdgcn_s_memrealtime(); }
 
-ATTR uint  __gcn_clock() { return (uint)__llvm_amdgcn_s_memrealtime(); }
+ATTR uint  __clock() { return (uint)__llvm_amdgcn_s_memrealtime(); }
 
 
 
