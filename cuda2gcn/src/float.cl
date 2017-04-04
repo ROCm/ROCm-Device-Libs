@@ -25,3 +25,9 @@ ATTR int __nv_isnand(double x) { return isnan(x); }
 //-------- T __nv_isnanf
 ATTR int __nv_isnanf(float x) { return isnan(x); }
 
+//-------- T __nv_nan
+ATTR double __nv_nan(char *tagp) { return __builtin_nan(tagp); }
+
+//-------- T __nv_nanf
+ATTR float __nv_nanf(char *tagp) { return __builtin_nan(tagp); }
+
