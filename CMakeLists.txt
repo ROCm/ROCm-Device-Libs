@@ -39,6 +39,17 @@ else (GENERIC_IS_ZERO)
 
 endif (GENERIC_IS_ZERO)
 
+# Introduce CUDA_TRIPLE Cmake option 
+option(CUDA_TRIPLE "Change Triple in llvm IR to use amdgcn--cuda" OFF)
+if (CUDA_TRIPLE)
+  set(AMDGPU_TARGET_TRIPLE "amdgcn--cuda")
+  execute_process(COMMAND "utils/change-triple.sh"
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+else (CUDA_TRIPLE)
+  execute_process(COMMAND "utils/change-triple.sh" "x"
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+endif (CUDA_TRIPLE)
+
 find_package(LLVM REQUIRED CONFIG PATHS ${LLVM_DIR} NO_DEFAULT_PATH)
 list(APPEND CMAKE_MODULE_PATH ${LLVM_CMAKE_DIR})
 include(AddLLVM)
@@ -66,8 +77,12 @@ add_subdirectory(ockl)
 add_subdirectory(opencl)
 add_subdirectory(cuda2gcn)
 add_subdirectory(hc)
-add_subdirectory(test/opencl)
-add_subdirectory(test/opencl_conformance)
+if (CUDA_TRIPLE)
+  message("Skip testing for compilation of CUDA rocm-device-libs ")
+else (CUDA_TRIPLE)
+  add_subdirectory(test/opencl)
+  add_subdirectory(test/opencl_conformance)
+endif (CUDA_TRIPLE)
 
 ## CPack standard variables
 set ( CPACK_PACKAGE_NAME "rocm-device-libs" )
