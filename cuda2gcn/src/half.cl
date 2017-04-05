@@ -12,12 +12,12 @@
 //-------- T __nv_float2half_rn
 half __nv_float2half_rn(float x)
 {
-    return convert_half_rte(x);
+    return (half)x;
 }
 
 //-------- T __nv_half2float
 float __nv_half2float(half x)
 {
-    return convert_float(x);
+    return (float)x;
 }
 
