@@ -68,8 +68,8 @@ endmacro(clang_opencl_bc_lib)
 
 macro(opt_builtins name)
   add_custom_command(
-    OUTPUT ${name}.optout.bc 
-    COMMAND ${LLVM_TOOLS_BINARY_DIR}/opt -O2 -infer-address-spaces -load LLVMSugarAddrSpaceCast.so -sugar-addrspacecast -dce -globaldce ${name}.lib.bc -o ${name}.optout.bc 
+    OUTPUT ${name}.optout.bc
+    COMMAND ${LLVM_TOOLS_BINARY_DIR}/opt -O2 -infer-address-spaces -dce -globaldce ${name}.lib.bc -o ${name}.optout.bc
     DEPENDS  ${name}_lib_bc
   )
   add_custom_target(${name}_optbc ALL
