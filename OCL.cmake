@@ -66,11 +66,22 @@ macro(clang_opencl_bc_lib name dir)
   set_target_properties(${name}_lib_bc PROPERTIES LINKER_LANGUAGE OCL)
 endmacro(clang_opencl_bc_lib)
 
+macro(opt_builtins name)
+  add_custom_command(
+    OUTPUT ${name}.optout.bc 
+    COMMAND ${LLVM_TOOLS_BINARY_DIR}/opt -O2 -infer-address-spaces -load LLVMSugarAddrSpaceCast.so -sugar-addrspacecast -dce -globaldce ${name}.lib.bc -o ${name}.optout.bc 
+    DEPENDS  ${name}_lib_bc
+  )
+  add_custom_target(${name}_optbc ALL
+    DEPENDS ${name}.optout.bc
+  )
+endmacro(opt_builtins)
+
 macro(prepare_builtins name)
   add_custom_command(
     OUTPUT ${name}${BC_EXT}
-    COMMAND ${PREPARE_BUILTINS} ${name}.lib.bc -o ${name}${BC_EXT}
-    DEPENDS prepare-builtins ${name}_lib_bc
+    COMMAND ${PREPARE_BUILTINS} ${name}.optout.bc -o ${name}${BC_EXT}
+    DEPENDS prepare-builtins ${name}_optbc ${name}.optout.bc
   )
   add_custom_target(${name}_bc ALL
     DEPENDS ${name}${BC_EXT}
@@ -80,6 +91,7 @@ endmacro(prepare_builtins)
 
 macro(clang_opencl_bc_builtins_lib name dir)
   clang_opencl_bc_lib(${name} ${dir} ${ARGN})
+  opt_builtins(${name})
   prepare_builtins(${name})
   install (FILES ${CMAKE_CURRENT_BINARY_DIR}/${name}${BC_EXT} DESTINATION lib)
 endmacro(clang_opencl_bc_builtins_lib)
