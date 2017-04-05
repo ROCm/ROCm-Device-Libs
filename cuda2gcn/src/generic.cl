@@ -40,3 +40,15 @@ ATTR ulong __nv_ullmin(ulong a, ulong b) { return MIN(a,b); }
 //-------- T __nv_umin
 ATTR uint __nv_umin(uint a, uint b) { return MIN(a,b); }
 
+//-------- T __nv_sad
+ATTR uint __nv_sad(int x, int y, uint z)
+{
+    return (z+abs(x-y));
+}
+
+//-------- T __nv_usad
+ATTR uint __nv_usad(uint x, uint y, uint z)
+{
+    return (z+abs(x-y));
+}
+
