@@ -255,6 +255,12 @@ FUNC1(y0)
 //-------- T __nv_y1f
 FUNC1(y1)
 
+//-------- T __nv_signbitd
+ATTR int __nv_signbitd(double x) { return __ocml_signbit_f64(x); }
+
+//-------- T __nv_signbitf
+ATTR int __nv_signbitf(float x) { return __ocml_signbit_f32(x); }
+
 //-------- T __nv_sincos
 ATTR void __nv_sincos(double x, __private double * sptr, __private double *cptr) { (*sptr)=__ocml_sincos_f64(x, cptr); }
 
