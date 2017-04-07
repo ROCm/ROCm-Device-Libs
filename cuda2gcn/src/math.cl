@@ -255,3 +255,15 @@ FUNC1(y0)
 //-------- T __nv_y1f
 FUNC1(y1)
 
+//-------- T __nv_sincos
+ATTR void __nv_sincos(double x, __private double * sptr, __private double *cptr) { (*sptr)=__ocml_sincos_f64(x, cptr); }
+
+//-------- T __nv_sincosf
+ATTR void __nv_sincosf(float x, __private float * sptr, __private float *cptr) { (*sptr)=__ocml_sincos_f32(x, cptr); }
+
+//-------- T __nv_sincospi
+ATTR void __nv_sincospi(double x, __private double * sptr, __private double *cptr) { (*sptr)=__ocml_sincospi_f64(x, cptr); }
+
+//-------- T __nv_sincospif
+ATTR void __nv_sincosfpif(float x, __private float * sptr, __private float *cptr) { (*sptr)=__ocml_sincospi_f32(x, cptr); }
+
