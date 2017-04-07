@@ -43,3 +43,21 @@ ATTR float __nv_uint_as_float(unsigned int x)
   return as_float(x);
 }
 
+//-------- T __nv_double2hiint
+int __nv_double2hiint(double x)
+{
+    return (int) as_long(x) >> 32;
+}
+
+//-------- T __nv_double2loint
+int __nv_double2loint(double x)
+{
+    return (int) as_long(x);
+}
+
+//-------- T __nv_hiloint2double
+double __nv_hiloint2double(int x, int y)
+{
+    return as_double((long)x << 32 | y);
+}
+
