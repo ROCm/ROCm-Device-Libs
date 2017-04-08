@@ -14,6 +14,8 @@
 
 # p:32:32 -> p:64:64
 /target datalayout/s/-p:32:32-/-p:64:64-/
+# p4:64:64 -> p4:32:32 - Temporary, to align with amd-common
+/target datalayout/s/-p4:64:64-/-p4:32:32-/
 
 #############################
 # change intrinsic functions
@@ -21,6 +23,8 @@
 
 # change p4i32 -> p0i32
 s/\.p4i32(/\.p0i32(/g
+# change p0i32 -> p5i32
+s/\.p0i32(/\.p5i32(/g
 
 ###########################
 # change pointer addrspace
