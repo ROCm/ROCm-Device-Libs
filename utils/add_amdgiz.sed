@@ -23,8 +23,6 @@
 
 # change p4i32 -> p0i32
 s/\.p4i32(/\.p0i32(/g
-# change p0i32 -> p5i32
-s/\.p0i32(/\.p5i32(/g
 
 ###########################
 # change pointer addrspace
