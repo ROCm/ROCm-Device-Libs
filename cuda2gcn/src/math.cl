@@ -254,6 +254,36 @@ FUNC1(y0)
 //-------- T __nv_y1
 //-------- T __nv_y1f
 FUNC1(y1)
+//-------- T __nv_frexp
+
+ATTR double __nv_frexp(double x, __private int *ptr) { return __ocml_frexp_f64(x, ptr); }
+
+//-------- T __nv_frexpf
+ATTR float __nv_frexpf(float x, __private int *ptr) { return __ocml_frexp_f32(x, ptr); }
+
+//-------- T __nv_ilogb
+ATTR int __nv_ilogb(double x) { return __ocml_ilogb_f64(x); }
+
+//-------- T __nv_ilogbf
+ATTR int __nv_ilogbf(float x) { return __ocml_ilogb_f32(x); }
+
+//-------- T __nv_ldexp
+ATTR double __nv_ldexp(double x, int i) { return __ocml_ldexp_f64(x, i); }
+
+//-------- T __nv_ldexpf
+ATTR float __nv_ldexpf(float x, int i) { return __ocml_ldexp_f32(x, i); }
+
+//-------- T __nv_modf
+ATTR double __nv_modf(double x, __private double *ptr) { return __ocml_modf_f64(x, ptr); }
+
+//-------- T __nv_modff
+ATTR float __nv_modff(float x, __private float *ptr) { return __ocml_modf_f32(x, ptr); }
+
+//-------- T __nv_remquo
+ATTR double __nv_remquo(double x, double y, __private int *ptr) { return __ocml_remquo_f64(x, y, ptr); }
+
+//-------- T __nv_remquof
+ATTR float __nv_remquof(float x, float y, __private int *ptr) { return __ocml_remquo_f32(x, y, ptr); }
 
 //-------- T __nv_signbitd
 ATTR int __nv_signbitd(double x) { return __ocml_signbit_f64(x); }
