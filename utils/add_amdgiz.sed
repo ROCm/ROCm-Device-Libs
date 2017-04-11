@@ -14,8 +14,6 @@
 
 # p:32:32 -> p:64:64
 /target datalayout/s/-p:32:32-/-p:64:64-/
-# p4:64:64 -> p4:32:32 - Temporary, to align with amd-common
-/target datalayout/s/-p4:64:64-/-p4:32:32-/
 
 #############################
 # change intrinsic functions
