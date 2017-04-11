@@ -48,3 +48,6 @@ FUNC1(sin)
 //-------- T __nv_fast_tanf
 FUNC1(tan)
 
+//-------- T __nv_fast_fdividef
+ATTR float __nv_fast_fdividef(float x, float y) { return native_divide(x, y); }
+
