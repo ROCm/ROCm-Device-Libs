@@ -52,21 +52,3 @@ ATTR uint __nv_usad(uint x, uint y, uint z)
     return (z+abs(x-y));
 }
 
-//-------- T __nv_hadd
-ATTR int __nv_hadd(int x, int y) { return hadd(x, y); }
-
-//-------- T __nv_rhadd
-ATTR int __nv_rhadd(int x, int y) { return rhadd(x, y); }
-
-//-------- T __nv_uhadd
-ATTR uint __nv_uhadd(uint x, uint y) { return hadd(x, y); }
-
-//-------- T __nv_urhadd
-ATTR uint __nv_urhadd(uint x, uint y) { return rhadd(x, y); }
-
-//-------- T __nv_mul24
-ATTR int __nv_mul24(int x, int y) { return mul24(x, y); }
-
-//-------- T __nv_umul24
-ATTR uint __nv_umul24(uint x, uint y) { return mul24(x, y); }
-
