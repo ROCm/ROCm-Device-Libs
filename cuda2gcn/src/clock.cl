@@ -7,11 +7,9 @@
 
 #include "irif.h"
 
-#define ATTR __attribute__((always_inline, const))
+#define ATTR __attribute__((always_inline))
 
 ATTR ulong __clock64() { return __llvm_amdgcn_s_memrealtime(); }
 
 ATTR uint  __clock() { return (uint)__llvm_amdgcn_s_memrealtime(); }
-
-
 
