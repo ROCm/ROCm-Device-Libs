@@ -5,11 +5,13 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#include "irif.h"
+#include "ockl.h"
 
-#define ATTR __attribute__((always_inline))
+#define ATTR __attribute__((always_inline, const))
 
-ATTR ulong __clock64() { return __llvm_amdgcn_s_memrealtime(); }
+//-------- T __nv_mul24
+ATTR int __nv_mul24(int x, int y) { return __ockl_mul24_i32(x, y); }
 
-ATTR uint  __clock() { return (uint)__llvm_amdgcn_s_memrealtime(); }
+//-------- T __nv_umul24
+ATTR uint __nv_umul24(uint x, uint y) { return __ockl_mul24_u32(x, y); }
 
