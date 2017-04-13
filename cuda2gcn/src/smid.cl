@@ -24,11 +24,17 @@
    ME_ID       31:30   Micro-engine ID.
  */
 
-#define HW_REGISTER_ID    4
+#define HW_ID            4
+
+#define CU_ID_BitSize    4
+#define CU_ID_BitOffset  8
+
+#define SE_ID_BitSize    2
+#define SE_ID_BitOffset  13
 
 /*
    Encoding of parameter bitmask
-   { Size[4:0], Offset[4:0], hwRegId[5:0] }
+   { BitSize[4:0], BitOffset[4:0], HWRegId[5:0] }
    Size is 1..32
    Offset is 0..31
  */
@@ -37,17 +43,11 @@
 
 ATTR uint __smid()
 {
-    const uint cu_id_bitsize = 4;
-    const uint cu_id_bitoffset = 8;
-
-    const uint se_id_bitsize = 2;
-    const uint se_id_bitoffset = 13;
-
     uint cu_id = __llvm_amdgcn_s_getreg(
-            GETREG_IMMED(cu_id_bitsize, cu_id_bitoffset, HW_REGISTER_ID));
+            GETREG_IMMED(CU_ID_BitSize, CU_ID_BitOffset, HW_ID));
     uint se_id = __llvm_amdgcn_s_getreg(
-            GETREG_IMMED(se_id_bitsize, se_id_bitoffset, HW_REGISTER_ID));
+            GETREG_IMMED(SE_ID_BitSize, SE_ID_BitOffset, HW_ID));
 
-    return (se_id << cu_id_bitsize) + cu_id;
+    return (se_id << CU_ID_BitSize) + cu_id;
 }
 
