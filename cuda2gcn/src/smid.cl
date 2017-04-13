@@ -26,35 +26,27 @@
 
 #define HW_REGISTER_ID    4
 
-static ATTR uint get_hw_reg(uint size, uint offset, uint hw_id)
-{
-    /* Encoding of parameter bitmask
-     * { Size[4:0], Offset[4:0], hwRegId[5:0] }
-     *   Size is 1..32
-     *   Offset is 0..31
-     */
+/*
+   Encoding of parameter bitmask
+   { Size[4:0], Offset[4:0], hwRegId[5:0] }
+   Size is 1..32
+   Offset is 0..31
+ */
 
-    uint size_bitstart = 11;
-    uint offset_bitstart = 6;
-    uint bit_mask = 0;
-    bit_mask |= size << size_bitstart;
-    bit_mask |= offset << offset_bitstart;
-    bit_mask |= hw_id;
-
-    uint reg_val = __llvm_amdgcn_s_getreg(bit_mask);
-
-    return reg_val;
-}
+#define GETREG_IMMED(SZ,OFF,REG) (SZ << 11) | (OFF << 6) | REG
 
 ATTR uint __smid()
 {
-    const uint cu_id_bitoffset = 8;
     const uint cu_id_bitsize = 4;
-    const uint se_id_bitoffset = 13;
-    const uint se_id_bitsize = 2;
+    const uint cu_id_bitoffset = 8;
 
-    uint cu_id = get_hw_reg(cu_id_bitsize, cu_id_bitoffset, HW_REGISTER_ID);
-    uint se_id = get_hw_reg(se_id_bitsize, se_id_bitoffset, HW_REGISTER_ID);
+    const uint se_id_bitsize = 2;
+    const uint se_id_bitoffset = 13;
+
+    uint cu_id = __llvm_amdgcn_s_getreg(
+            GETREG_IMMED(cu_id_bitsize, cu_id_bitoffset, HW_REGISTER_ID));
+    uint se_id = __llvm_amdgcn_s_getreg(
+            GETREG_IMMED(se_id_bitsize, se_id_bitoffset, HW_REGISTER_ID));
 
     return (se_id << cu_id_bitsize) + cu_id;
 }
