@@ -34,7 +34,7 @@
 
 /*
    Encoding of parameter bitmask
-   { BitSize[4:0], BitOffset[4:0], HWRegId[5:0] }
+   { BitSize[4:0], BitOffset[4:0], HW_ID[5:0] }
    Size is 1..32
    Offset is 0..31
  */
