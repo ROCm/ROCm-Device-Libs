@@ -24,38 +24,31 @@
    ME_ID       31:30   Micro-engine ID.
  */
 
-#define HW_REGISTER_ID    4
+#define HW_ID               4
 
-static ATTR uint get_hw_reg(uint size, uint offset, uint hw_id)
-{
-    /* Encoding of parameter bitmask
-     * { Size[4:0], Offset[4:0], hwRegId[5:0] }
-     *   Size is 1..32
-     *   Offset is 0..31
-     */
+#define HW_ID_CU_ID_SIZE    4
+#define HW_ID_CU_ID_OFFSET  8
 
-    uint size_bitstart = 11;
-    uint offset_bitstart = 6;
-    uint bit_mask = 0;
-    bit_mask |= size << size_bitstart;
-    bit_mask |= offset << offset_bitstart;
-    bit_mask |= hw_id;
+#define HW_ID_SE_ID_SIZE    2
+#define HW_ID_SE_ID_OFFSET  13
 
-    uint reg_val = __llvm_amdgcn_s_getreg(bit_mask);
+/*
+   Encoding of parameter bitmask
+   HW_ID        5:0     HW_ID
+   OFFSET       10:6    Range: 0..31
+   SIZE         15:11   Range: 1..32
+ */
 
-    return reg_val;
-}
+#define GETREG_IMMED(SZ,OFF,REG) (SZ << 11) | (OFF << 6) | REG
 
 ATTR uint __smid()
 {
-    const uint cu_id_bitoffset = 8;
-    const uint cu_id_bitsize = 4;
-    const uint se_id_bitoffset = 13;
-    const uint se_id_bitsize = 2;
+    uint cu_id = __llvm_amdgcn_s_getreg(
+            GETREG_IMMED(HW_ID_CU_ID_SIZE, HW_ID_CU_ID_OFFSET, HW_ID));
+    uint se_id = __llvm_amdgcn_s_getreg(
+            GETREG_IMMED(HW_ID_SE_ID_SIZE, HW_ID_SE_ID_OFFSET, HW_ID));
 
-    uint cu_id = get_hw_reg(cu_id_bitsize, cu_id_bitoffset, HW_REGISTER_ID);
-    uint se_id = get_hw_reg(se_id_bitsize, se_id_bitoffset, HW_REGISTER_ID);
-
-    return (se_id << cu_id_bitsize) + cu_id;
+    /* Each shader engine has 16 CU */
+    return (se_id << HW_ID_CU_ID_SIZE) + cu_id;
 }
 
