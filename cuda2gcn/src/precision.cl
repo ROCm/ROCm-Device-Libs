@@ -51,3 +51,6 @@ FUNC1(tan)
 //-------- T __nv_fast_fdividef
 ATTR float __nv_fast_fdividef(float x, float y) { return native_divide(x, y); }
 
+//-------- T __nv_fast_sincosf
+ATTR void __nv_fast_sincosf(float x, __private float * sptr, __private float *cptr) { (*sptr)=__ocml_sincos_f32(x, cptr); }
+
