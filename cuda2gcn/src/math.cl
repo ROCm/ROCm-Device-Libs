@@ -288,9 +288,9 @@ ATTR float __nv_remquof(float x, float y, __private int *ptr) { return __ocml_re
 //-------- T __nv_saturatef
 ATTR float __nv_saturatef(float x)
 {
-    if (isnan(x)) return 0;
-    if (x==__ocml_min_f32(0,x)) return 0;
-    if (x==__ocml_max_f32(1,x)) return 1;
+    if (isnan(x)) return 0.0f;
+    if (x==__ocml_min_f32(0.0f,x)) return 0.0f;
+    if (x==__ocml_max_f32(1.0f,x)) return 1.0f;
     return x;
 }
 
