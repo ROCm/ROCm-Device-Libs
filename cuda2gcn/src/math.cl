@@ -279,6 +279,18 @@ ATTR double __nv_modf(double x, __private double *ptr) { return __ocml_modf_f64(
 //-------- T __nv_modff
 ATTR float __nv_modff(float x, __private float *ptr) { return __ocml_modf_f32(x, ptr); }
 
+//-------- T __nv_normcdf
+ATTR double __nv_normcdf(double x) { return __ocml_ncdf_f64(x); }
+
+//-------- T __nv_normcdff
+ATTR float __nv_normcdff(float x) { return __ocml_ncdf_f32(x); }
+
+//-------- T __nv_normcdfinv
+ATTR double __nv_normcdfinv(double x) { return __ocml_ncdfinv_f64(x); }
+
+//-------- T __nv_normcdfinvf
+ATTR float __nv_normcdfinvf(float x) { return __ocml_ncdfinv_f32(x); }
+
 //-------- T __nv_remquo
 ATTR double __nv_remquo(double x, double y, __private int *ptr) { return __ocml_remquo_f64(x, y, ptr); }
 
