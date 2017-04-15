@@ -285,6 +285,15 @@ ATTR double __nv_remquo(double x, double y, __private int *ptr) { return __ocml_
 //-------- T __nv_remquof
 ATTR float __nv_remquof(float x, float y, __private int *ptr) { return __ocml_remquo_f32(x, y, ptr); }
 
+//-------- T __nv_saturatef
+ATTR float __nv_saturatef(float x)
+{
+    if (isnan(x)) return 0;
+    if (x==__ocml_min_f32(0,x)) return 0;
+    if (x==__ocml_max_f32(1,x)) return 1;
+    return x;
+}
+
 //-------- T __nv_signbitd
 ATTR int __nv_signbitd(double x) { return __ocml_signbit_f64(x); }
 
