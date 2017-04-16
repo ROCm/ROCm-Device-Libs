@@ -291,6 +291,12 @@ ATTR double __nv_normcdfinv(double x) { return __ocml_ncdfinv_f64(x); }
 //-------- T __nv_normcdfinvf
 ATTR float __nv_normcdfinvf(float x) { return __ocml_ncdfinv_f32(x); }
 
+//-------- T __nv_powi
+ATTR double __nv_powi(double x, int n) { return __ocml_pown_f64(x, n); }
+
+//-------- T __nv_powi
+ATTR float __nv_powif(float x, int n) { return __ocml_pown_f32(x, n); }
+
 //-------- T __nv_remquo
 ATTR double __nv_remquo(double x, double y, __private int *ptr) { return __ocml_remquo_f64(x, y, ptr); }
 
