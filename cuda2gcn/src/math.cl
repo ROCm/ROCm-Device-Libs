@@ -303,6 +303,12 @@ ATTR double __nv_remquo(double x, double y, __private int *ptr) { return __ocml_
 //-------- T __nv_remquof
 ATTR float __nv_remquof(float x, float y, __private int *ptr) { return __ocml_remquo_f32(x, y, ptr); }
 
+//-------- T __nv_rhypot
+ATTR double __nv_rhypot(double x, double y) { return 1.0/__ocml_hypot_f64(x,y); }
+
+//-------- T __nv_rhypotf
+ATTR float __nv_rhypotf(float x, float y) { return 1.0f/__ocml_hypot_f32(x,y); }
+
 //-------- T __nv_saturatef
 ATTR float __nv_saturatef(float x) { return __ocml_min_f32(__ocml_max_f32(x, 0.0f), 1.0f); }
 
