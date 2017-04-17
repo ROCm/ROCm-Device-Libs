@@ -254,8 +254,20 @@ FUNC1(y0)
 //-------- T __nv_y1
 //-------- T __nv_y1f
 FUNC1(y1)
-//-------- T __nv_frexp
 
+//-------- T __nv_cyl_bessel_i0
+ATTR double __nv_cyl_bessel_i0(double x) { return __ocml_i0_f64(x); }
+
+//-------- T __nv_cyl_bessel_i0f
+ATTR float __nv_cyl_bessel_i0f(float x) { return __ocml_i0_f32(x); }
+
+//-------- T __nv_cyl_bessel_i1
+ATTR double __nv_cyl_bessel_i1(double x) { return __ocml_i1_f64(x); }
+
+//-------- T __nv_cyl_bessel_i1f
+ATTR float __nv_cyl_bessel_i1f(float x) { return __ocml_i1_f32(x); }
+
+//-------- T __nv_frexp
 ATTR double __nv_frexp(double x, __private int *ptr) { return __ocml_frexp_f64(x, ptr); }
 
 //-------- T __nv_frexpf
@@ -279,11 +291,38 @@ ATTR double __nv_modf(double x, __private double *ptr) { return __ocml_modf_f64(
 //-------- T __nv_modff
 ATTR float __nv_modff(float x, __private float *ptr) { return __ocml_modf_f32(x, ptr); }
 
+//-------- T __nv_normcdf
+ATTR double __nv_normcdf(double x) { return __ocml_ncdf_f64(x); }
+
+//-------- T __nv_normcdff
+ATTR float __nv_normcdff(float x) { return __ocml_ncdf_f32(x); }
+
+//-------- T __nv_normcdfinv
+ATTR double __nv_normcdfinv(double x) { return __ocml_ncdfinv_f64(x); }
+
+//-------- T __nv_normcdfinvf
+ATTR float __nv_normcdfinvf(float x) { return __ocml_ncdfinv_f32(x); }
+
+//-------- T __nv_powi
+ATTR double __nv_powi(double x, int n) { return __ocml_pown_f64(x, n); }
+
+//-------- T __nv_powi
+ATTR float __nv_powif(float x, int n) { return __ocml_pown_f32(x, n); }
+
 //-------- T __nv_remquo
 ATTR double __nv_remquo(double x, double y, __private int *ptr) { return __ocml_remquo_f64(x, y, ptr); }
 
 //-------- T __nv_remquof
 ATTR float __nv_remquof(float x, float y, __private int *ptr) { return __ocml_remquo_f32(x, y, ptr); }
+
+//-------- T __nv_rhypot
+ATTR double __nv_rhypot(double x, double y) { return 1.0/__ocml_hypot_f64(x,y); }
+
+//-------- T __nv_rhypotf
+ATTR float __nv_rhypotf(float x, float y) { return 1.0f/__ocml_hypot_f32(x,y); }
+
+//-------- T __nv_saturatef
+ATTR float __nv_saturatef(float x) { return __ocml_min_f32(__ocml_max_f32(x, 0.0f), 1.0f); }
 
 //-------- T __nv_signbitd
 ATTR int __nv_signbitd(double x) { return __ocml_signbit_f64(x); }
