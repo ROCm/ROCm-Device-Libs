@@ -254,8 +254,20 @@ FUNC1(y0)
 //-------- T __nv_y1
 //-------- T __nv_y1f
 FUNC1(y1)
-//-------- T __nv_frexp
 
+//-------- T __nv_cyl_bessel_i0
+ATTR double __nv_cyl_bessel_i0(double x) { return __ocml_i0_f64(x); }
+
+//-------- T __nv_cyl_bessel_i0f
+ATTR float __nv_cyl_bessel_i0f(float x) { return __ocml_i0_f32(x); }
+
+//-------- T __nv_cyl_bessel_i1
+ATTR double __nv_cyl_bessel_i1(double x) { return __ocml_i1_f64(x); }
+
+//-------- T __nv_cyl_bessel_i1f
+ATTR float __nv_cyl_bessel_i1f(float x) { return __ocml_i1_f32(x); }
+
+//-------- T __nv_frexp
 ATTR double __nv_frexp(double x, __private int *ptr) { return __ocml_frexp_f64(x, ptr); }
 
 //-------- T __nv_frexpf
