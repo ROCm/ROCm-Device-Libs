@@ -291,6 +291,18 @@ ATTR double __nv_modf(double x, __private double *ptr) { return __ocml_modf_f64(
 //-------- T __nv_modff
 ATTR float __nv_modff(float x, __private float *ptr) { return __ocml_modf_f32(x, ptr); }
 
+//-------- T __nv_norm3d
+ATTR double __nv_norm3d(double x, double y, double z) { return __ocml_len3_f64(x,y,z); }
+
+//-------- T __nv_norm3df
+ATTR float __nv_norm3df(float x, float y, float z) { return __ocml_len3_f32(x,y,z); }
+
+//-------- T __nv_norm4d
+ATTR double __nv_norm4d(double a, double b, double c, double d) { return __ocml_len4_f64(a,b,c,d); }
+
+//-------- T __nv_norm4df
+ATTR float __nv_norm4df(float a, float b, float c, float d) { return __ocml_len4_f32(a,b,c,d); }
+
 //-------- T __nv_normcdf
 ATTR double __nv_normcdf(double x) { return __ocml_ncdf_f64(x); }
 
