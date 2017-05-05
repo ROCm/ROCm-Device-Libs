@@ -14,6 +14,8 @@
 
 # p:64:64 -> p:32:32
 /target datalayout/s/-p:64:64-/-p:32:32-/
+/target datalayout/s/-p4:32:32-/-p4:64:64-/
+/target datalayout/s/-n32:64-A5/-n32:64/
 
 #############################
 # change intrinsic functions
