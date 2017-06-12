@@ -21,7 +21,9 @@ include(AddLLVM)
  set(ROCM_DEVICELIB_STANDALONE_BUILD ON)
 endif(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
-set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa")
+if (NOT DEFINED AMDGPU_TARGET_TRIPLE)
+  set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa")
+endif (NOT DEFINED AMDGPU_TARGET_TRIPLE)
 
 # Introduce GENERIC_IS_ZERO CMake option
 option(GENERIC_IS_ZERO "Teach LLVM/Clang that generic address space IS address space 0 for AMDGPU target" OFF)
@@ -45,6 +47,7 @@ endif()
 
 include(OCL.cmake)
 
+set(AMDGCN_LIB_LIST)
 add_subdirectory(irif)
 add_subdirectory(oclc)
 add_subdirectory(ocml)
@@ -54,6 +57,10 @@ add_subdirectory(opencl)
 if(BUILD_HC_LIB)
   add_subdirectory(hc)
 endif(BUILD_HC_LIB)
+
+if(AMDGCN_TARGETS_LIB_LIST)
+  set(${AMDGCN_TARGETS_LIB_LIST} ${AMDGCN_LIB_LIST} PARENT_SCOPE)
+endif(AMDGCN_TARGETS_LIB_LIST)
 
 if(ROCM_DEVICELIB_INCLUDE_TESTS)
   if (NOT AMDHSACOD)
