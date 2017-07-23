@@ -7,8 +7,13 @@
 
 #include "mathF.h"
 
-float
-MATH_MANGLE(fract)(float x, __private float *ip)
+typedef struct fract_ret_ty
+{
+    float f;
+    float i;
+} fract_ret_ty;
+
+static fract_ret_ty _fract_impl(float x)
 {
     float i = BUILTIN_FLOOR_F32(x);
 
@@ -23,7 +28,16 @@ MATH_MANGLE(fract)(float x, __private float *ip)
         f = BUILTIN_FRACTION_F32(x);
     }
 
-    *ip = i;
-    return f;
+    fract_ret_ty ret = { f, i };
+    return ret;
+}
+
+ALWAYS_INLINE float
+MATH_MANGLE(fract)(float x, __private float *ip)
+{
+    fract_ret_ty ret = _fract_impl(x);
+
+    *ip = ret.i;
+    return ret.f;
 }
 

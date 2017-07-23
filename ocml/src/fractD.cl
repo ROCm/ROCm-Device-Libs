@@ -7,8 +7,13 @@
 
 #include "mathD.h"
 
-double
-MATH_MANGLE(fract)(double x, __private double *ip)
+typedef struct fract_ret_ty
+{
+    double f;
+    double i;
+} fract_ret_ty;
+
+static fract_ret_ty _fract_impl(double x)
 {
     double i = BUILTIN_FLOOR_F64(x);
 
@@ -23,7 +28,16 @@ MATH_MANGLE(fract)(double x, __private double *ip)
         f = BUILTIN_FRACTION_F64(x);
     }
 
-    *ip = i;
-    return f;
+    fract_ret_ty ret = { f, i };
+    return ret;
+}
+
+double
+MATH_MANGLE(fract)(double x, __private double *ip)
+{
+    fract_ret_ty ret = _fract_impl(x);
+
+    *ip = ret.i;
+    return ret.f;
 }
 
