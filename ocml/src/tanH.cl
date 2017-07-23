@@ -10,7 +10,7 @@
 
 UGEN(tan)
 
-INLINEATTR half
+half
 MATH_MANGLE(tan)(half x)
 {
     half r;

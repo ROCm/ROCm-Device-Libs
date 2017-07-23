@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigredD.h"
 
-INLINEATTR double
+double
 MATH_MANGLE(cos)(double x)
 {
     double r, rr;

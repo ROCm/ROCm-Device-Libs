@@ -24,7 +24,7 @@
         L = __e; \
     } while (0)
 
-INLINEATTR float
+float
 MATH_PRIVATE(sinb)(float x, int n, float p)
 {
 #if defined EXTRA_PRECISION

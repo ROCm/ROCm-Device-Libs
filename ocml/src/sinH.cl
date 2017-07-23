@@ -10,7 +10,7 @@
 
 UGEN(sin)
 
-INLINEATTR half
+half
 MATH_MANGLE(sin)(half x)
 {
     half r;

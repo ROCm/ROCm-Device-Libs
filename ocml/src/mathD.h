@@ -23,7 +23,7 @@
 
 // Attributes
 #define ALIGNEDATTR(X) __attribute__((aligned(X)))
-#define INLINEATTR __attribute__((always_inline))
+#define ALWAYS_INLINE __attribute__((always_inline))
 #define PUREATTR __attribute__((pure))
 #define CONSTATTR __attribute__((const))
 

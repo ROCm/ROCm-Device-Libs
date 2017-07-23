@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigpiredD.h"
 
-INLINEATTR int
+int
 MATH_PRIVATE(trigpired)(double x, __private double *r)
 {
     double t = 2.0 * BUILTIN_FRACTION_F64(0.5 * x);

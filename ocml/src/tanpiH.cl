@@ -10,7 +10,7 @@
 
 CONSTATTR UGEN(tanpi)
 
-CONSTATTR INLINEATTR half
+CONSTATTR half
 MATH_MANGLE(tanpi)(half x)
 {
     half r;

@@ -7,13 +7,13 @@
 
 #include "mathH.h"
 
-CONSTATTR INLINEATTR half2
+ALWAYS_INLINE CONSTATTR half2
 MATH_MANGLE2(floor)(half2 x)
 {
     return BUILTIN_FLOOR_2F16(x);
 }
 
-CONSTATTR INLINEATTR half
+ALWAYS_INLINE CONSTATTR half
 MATH_MANGLE(floor)(half x)
 {
     return BUILTIN_FLOOR_F16(x);

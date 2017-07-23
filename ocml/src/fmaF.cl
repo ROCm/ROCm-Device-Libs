@@ -7,7 +7,7 @@
 
 #include "mathF.h"
 
-CONSTATTR float
+ALWAYS_INLINE CONSTATTR float
 MATH_MANGLE(fma)(float a, float b, float c)
 {
     return BUILTIN_FMA_F32(a, b, c);
@@ -17,7 +17,7 @@ MATH_MANGLE(fma)(float a, float b, float c)
 #if defined HSAIL_BUILD
 
 #define GEN(NAME,ROUND)\
-CONSTATTR INLINEATTR float \
+CONSTATTR float \
 MATH_MANGLE(NAME)(float a, float b, float c) \
 { \
     float ret; \

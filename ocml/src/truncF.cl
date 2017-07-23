@@ -7,7 +7,7 @@
 
 #include "mathF.h"
 
-CONSTATTR INLINEATTR float
+ALWAYS_INLINE CONSTATTR float
 MATH_MANGLE(trunc)(float x)
 {
     return BUILTIN_TRUNC_F32(x);

@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigredD.h"
 
-INLINEATTR int
+int
 MATH_PRIVATE(trigredsmall)(__private double *r, __private double *rr, double x)
 {
     const double twobypi = 0x1.45f306dc9c883p-1;

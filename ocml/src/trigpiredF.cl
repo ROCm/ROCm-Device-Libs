@@ -8,7 +8,7 @@
 #include "mathF.h"
 #include "trigpiredF.h"
 
-INLINEATTR int
+int
 MATH_PRIVATE(trigpired)(float x, __private float *r)
 {
     float t = 2.0f * BUILTIN_FRACTION_F32(0.5f * x);

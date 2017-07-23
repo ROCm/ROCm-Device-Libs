@@ -7,13 +7,13 @@
 
 #include "mathH.h"
 
-CONSTATTR half2
+ALWAYS_INLINE CONSTATTR half2
 MATH_MANGLE2(fma)(half2 a, half2 b, half2 c)
 {
     return BUILTIN_FMA_2F16(a, b, c);
 }
 
-CONSTATTR half
+ALWAYS_INLINE CONSTATTR half
 MATH_MANGLE(fma)(half a, half b, half c)
 {
     return BUILTIN_FMA_F16(a, b, c);
@@ -23,7 +23,7 @@ MATH_MANGLE(fma)(half a, half b, half c)
 #if defined HSAIL_BUILD
 
 #define GEN(NAME,ROUND)\
-CONSTATTR INLINEATTR half \
+CONSTATTR half \
 MATH_MANGLE(NAME)(half a, half b, half c) \
 { \
     return BUILTIN_FULL_TERNARY(ffmah, false, ROUND, a, b, c); \

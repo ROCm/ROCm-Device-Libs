@@ -8,7 +8,7 @@
 #include "mathH.h"
 #include "trigredH.h"
 
-INLINEATTR half2
+half2
 MATH_MANGLE2(sincos)(half2 x, __private half2 *cp)
 {
     half2 s;
@@ -19,7 +19,7 @@ MATH_MANGLE2(sincos)(half2 x, __private half2 *cp)
     return s;
 }
 
-INLINEATTR half
+half
 MATH_MANGLE(sincos)(half x, __private half *cp)
 {
     half r;

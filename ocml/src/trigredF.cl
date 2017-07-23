@@ -8,7 +8,7 @@
 #include "mathF.h"
 #include "trigredF.h"
 
-INLINEATTR int
+int
 #if defined EXTRA_PRECISION
 MATH_PRIVATE(trigred)(__private float *r, __private float *rr, float x)
 #else

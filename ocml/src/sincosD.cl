@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigredD.h"
 
-INLINEATTR double
+double
 MATH_MANGLE(sincos)(double x, __private double * cp)
 {
     double r, rr;

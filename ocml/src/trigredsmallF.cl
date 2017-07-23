@@ -91,7 +91,7 @@ fma_reduce(__private float *hi, float x)
     return (int)fn & 0x3;
 }
 
-INLINEATTR int
+int
 #if defined EXTRA_PRECISION
 MATH_PRIVATE(trigredsmall)(__private float *r, __private float *rr, float x)
 #else

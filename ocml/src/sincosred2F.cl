@@ -7,7 +7,7 @@
 
 #include "mathF.h"
 
-INLINEATTR float
+float
 MATH_PRIVATE(sincosred2)(float x, float y, __private float *cp)
 {
     const float c0 =  0x1.555556p-5f;

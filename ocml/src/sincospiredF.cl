@@ -7,7 +7,7 @@
 
 #include "mathF.h"
 
-INLINEATTR float
+float
 MATH_PRIVATE(sincospired)(float x, __private float *cp)
 {
 

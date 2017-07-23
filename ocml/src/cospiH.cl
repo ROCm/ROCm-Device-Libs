@@ -10,7 +10,7 @@
 
 UGEN(cospi)
 
-INLINEATTR half
+half
 MATH_MANGLE(cospi)(half x)
 {
     half t;

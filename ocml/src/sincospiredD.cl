@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-INLINEATTR double
+double
 MATH_PRIVATE(sincospired)(double x, __private double *cp)
 {
 

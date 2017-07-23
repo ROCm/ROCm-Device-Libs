@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-INLINEATTR double
+double
 MATH_PRIVATE(sincosred)(double x, __private double *cp)
 {
     const double S0 = -0x1.5555555555555p-3;

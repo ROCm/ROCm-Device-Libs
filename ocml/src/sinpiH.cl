@@ -10,7 +10,7 @@
 
 UGEN(sinpi)
 
-INLINEATTR half
+half
 MATH_MANGLE(sinpi)(half x)
 {
     half t;

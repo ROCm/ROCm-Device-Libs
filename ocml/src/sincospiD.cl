@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigpiredD.h"
 
-INLINEATTR double
+double
 MATH_MANGLE(sincospi)(double x, __private double * cp)
 {
     double t;

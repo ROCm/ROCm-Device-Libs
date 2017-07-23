@@ -10,7 +10,7 @@
 
 UGEN(cos)
 
-INLINEATTR half
+half
 MATH_MANGLE(cos)(half x)
 {
     half r;

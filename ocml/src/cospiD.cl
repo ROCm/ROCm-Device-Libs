@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigpiredD.h"
 
-INLINEATTR double
+double
 MATH_MANGLE(cospi)(double x)
 {
     double t;

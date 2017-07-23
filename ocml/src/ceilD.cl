@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-CONSTATTR INLINEATTR double
+ALWAYS_INLINE CONSTATTR double
 MATH_MANGLE(ceil)(double x)
 {
     return BUILTIN_CEIL_F64(x);

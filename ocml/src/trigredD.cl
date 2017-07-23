@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigredD.h"
 
-INLINEATTR int
+int
 MATH_PRIVATE(trigred)(__private double *r, __private double *rr, double x)
 {
     if (x < 0x1.0p+21)

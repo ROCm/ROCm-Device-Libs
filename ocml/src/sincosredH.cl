@@ -8,7 +8,7 @@
 #include "mathH.h"
 #include "trigredH.h"
 
-INLINEATTR half
+half
 MATH_PRIVATE(sincosred)(half x, __private half *cp)
 {
     half t = x * x;

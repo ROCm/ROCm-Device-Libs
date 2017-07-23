@@ -8,7 +8,7 @@
 #include "mathF.h"
 #include "trigredF.h"
 
-INLINEATTR float
+float
 MATH_PRIVATE(sincosred)(float x, __private float *cp)
 {
     float t = x * x;

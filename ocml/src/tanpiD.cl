@@ -8,7 +8,7 @@
 #include "mathD.h"
 #include "trigpiredD.h"
 
-CONSTATTR INLINEATTR double
+CONSTATTR double
 MATH_MANGLE(tanpi)(double x)
 {
     double r;

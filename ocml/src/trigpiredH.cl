@@ -8,7 +8,7 @@
 #include "mathH.h"
 #include "trigpiredH.h"
 
-INLINEATTR short
+short
 MATH_PRIVATE(trigpired)(half x, __private half *r)
 {
     half t = 2.0h * BUILTIN_FRACTION_F16(0.5h * x);

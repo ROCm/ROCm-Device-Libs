@@ -7,7 +7,7 @@
 
 #include "mathH.h"
 
-INLINEATTR half
+half
 MATH_PRIVATE(sincospired)(half x, __private half *cp)
 {
 

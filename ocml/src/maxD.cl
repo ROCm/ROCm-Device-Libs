@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-CONSTATTR INLINEATTR double
+ALWAYS_INLINE CONSTATTR double
 MATH_MANGLE(max)(double x, double y)
 {
     return BUILTIN_CMAX_F64(x, y);
