@@ -10,13 +10,11 @@
 
 UGEN(tan)
 
-INLINEATTR half
+half
 MATH_MANGLE(tan)(half x)
 {
-    half r;
-    short i = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
-
-    short t = AS_SHORT(MATH_PRIVATE(tanred)(r, i & 1));
+    struct redret r = MATH_PRIVATE(trigred)(BUILTIN_ABS_F16(x));
+    short t = AS_SHORT(MATH_PRIVATE(tanred)(r.hi, r.i & (short)1));
     t ^= AS_SHORT(x) & (short)0x8000;
 
     if (!FINITE_ONLY_OPT()) {
