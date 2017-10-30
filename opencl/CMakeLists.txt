@@ -14,6 +14,7 @@ file(GLOB cl_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/math/*.cl
   ${CMAKE_CURRENT_SOURCE_DIR}/src/media/*.cl
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc/*.cl
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/pipes/*.cl
   ${CMAKE_CURRENT_SOURCE_DIR}/src/relational/*.cl
   ${CMAKE_CURRENT_SOURCE_DIR}/src/subgroup/*.cl
   ${CMAKE_CURRENT_SOURCE_DIR}/src/vldst/*.cl
@@ -36,7 +37,7 @@ if (GENERIC_IS_ZERO)
   endforeach(f)
 
   # Perform transformation
-  execute_process(COMMAND "${CMAKE_SOURCE_DIR}/utils/change-addr-space.sh" "${CMAKE_SOURCE_DIR}/utils"
+  execute_process(COMMAND "${CMAKE_SOURCE_DIR}/../utils/change-addr-space.sh" "${AMDGPU_TARGET_TRIPLE}" "${CMAKE_SOURCE_DIR}/../utils"
                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
   file(GLOB ll_srcs

@@ -102,9 +102,18 @@
 
 #pragma OPENCL EXTENSION cl_khr_fp16 : enable
 
+extern __attribute__((const)) uchar OCKL_MANGLE_T(clz,u8)(uchar);
+extern __attribute__((const)) ushort OCKL_MANGLE_T(clz,u16)(ushort);
 DECL_CONST_OCKL_UNARY_U32(clz)
+DECL_CONST_OCKL_UNARY_U64(clz)
+
+extern __attribute__((const)) uchar OCKL_MANGLE_T(ctz,u8)(uchar);
+extern __attribute__((const)) ushort OCKL_MANGLE_T(ctz,u16)(ushort);
 DECL_CONST_OCKL_UNARY_U32(ctz)
+DECL_CONST_OCKL_UNARY_U64(ctz)
+
 DECL_CONST_OCKL_UNARY_U32(popcount)
+DECL_CONST_OCKL_UNARY_U64(popcount)
 
 DECL_CONST_OCKL_BINARY_I32(add_sat)
 DECL_CONST_OCKL_BINARY_U32(add_sat)

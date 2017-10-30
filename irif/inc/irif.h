@@ -120,11 +120,15 @@ extern bool __llvm_umul_with_overflow_i32(uint, uint, __private uint*);
 extern bool __llvm_smul_with_overflow_i64(long, long, __private long*);
 extern bool __llvm_umul_with_overflow_i64(ulong, ulong, __private ulong*);
 
-extern __attribute__((const)) int __llvm_ctlz_i32(int);
-extern __attribute__((const)) int __llvm_ctlz_i64(long);
+extern __attribute__((const)) uchar __llvm_ctlz_i8(uchar);
+extern __attribute__((const)) ushort __llvm_ctlz_i16(ushort);
+extern __attribute__((const)) uint __llvm_ctlz_i32(uint);
+extern __attribute__((const)) ulong __llvm_ctlz_i64(ulong);
 
-extern __attribute__((const)) int __llvm_cttz_i32(int);
-extern __attribute__((const)) int __llvm_cttz_i64(long);
+extern __attribute__((const)) uchar __llvm_cttz_i8(uchar);
+extern __attribute__((const)) ushort __llvm_cttz_i16(ushort);
+extern __attribute__((const)) uint __llvm_cttz_i32(uint);
+extern __attribute__((const)) ulong __llvm_cttz_i64(ulong);
 
 // Fence intrinsics
 extern void __llvm_fence_acq_wi(void);
@@ -196,6 +200,80 @@ extern uint __llvm_cmpxchg_a1_x_x_dev_i32(__global uint *, uint, uint);
 extern ulong __llvm_cmpxchg_a1_x_x_dev_i64(__global ulong *, ulong, ulong);
 extern uint __llvm_cmpxchg_a3_x_x_wg_i32(__local uint *, uint, uint);
 extern ulong __llvm_cmpxchg_a3_x_x_wg_i64(__local ulong *, ulong, ulong);
+
+// Constrained floating point
+extern __attribute__((const)) half __llvm_add_rte_f16(half, half);
+extern __attribute__((const)) half __llvm_add_rtn_f16(half, half);
+extern __attribute__((const)) half __llvm_add_rtp_f16(half, half);
+extern __attribute__((const)) half __llvm_add_rtz_f16(half, half);
+extern __attribute__((const)) float __llvm_add_rte_f32(float, float);
+extern __attribute__((const)) float __llvm_add_rtn_f32(float, float);
+extern __attribute__((const)) float __llvm_add_rtp_f32(float, float);
+extern __attribute__((const)) float __llvm_add_rtz_f32(float, float);
+extern __attribute__((const)) double __llvm_add_rte_f64(double, double);
+extern __attribute__((const)) double __llvm_add_rtn_f64(double, double);
+extern __attribute__((const)) double __llvm_add_rtp_f64(double, double);
+extern __attribute__((const)) double __llvm_add_rtz_f64(double, double);
+extern __attribute__((const)) half __llvm_sub_rte_f16(half, half);
+extern __attribute__((const)) half __llvm_sub_rtn_f16(half, half);
+extern __attribute__((const)) half __llvm_sub_rtp_f16(half, half);
+extern __attribute__((const)) half __llvm_sub_rtz_f16(half, half);
+extern __attribute__((const)) float __llvm_sub_rte_f32(float, float);
+extern __attribute__((const)) float __llvm_sub_rtn_f32(float, float);
+extern __attribute__((const)) float __llvm_sub_rtp_f32(float, float);
+extern __attribute__((const)) float __llvm_sub_rtz_f32(float, float);
+extern __attribute__((const)) double __llvm_sub_rte_f64(double, double);
+extern __attribute__((const)) double __llvm_sub_rtn_f64(double, double);
+extern __attribute__((const)) double __llvm_sub_rtp_f64(double, double);
+extern __attribute__((const)) double __llvm_sub_rtz_f64(double, double);
+extern __attribute__((const)) half __llvm_mul_rte_f16(half, half);
+extern __attribute__((const)) half __llvm_mul_rtn_f16(half, half);
+extern __attribute__((const)) half __llvm_mul_rtp_f16(half, half);
+extern __attribute__((const)) half __llvm_mul_rtz_f16(half, half);
+extern __attribute__((const)) float __llvm_mul_rte_f32(float, float);
+extern __attribute__((const)) float __llvm_mul_rtn_f32(float, float);
+extern __attribute__((const)) float __llvm_mul_rtp_f32(float, float);
+extern __attribute__((const)) float __llvm_mul_rtz_f32(float, float);
+extern __attribute__((const)) double __llvm_mul_rte_f64(double, double);
+extern __attribute__((const)) double __llvm_mul_rtn_f64(double, double);
+extern __attribute__((const)) double __llvm_mul_rtp_f64(double, double);
+extern __attribute__((const)) double __llvm_mul_rtz_f64(double, double);
+extern __attribute__((const)) half __llvm_div_rte_f16(half, half);
+extern __attribute__((const)) half __llvm_div_rtn_f16(half, half);
+extern __attribute__((const)) half __llvm_div_rtp_f16(half, half);
+extern __attribute__((const)) half __llvm_div_rtz_f16(half, half);
+extern __attribute__((const)) float __llvm_div_rte_f32(float, float);
+extern __attribute__((const)) float __llvm_div_rtn_f32(float, float);
+extern __attribute__((const)) float __llvm_div_rtp_f32(float, float);
+extern __attribute__((const)) float __llvm_div_rtz_f32(float, float);
+extern __attribute__((const)) double __llvm_div_rte_f64(double, double);
+extern __attribute__((const)) double __llvm_div_rtn_f64(double, double);
+extern __attribute__((const)) double __llvm_div_rtp_f64(double, double);
+extern __attribute__((const)) double __llvm_div_rtz_f64(double, double);
+extern __attribute__((const)) half __llvm_sqrt_rte_f16(half);
+extern __attribute__((const)) half __llvm_sqrt_rtn_f16(half);
+extern __attribute__((const)) half __llvm_sqrt_rtp_f16(half);
+extern __attribute__((const)) half __llvm_sqrt_rtz_f16(half);
+extern __attribute__((const)) float __llvm_sqrt_rte_f32(float);
+extern __attribute__((const)) float __llvm_sqrt_rtn_f32(float);
+extern __attribute__((const)) float __llvm_sqrt_rtp_f32(float);
+extern __attribute__((const)) float __llvm_sqrt_rtz_f32(float);
+extern __attribute__((const)) double __llvm_sqrt_rte_f64(double);
+extern __attribute__((const)) double __llvm_sqrt_rtn_f64(double);
+extern __attribute__((const)) double __llvm_sqrt_rtp_f64(double);
+extern __attribute__((const)) double __llvm_sqrt_rtz_f64(double);
+extern __attribute__((const)) half __llvm_fma_rte_f16(half, half, half);
+extern __attribute__((const)) half __llvm_fma_rtn_f16(half, half, half);
+extern __attribute__((const)) half __llvm_fma_rtp_f16(half, half, half);
+extern __attribute__((const)) half __llvm_fma_rtz_f16(half, half, half);
+extern __attribute__((const)) float __llvm_fma_rte_f32(float, float, float);
+extern __attribute__((const)) float __llvm_fma_rtn_f32(float, float, float);
+extern __attribute__((const)) float __llvm_fma_rtp_f32(float, float, float);
+extern __attribute__((const)) float __llvm_fma_rtz_f32(float, float, float);
+extern __attribute__((const)) double __llvm_fma_rte_f64(double, double, double);
+extern __attribute__((const)) double __llvm_fma_rtn_f64(double, double, double);
+extern __attribute__((const)) double __llvm_fma_rtp_f64(double, double, double);
+extern __attribute__((const)) double __llvm_fma_rtz_f64(double, double, double);
 
 // AMDGPU intrinsics
 extern __attribute__((const)) bool __llvm_amdgcn_class_f16(half, int) __asm("llvm.amdgcn.class.f16");
@@ -275,9 +353,9 @@ extern void __llvm_amdcgn_buffer_wbinvl1_vol(void) __asm("llvm.amdgcn.buffer.wbi
 extern __attribute__((const)) uint __llvm_amdgcn_mbcnt_lo(uint, uint) __asm("llvm.amdgcn.mbcnt.lo");
 extern __attribute__((const)) uint __llvm_amdgcn_mbcnt_hi(uint, uint) __asm("llvm.amdgcn.mbcnt.hi");
 
-extern ulong __llvm_amdgcn_read_exec(void);
-extern uint __llvm_amdgcn_read_exec_lo(void);
-extern uint __llvm_amdgcn_read_exec_hi(void);
+extern __attribute__((convergent)) ulong __llvm_amdgcn_read_exec(void);
+extern __attribute__((convergent)) uint __llvm_amdgcn_read_exec_lo(void);
+extern __attribute__((convergent)) uint __llvm_amdgcn_read_exec_hi(void);
 
 extern uint __llvm_amdgcn_s_getreg(uint) __asm("llvm.amdgcn.s.getreg");
 
@@ -387,12 +465,12 @@ extern void __llvm_amdgcn_image_store_mip_f32_v4i32(float p, int4 c, uint8 t, ui
     __asm("llvm.amdgcn.image.store.mip.f32.v4i32.v8i32");
 
 // Image Sample: Only expose 8 word T# and a few of the other combinations
-extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_v4f32_f32(float c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.v4f32.f32.v8i32");
-extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_v4f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.v4f32.v2f32.v8i32");
-extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_v4f32_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.v4f32.v4f32.v8i32");
+extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_lz_v4f32_f32(float c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.v4f32.f32.v8i32");
+extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_lz_v4f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.v4f32.v2f32.v8i32");
+extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_lz_v4f32_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.v4f32.v4f32.v8i32");
 
 extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_l_v4f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
     __asm("llvm.amdgcn.image.sample.l.v4f32.v2f32.v8i32");
@@ -406,12 +484,12 @@ extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_d_v4f32_v8f32(flo
 extern __attribute__((pure)) float4 __llvm_amdgcn_image_sample_d_v4f32_v16f32(float16 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
     __asm("llvm.amdgcn.image.sample.l.v4f32.v16f32.v8i32");
 
-extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_v4f16_f32(float c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.v4f16.f32.v8i32");
-extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_v4f16_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.v4f16.v2f32.v8i32");
-extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_v4f16_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.v4f16.v4f32.v8i32");
+extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_lz_v4f16_f32(float c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.v4f16.f32.v8i32");
+extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_lz_v4f16_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.v4f16.v2f32.v8i32");
+extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_lz_v4f16_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.v4f16.v4f32.v8i32");
 
 extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_l_v4f16_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
     __asm("llvm.amdgcn.image.sample.l.v4f16.v2f32.v8i32");
@@ -426,10 +504,10 @@ extern __attribute__((pure)) half4 __llvm_amdgcn_image_sample_d_v4f16_v16f32(flo
     __asm("llvm.amdgcn.image.sample.l.v4f16.v16f32.v8i32");
 
 // depth image sample
-extern __attribute__((pure)) float __llvm_amdgcn_image_sample_f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.f32.v2f32.v8i32");
-extern __attribute__((pure)) float __llvm_amdgcn_image_sample_f32_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-    __asm("llvm.amdgcn.image.sample.f32.v4f32.v8i32");
+extern __attribute__((pure)) float __llvm_amdgcn_image_sample_lz_f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.f32.v2f32.v8i32");
+extern __attribute__((pure)) float __llvm_amdgcn_image_sample_lz_f32_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+    __asm("llvm.amdgcn.image.sample.lz.f32.v4f32.v8i32");
 
 extern __attribute__((pure)) float __llvm_amdgcn_image_sample_l_f32_v4f32(float4 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
     __asm("llvm.amdgcn.image.sample.l.f32.v4f32.v8i32");
@@ -440,8 +518,8 @@ extern __attribute__((pure)) float __llvm_amdgcn_image_sample_d_f32_v16f32(float
     __asm("llvm.amdgcn.image.sample.l.f32.v16f32.v8i32");
 
 // image fetch
-extern __attribute__((pure)) float4 __llvm_amdgcn_image_gather4_v4f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
-        __asm("llvm.amdgcn.image.gather4.v4f32.v2f32.v8i32");
+extern __attribute__((pure)) float4 __llvm_amdgcn_image_gather4_lz_v4f32_v2f32(float2 c, uint8 t, uint4 s, uint dmask, bool unorm, bool glc, bool slc, bool lwe, bool da)
+        __asm("llvm.amdgcn.image.gather4.lz.v4f32.v2f32.v8i32");
 
 #pragma OPENCL EXTENSION cl_khr_fp16 : disable
 #endif // IRIF_H
