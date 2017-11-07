@@ -99,27 +99,6 @@ extern __attribute__((const)) float __llvm_canonicalize_f32(float) __asm("llvm.c
 extern __attribute__((const)) double __llvm_canonicalize_f64(double) __asm("llvm.canonicalize.f64");
 
 // Intrinsics requiring wrapping
-extern bool __llvm_sadd_with_overflow_i16(short, short, __private short*);
-extern bool __llvm_uadd_with_overflow_i16(ushort, ushort, __private ushort*);
-extern bool __llvm_sadd_with_overflow_i32(int, int, __private int*);
-extern bool __llvm_uadd_with_overflow_i32(uint, uint, __private uint*);
-extern bool __llvm_sadd_with_overflow_i64(long, long, __private long*);
-extern bool __llvm_uadd_with_overflow_i64(ulong, ulong, __private ulong*);
-
-extern bool __llvm_ssub_with_overflow_i16(short, short, __private short*);
-extern bool __llvm_usub_with_overflow_i16(ushort, ushort, __private ushort*);
-extern bool __llvm_ssub_with_overflow_i32(int, int, __private int*);
-extern bool __llvm_usub_with_overflow_i32(uint, uint, __private uint*);
-extern bool __llvm_ssub_with_overflow_i64(long, long, __private long*);
-extern bool __llvm_usub_with_overflow_i64(ulong, ulong, __private ulong*);
-
-extern bool __llvm_smul_with_overflow_i16(short, short, __private short*);
-extern bool __llvm_umul_with_overflow_i16(ushort, ushort, __private ushort*);
-extern bool __llvm_smul_with_overflow_i32(int, int, __private int*);
-extern bool __llvm_umul_with_overflow_i32(uint, uint, __private uint*);
-extern bool __llvm_smul_with_overflow_i64(long, long, __private long*);
-extern bool __llvm_umul_with_overflow_i64(ulong, ulong, __private ulong*);
-
 extern __attribute__((const)) uchar __llvm_ctlz_i8(uchar);
 extern __attribute__((const)) ushort __llvm_ctlz_i16(ushort);
 extern __attribute__((const)) uint __llvm_ctlz_i32(uint);
@@ -312,18 +291,6 @@ extern __attribute__((const)) double __llvm_amdgcn_trig_preop_f64(double, int) _
 
 extern __attribute__((const)) half __llvm_amdgcn_fmed3_f16(half, half, half) __asm("llvm.amdgcn.fmed3.f16");
 extern __attribute__((const)) float __llvm_amdgcn_fmed3_f32(float, float, float) __asm("llvm.amdgcn.fmed3.f32");
-
-extern void __llvm_amdgcn_s_sendmsg(uint, uint) __asm("llvm.amdgcn.s.sendmsg");
-extern void __llvm_amdgcn_s_barrier(void) __asm("llvm.amdgcn.s.barrier");
-extern void __llvm_amdgcn_wave_barrier(void) __asm("llvm.amdgcn.wave.barrier");
-
-extern __attribute__((const)) uint __llvm_amdgcn_workitem_id_x(void) __asm("llvm.amdgcn.workitem.id.x");
-extern __attribute__((const)) uint __llvm_amdgcn_workitem_id_y(void) __asm("llvm.amdgcn.workitem.id.y");
-extern __attribute__((const)) uint __llvm_amdgcn_workitem_id_z(void) __asm("llvm.amdgcn.workitem.id.z");
-
-extern __attribute__((const)) uint __llvm_amdgcn_workgroup_id_x(void) __asm("llvm.amdgcn.workgroup.id.x");
-extern __attribute__((const)) uint __llvm_amdgcn_workgroup_id_y(void) __asm("llvm.amdgcn.workgroup.id.y");
-extern __attribute__((const)) uint __llvm_amdgcn_workgroup_id_z(void) __asm("llvm.amdgcn.workgroup.id.z");
 
 extern __attribute__((const)) __constant void *__llvm_amdgcn_dispatch_ptr(void) __asm("llvm.amdgcn.dispatch.ptr");
 extern __attribute__((const)) __constant void *__llvm_amdgcn_queue_ptr(void) __asm("llvm.amdgcn.queue.ptr");
