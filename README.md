@@ -36,7 +36,7 @@ upstreamed.
         -DLLVM_TARGETS_TO_BUILD="AMDGPU;X86" \
         ..
 
-Testing also requires amdhsacod utility from ROCm Runtime.
+Testing also requires amdhsacod utility from [ROCm Runtime](https://github.com/RadeonOpenCompute/ROCR-Runtime).
 
 Use out-of-source CMake build and create separate directory to run CMake.
 
