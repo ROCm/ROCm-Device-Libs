@@ -34,7 +34,7 @@ if (GENERIC_IS_ZERO)
   # HCC will execute utils/change-addr-space.sh
   # and apply utils/add_amdgiz.sed on all .ll files in subdirectory hc/, irif/, opencl/
   if (CUDA_TRIPLE)
-    set(AMDGPU_TARGET_TRIPLE "amdgcn--cuda")
+    set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa")
   endif (CUDA_TRIPLE)
 
 endif (GENERIC_IS_ZERO)
