@@ -13,9 +13,11 @@
 # change data layout
 #####################
 
-# p:32:32 -> p:64:64
+# cleanup datalayouts to latest in upstream AMDGPU.cpp
 /target datalayout/s/-p:32:32-/-p:64:64-/
-/target datalayout/s/-p4:64:64-/-p4:32:32-/
+/target datalayout/s/-p2:64:64-/-p2:32:32-/
+/target datalayout/s/-p4:32:32-/-p4:64:64-/
+/target datalayout/s/-p5:32:32-i64/-p5:32:32-p6:32:32-i64/
 /target datalayout/s/-n32:64/-n32:64-A5/
 
 #############################
