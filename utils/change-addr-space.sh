@@ -9,7 +9,6 @@
 tmpfile=/tmp/cas$$.sed
 if [ $# -lt 3 ]; then
   echo "/target triple/s/\\\"amdgcn--amdhsa\\\"/\\\"${1}\\\"/" >$tmpfile
-  echo "/target triple/s/\\\"amdgcn-amd-amdhsa-opencl\\\"/\\\"${1}\\\"/" >>$tmpfile
   cat $2/add_amdgiz.sed >>$tmpfile
 else
   echo "/target triple/s/\\\"${1}\\\"/\\\"amdgcn--amdhsa\\\"/" >$tmpfile
