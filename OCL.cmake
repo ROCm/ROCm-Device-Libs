@@ -99,7 +99,7 @@ set (oclc_default_libs
 )
 
 macro(clang_opencl_test name dir)
-  clang_opencl_code(${name} ${dir} opencl ocml ockl ${oclc_default_libs} irif)
+  clang_opencl_code(${name} ${dir} hip opencl ocml ockl ${oclc_default_libs} irif)
   add_test(
     NAME ${name}:llvm-objdump
     COMMAND ${LLVM_OBJDUMP} -disassemble -mcpu=fiji $<TARGET_FILE:${name}_code>
