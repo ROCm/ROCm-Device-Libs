@@ -10,7 +10,7 @@
 // The companion to this file is x_atomics.cl which defines the non overloaded
 // functions used below. 
 
-#include "hip/hip_runtime.h"
+#include "hip_minimal.h"
 
 #define __OVERL__ __attribute__((always_inline, overloadable, const)) __device__
 #define __NOOVL__ extern "C" __attribute__((always_inline,const))  __device__
