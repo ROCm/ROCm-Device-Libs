@@ -9,6 +9,9 @@
 set (CLANG_OCL_FLAGS "-Werror -Wno-error=atomic-alignment -x cl -Xclang -cl-std=CL2.0 -fblocks -target ${AMDGPU_TARGET_TRIPLE} -DCL_VERSION_2_0=200 -D__OPENCL_C_VERSION__=200 -Dcl_khr_fp64 -Dcl_khr_fp16 -Dcl_khr_subgroups -Dcl_khr_int64_base_atomics -Dcl_khr_int64_extended_atomics -Xclang -finclude-default-header ${CLANG_OPTIONS_APPEND}")
 set (CLANG_OCL_LINK_FLAGS "-target ${AMDGPU_TARGET_TRIPLE} -mcpu=fiji")
 
+set (CLANG_HIP_FLAGS "-x hip -triple ${AMDGPU_TARGET_TRIPLE} -target-cpu gfx803 -fcuda-is-device ${CLANG_OPTIONS_APPEND}")
+set (CLANG_HIP_LINK_FLAGS "-target ${AMDGPU_TARGET_TRIPLE} -mcpu=fiji")
+
 set (LLVM_LINK "${LLVM_TOOLS_BINARY_DIR}/llvm-link")
 set (LLVM_OBJDUMP "${LLVM_TOOLS_BINARY_DIR}/llvm-objdump")
 
@@ -24,6 +27,15 @@ set (CMAKE_OCL_CREATE_STATIC_LIBRARY "${LLVM_LINK} -o <TARGET> <OBJECTS>")
 set (CMAKE_OCL_SOURCE_FILE_EXTENSIONS "cl")
 set (CMAKE_EXECUTABLE_SUFFIX_OCL ".co")
 
+set (CMAKE_INCLUDE_FLAG_HIP "-I")
+set (CMAKE_HIP_COMPILER_ENV_VAR HIP)
+set (CMAKE_HIP_OUTPUT_EXTENTION ${BC_EXT})
+set (CMAKE_HIP_COMPILER ${LLVM_TOOLS_BINARY_DIR}/clang)
+set (CMAKE_HIP_COMPILE_OBJECT "${CMAKE_OCL_COMPILER} -cc1 <INCLUDES> -o <OBJECT> <FLAGS> <SOURCE>")
+set (CMAKE_HIP_LINK_EXECUTABLE "${LLVM_LINK} -o <TARGET> <LINK_LIBRARIES>")
+set (CMAKE_HIP_CREATE_STATIC_LIBRARY "${LLVM_LINK} -o <TARGET> <OBJECTS>")
+set (CMAKE_HIP_SOURCE_FILE_EXTENSIONS "hip")
+
 macro(opencl_bc_lib name)
   set(lib_tgt ${name}_lib)
   list(APPEND AMDGCN_LIB_LIST ${lib_tgt})
@@ -34,7 +46,15 @@ macro(opencl_bc_lib name)
     if (fext STREQUAL ".cl")
       set_source_files_properties(${file} PROPERTIES
         OBJECT_DEPENDS ${CMAKE_OCL_COMPILER}
+        COMPILE_FLAGS "${CLANG_OCL_FLAGS} -emit-llvm"
         LANGUAGE "OCL")
+    endif()
+    #mark files as HIP source
+    if (fext STREQUAL ".hip")
+      set_source_files_properties(${file} PROPERTIES
+        OBJECT_DEPENDS ${CMAKE_HIP_COMPILER}
+        COMPILE_FLAGS "${CLANG_HIP_FLAGS} -emit-llvm"
+        LANGUAGE "HIP")
     endif()
     #mark files as OCL object to add them to link
     if (fext STREQUAL ".ll")
@@ -52,9 +72,10 @@ macro(opencl_bc_lib name)
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     ARCHIVE_OUTPUT_NAME "${name}"
     PREFIX "" SUFFIX ${LIB_SUFFIX}
-    COMPILE_FLAGS "${CLANG_OCL_FLAGS} -emit-llvm"
+    #COMPILE_FLAGS "${CLANG_OCL_FLAGS} -emit-llvm"
     LINK_DEPENDS ${LLVM_LINK}
-    LANGUAGE "OCL" LINKER_LANGUAGE "OCL")
+    #LANGUAGE "OCL"
+    LINKER_LANGUAGE "OCL")
   set(output_name "${name}.amdgcn${BC_EXT}")
 
   if (TARGET prepare-builtins)

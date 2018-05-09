@@ -9,11 +9,15 @@ file(GLOB cl_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cl
 )
 
+file(GLOB hip_sources
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/*.hip
+)
+
 file(GLOB ll_sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/*.ll
 )
 
-file(GLOB sources ${cl_sources} ${ll_sources})
+file(GLOB sources ${cl_sources} ${hip_sources} ${ll_sources})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ocml/inc)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ockl/inc)
