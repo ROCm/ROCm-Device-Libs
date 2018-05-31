@@ -10,7 +10,8 @@
 // the overloaded atomic operators for hip. 
 
 #define INLINE __attribute__((always_inline,const)) 
-
+#pragma OPENCL EXTENSION cl_khr_int64_base_atomics : enable
+#pragma OPENCL EXTENSION cl_khr_int64_extended_atomics : enable
 
 // atomicAdd =
 // These are defined in rocm device lib in hc_atomic.ll
@@ -63,6 +64,7 @@ INLINE float x_atomicAdd_float(float * x, float y) {
 // no header for hc_atomics.ll, so declare them here for OpenCL
 uint atomic_compare_exchange_unsigned_global(__global atomic_uint * x, uint y, uint z);
 int atomic_compare_exchange_int_global(__global atomic_int * x, int y, int z);
+ulong atomic_compare_exchange_uint64_global(__global atomic_ulong * x, ulong y, ulong z);
 
 INLINE uint x_atomicCAS_uint(uint * x, uint y, uint z){
   // define i32 @atomic_compare_exchange_unsigned_global(i32 addrspace(1)* %x, i32 %y, i32 %z) #2 {
@@ -71,6 +73,10 @@ INLINE uint x_atomicCAS_uint(uint * x, uint y, uint z){
 INLINE int x_atomicCAS_int(int * x, int y, int z){
   // define i32 @atomic_compare_exchange_int_global(i32 addrspace(1)* %x, i32 %y, i32 %z) #2 {
   return atomic_compare_exchange_int_global((__global atomic_int *) x,y,z);
+}
+INLINE ulong x_atomicCAS_uint64(ulong * x, ulong y, ulong z){
+  // define i32 @atomic_compare_exchange_unsigned_global(i32 addrspace(1)* %x, i32 %y, i32 %z) #2 {
+  return atomic_compare_exchange_uint64_global((__global atomic_ulong *) x,y,z);
 }
 
 // FIXME: Add long long support and other atomics
