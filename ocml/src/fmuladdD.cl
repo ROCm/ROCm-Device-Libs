@@ -5,18 +5,11 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#include "irif.h"
-#include "ockl.h"
+#include "mathD.h"
 
-__attribute__((always_inline, const)) uint
-OCKL_MANGLE_U32(popcount)(uint i)
+CONSTATTR double
+MATH_MANGLE(fmuladd)(double a, double b, double c)
 {
-    return (uint)__builtin_popcount(i);
+    #pragma OPENCL FP_CONTRACT ON
+    return a * b + c;
 }
-
-__attribute__((always_inline, const)) ulong
-OCKL_MANGLE_U64(popcount)(ulong i)
-{
-    return (ulong)__builtin_popcountl(i);
-}
-

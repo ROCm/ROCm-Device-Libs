@@ -6,17 +6,12 @@
  *===------------------------------------------------------------------------*/
 
 #include "irif.h"
-#include "ockl.h"
+#include "mathF.h"
 
-__attribute__((always_inline, const)) uint
-OCKL_MANGLE_U32(popcount)(uint i)
+CONSTATTR float
+MATH_MANGLE(fmuladd)(float a, float b, float c)
 {
-    return (uint)__builtin_popcount(i);
-}
-
-__attribute__((always_inline, const)) ulong
-OCKL_MANGLE_U64(popcount)(ulong i)
-{
-    return (ulong)__builtin_popcountl(i);
+    #pragma OPENCL FP_CONTRACT ON
+    return a * b + c;
 }
 
