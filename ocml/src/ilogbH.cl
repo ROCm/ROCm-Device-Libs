@@ -19,8 +19,8 @@ MATH_MANGLE(ilogb)(half x)
     int r = (int)BUILTIN_FREXP_EXP_F16(x) - 1;
 
     if (!FINITE_ONLY_OPT()) {
-        r = BUILTIN_CLASS_F16(x, CLASS_QNAN|CLASS_SNAN) ? FP_ILOGBNAN : r;
-        r = BUILTIN_CLASS_F16(x, CLASS_PINF|CLASS_NINF) ? INT_MAX : r;
+        r = BUILTIN_ISNAN_F16(x) ? FP_ILOGBNAN : r;
+        r = BUILTIN_ISINF_F16(x) ? INT_MAX : r;
     }
 
     r = x == 0.0h ? FP_ILOGB0 : r;

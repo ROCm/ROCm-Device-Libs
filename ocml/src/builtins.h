@@ -52,6 +52,15 @@
 #define BUILTIN_CLASS_F64 __builtin_amdgcn_class
 #define BUILTIN_CLASS_F16 __llvm_amdgcn_class_f16
 
+#define BUILTIN_ISNAN_F32(x) __builtin_isnan(x)
+#define BUILTIN_ISNAN_F64(x) __builtin_isnan(x)
+#define BUILTIN_ISNAN_F16(x) __builtin_isnan(x)
+
+// TODO: Use __builtin_isinf
+#define BUILTIN_ISINF_F32(x) __builtin_amdgcn_classf(x, CLASS_PINF|CLASS_NINF)
+#define BUILTIN_ISINF_F64(x) __builtin_amdgcn_class(x, CLASS_PINF|CLASS_NINF)
+#define BUILTIN_ISINF_F16(x) __llvm_amdgcn_class_f16(x, CLASS_PINF|CLASS_NINF)
+
 #define BUILTIN_COPYSIGN_F32 __builtin_copysignf
 #define BUILTIN_COPYSIGN_F64 __builtin_copysign
 #define BUILTIN_COPYSIGN_F16 __llvm_copysign_f16
