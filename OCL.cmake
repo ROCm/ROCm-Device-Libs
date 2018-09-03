@@ -6,7 +6,7 @@
 ##===--------------------------------------------------------------------------
 
 # -Wno-error=atomic-alignment was added to workaround build problems due to potential mis-aligned atomic ops detected by clang
-set (CLANG_OCL_FLAGS "-Werror -Wno-error=atomic-alignment -x cl -Xclang -cl-std=CL2.0 -target ${AMDGPU_TARGET_TRIPLE} -Xclang -finclude-default-header ${CLANG_OPTIONS_APPEND}")
+set (CLANG_OCL_FLAGS "-Werror -Wno-error=atomic-alignment -x cl -Xclang -cl-std=CL2.0 -target ${AMDGPU_TARGET_TRIPLE} -fvisibility=protected -Xclang -finclude-default-header ${CLANG_OPTIONS_APPEND}")
 set (CLANG_OCL_LINK_FLAGS "-target ${AMDGPU_TARGET_TRIPLE} -mcpu=fiji")
 
 set (LLVM_LINK "${LLVM_TOOLS_BINARY_DIR}/llvm-link")
@@ -67,7 +67,7 @@ macro(opencl_bc_lib name)
 
   add_custom_command(TARGET ${lib_tgt}
     POST_BUILD
-    COMMAND ${PREPARE_BUILTINS} ${name}${LIB_SUFFIX} -o ${output_name}
+    COMMAND ${PREPARE_BUILTINS} $<TARGET_FILE:${lib_tgt}> -o ${output_name}
     DEPENDS ${lib_tgt}
     COMMENT "Generating ${output_name}"
   )
