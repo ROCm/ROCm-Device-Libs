@@ -42,6 +42,13 @@ add_subdirectory(ocml)
 add_subdirectory(ockl)
 add_subdirectory(opencl)
 
+option(BUILD_CUDA2GCN "Build CUDA2GCN needed for HIP Automatic Mode" OFF)
+if(BUILD_CUDA2GCN)
+  add_subdirectory(cuda2gcn)
+  add_subdirectory(cudamath)
+  add_subdirectory(hip)
+endif(BUILD_CUDA2GCN)
+
 if(BUILD_HC_LIB)
   add_subdirectory(hc)
 endif()
