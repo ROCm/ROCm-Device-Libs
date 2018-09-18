@@ -107,3 +107,7 @@ The output of tests (which includes AMDGPU disassembly) can be displayed by runn
 
 Tests for OpenCL conformance kernels can be enabled by specifying -DOCL_CONFORMANCE_HOME=<path> to CMake, for example,
   cmake ... -DOCL_CONFORMANCE_HOME=/srv/hsa/drivers/opencl/tests/extra/hsa/ocl/conformance/1.2
+
+ This is development branch HCC2-180918 .
+ Throw this first marker commit away when making future development branches
+
