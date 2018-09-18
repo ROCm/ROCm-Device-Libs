@@ -8,13 +8,19 @@
 #include "ockl.h"
 #include "irif.h"
 
+
+extern __attribute__((const)) int __llvm_bitreverse_i32(int) __asm("llvm.bitreverse.i32");
+extern __attribute__((const)) long __llvm_bitreverse_i64(long) __asm("llvm.bitreverse.i64");
+extern __attribute__((const)) int __llvm_ctpop_i32(int) __asm("llvm.ctpop.i32");
+extern __attribute__((const)) long __llvm_ctpop_i64(long) __asm("llvm.ctpop.i64");
+
 #define ATTR __attribute__((always_inline, const))
 
 //-------- T __nv_brev
-ATTR int __nv_brev(int x) { return __builtin_bitreverse32(x); }
+ATTR int __nv_brev(int x) { return __llvm_bitreverse_i32(x); }
 
 //-------- T __nv_brevll
-ATTR long __nv_brevll(long x) { return __builitn_bitreverse64(x); }
+ATTR long __nv_brevll(long x) { return __llvm_bitreverse_i64(x); }
 
 //-------- T __nv_clz
 ATTR int __nv_clz(int x)

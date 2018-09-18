@@ -6,7 +6,7 @@
 # Source Licenses. See LICENSE.txt for details.
 ##===----------------------------------------------------------------------===##
 #
-# rocm-device-libs/cuda2gcn/CMakeLists.txt
+# rocm-device-libs/cudamath/CMakeLists.txt
 #
 ##===----------------------------------------------------------------------===##
 
@@ -24,7 +24,7 @@ set(ROCDL_INC_OCKL ${ROCDL}/ockl/inc)
 set(ROCDL_INC_OCML ${ROCDL}/ocml/inc)
 set(ROCDL_INC_IRIF ${ROCDL}/irif/inc)
 
-set(libname "cuda2gcn")
+set(libname "cudamath")
 message("---> Building ${libname} with Compiler ${LLVM_COMPILER}")
 project(${libname})
 
@@ -58,16 +58,16 @@ endforeach()
 
 #Link all llfiles from cl and ll files
 add_custom_command(
-    OUTPUT linkout.bc
-    COMMAND ${LLVM_COMPILER}/bin/llvm-link ${cl_ll_files} ${ll_sources} -o linkout.bc
+    OUTPUT linkout_cudamath.bc
+    COMMAND ${LLVM_COMPILER}/bin/llvm-link ${cl_ll_files} ${ll_sources} -o linkout_cudamath.bc
     DEPENDS ${cl_ll_files} ${ll_sources})
-add_custom_target(linkout-bc  ALL DEPENDS linkout.bc)
+add_custom_target(linkout_cudamath-bc  ALL DEPENDS linkout_cudamath.bc)
 
 set(final_bc_filename ${libname}.amdgcn.bc)
 add_custom_command(
     OUTPUT ${final_bc_filename}
-    COMMAND ${LLVM_COMPILER}/bin/prepare-builtins linkout.bc -o ${final_bc_filename}
-    DEPENDS linkout.bc )
+    COMMAND ${LLVM_COMPILER}/bin/prepare-builtins linkout_cudamath.bc -o ${final_bc_filename}
+    DEPENDS linkout_cudamath.bc )
 add_custom_target(${libname} ALL DEPENDS ${final_bc_filename})
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${final_bc_filename} DESTINATION lib)
