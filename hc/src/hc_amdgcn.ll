@@ -246,6 +246,28 @@ declare i32 @llvm.amdgcn.s.getreg(i32) #0
 
 declare i32 @llvm.amdgcn.groupstaticsize() #1
 
+declare i32 @llvm.amdgcn.mbcnt.lo(i32, i32)
+
+declare i32 @llvm.amdgcn.mbcnt.hi(i32, i32)
+
+define linkonce_odr protected float @amdgcn_shfl_down(float %var, i32 %offset) #0 {
+  %var_i32 = bitcast float %var to i32
+
+  %lane_id_partial = tail call i32 @llvm.amdgcn.mbcnt.lo(i32 -1, i32 0)
+  %lane_id = tail call i32 @llvm.amdgcn.mbcnt.hi(i32 -1, i32 %lane_id_partial)
+
+  %lane_id_mod63 = and i32 %lane_id, 63
+  %index = add i32 %lane_id_mod63, %offset
+  %cmp = icmp slt i32 %index, 64
+  %cmp_result = select i1 %cmp, i32 %offset, i32 0
+  %index_updated = add i32 %cmp_result, %lane_id
+  %index_updated_shifted = shl i32 %index_updated, 2
+  %ret_i32 = tail call i32 @llvm.amdgcn.ds.bpermute(i32 %index_updated_shifted, i32 %var_i32)
+
+  %ret_float = bitcast i32 %ret_i32 to float
+  ret float %ret_float
+}
+
 attributes #0 = { alwaysinline nounwind readonly }
 attributes #1 = { alwaysinline nounwind readnone }
 attributes #3 = { alwaysinline convergent nounwind }
