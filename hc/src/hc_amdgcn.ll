@@ -192,7 +192,7 @@ define protected i32 @__atomic_wrapdec(i32* nocapture %addr, i32 %val) #3 {
 ; llvm.amdgcn.atomic.dec.i32.p4i32 <addr> <val> <ordering> <scope> <is_volatile>
 declare i32 @llvm.amdgcn.atomic.dec.i32.p0i32(i32* nocapture, i32, i32, i32, i1) #4
 
-define protected i64 @__clock_u64() #8 {
+define protected i64 @__clock_u64() #10 {
   %ret = tail call i64 @llvm.amdgcn.s.memrealtime()
   ret i64 %ret
 }
@@ -200,7 +200,7 @@ define protected i64 @__clock_u64() #8 {
 declare i64 @llvm.amdgcn.s.memrealtime() #8
 
 
-define protected i64 @__cycle_u64() #8 {
+define protected i64 @__cycle_u64() #10 {
   %ret = tail call i64 @llvm.amdgcn.s.memtime()
   ret i64 %ret
 }
@@ -255,3 +255,4 @@ attributes #6 = { alwaysinline norecurse nounwind readnone }
 attributes #7 = { norecurse nounwind readnone }
 attributes #8 = { alwaysinline nounwind inaccessiblememonly norecurse }
 attributes #9 = { convergent nounwind readnone }
+attributes #10 = { alwaysinline nounwind norecurse }
