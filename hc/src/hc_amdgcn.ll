@@ -250,7 +250,7 @@ declare i32 @llvm.amdgcn.mbcnt.lo(i32, i32)
 
 declare i32 @llvm.amdgcn.mbcnt.hi(i32, i32)
 
-define linkonce_odr protected float @amdgcn_shfl_down(float %var, i32 %offset) #0 {
+define protected float @amdgcn_shfl_down(float %var, i32 %offset) #0 {
   %var_i32 = bitcast float %var to i32
 
   %lane_id_partial = tail call i32 @llvm.amdgcn.mbcnt.lo(i32 -1, i32 0)
