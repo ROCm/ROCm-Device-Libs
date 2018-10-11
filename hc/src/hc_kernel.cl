@@ -178,3 +178,25 @@ amp_barrier(int n)
   hc_barrier(n);
 }
 
+// utility union type
+typedef union {
+    int i;
+    uint u;
+    float f;
+} __u;
+
+ATTR int amdgcn_shfl_down_i32(int var, int offset)
+{
+    int self = __llvm_amdgcn_mbcnt_hi(~0u, __llvm_amdgcn_mbcnt_lo(~0u, 0u));
+    int index = self + offset;
+    index = (uint)((self & (64 - 1)) + offset) >= 64 ? self : index;
+    return __llvm_amdgcn_ds_bpermute(index << 2, var);
+}
+
+ATTR float amdgcn_shfl_down_f32(float var, int offset)
+{
+    __u tmp; tmp.f = var;
+    tmp.i = amdgcn_shfl_down_i32(tmp.i, offset);
+    return tmp.f;
+}
+

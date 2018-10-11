@@ -152,6 +152,9 @@ extern __attribute__((const)) short __llvm_amdgcn_frexp_exp_i16_f16(half) __asm(
 // llvm.amdgcn.update.dpp.i32 <old> <src> <dpp_ctrl> <row_mask> <bank_mask> <bound_ctrl>
 extern uint __llvm_amdgcn_update_dpp_i32(uint, uint, uint, uint, uint, bool) __asm("llvm.amdgcn.update.dpp.i32");
 
+// llvm.amdgcn.ds.bpermute
+extern int __llvm_amdgcn_ds_bpermute(int, int) __asm("llvm.amdgcn.ds.bpermute");
+
 // Operand bits: [0..3]=VM_CNT, [4..6]=EXP_CNT (Export), [8..11]=LGKM_CNT (LDS, GDS, Konstant, Message)
 extern void __llvm_amdgcn_s_waitcnt(int) __asm("llvm.amdgcn.s.waitcnt");
 
