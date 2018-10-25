@@ -15,7 +15,7 @@ extern CONSTATTR float MATH_PRIVATE(lnep)(float2 x);
 CONSTATTR float
 MATH_MANGLE(log1p)(float x)
 {
-    float z = MATH_PRIVATE(lnep)(add(1.0, x));
+    float z = MATH_PRIVATE(lnep)(add(1.0f, x));
 
     if (!FINITE_ONLY_OPT()) {
         z = BUILTIN_CLASS_F32(x, CLASS_PINF) ? x : z;
@@ -25,4 +25,3 @@ MATH_MANGLE(log1p)(float x)
 
     return BUILTIN_ABS_F32(x) < 0x1.0p-24f ? x : z;
 }
-
