@@ -7,17 +7,11 @@
 
 #include "mathD.h"
 
-CONSTATTR int
-MATH_MANGLE(ilogb)(double x)
+CONSTATTR double2
+MATH_MANGLE(cacos)(double2 z)
 {
-    int r = BUILTIN_FREXP_EXP_F64(x) - 1;
-
-    if (!FINITE_ONLY_OPT()) {
-        r = BUILTIN_ISNAN_F64(x) ? FP_ILOGBNAN : r;
-        r = BUILTIN_ISINF_F64(x) ? INT_MAX : r;
-    }
-
-    r = x == 0.0 ? FP_ILOGB0 : r;
-    return r;
+    double2 a = MATH_MANGLE(cacosh)(z);
+    bool b = AS_INT2(z.y).hi < 0;
+    return (double2)(b ? -a.y : a.y, b ? a.x : -a.x);
 }
 
