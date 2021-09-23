@@ -7,6 +7,10 @@
 
 #if !defined NO_BLIT
 
+#pragma OPENCL EXTENSION cl_khr_int64_base_atomics : enable
+#pragma OPENCL EXTENSION cl_khr_int64_extended_atomics : enable
+
+
 static const uint SplitCount = 3;
 
 __attribute__((always_inline)) void
@@ -513,5 +517,95 @@ __amd_fillImage(
     }
 }
 
+
+__attribute__((always_inline)) void
+__amd_streamOpsWrite(
+    __global atomic_uint* ptrInt,
+    __global atomic_ulong* ptrUlong,
+    ulong value) {
+
+  // The launch parameters for this shader is a 1 grid work-item
+
+  // 32-bit write
+  if (ptrInt) {
+    atomic_store_explicit(ptrInt, (uint)value, memory_order_relaxed, memory_scope_all_svm_devices);
+  }
+  // 64-bit write
+  else {
+    atomic_store_explicit(ptrUlong, value, memory_order_relaxed, memory_scope_all_svm_devices);
+  }
+}
+
+
+__attribute__((always_inline)) void
+__amd_streamOpsWait(
+    __global atomic_uint* ptrInt,
+    __global atomic_ulong* ptrUlong,
+    ulong value, ulong compareOp, ulong mask) {
+
+    // The launch parameters for this shader is a 1 grid work-item
+
+    switch (compareOp) {
+    case 0: //GEQ
+      if (ptrInt) {
+        while (!((((atomic_load_explicit(ptrInt, memory_order_relaxed,
+                    memory_scope_all_svm_devices)) & (uint)mask) - (uint)value) >= 0)) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      else {
+        while (!((((atomic_load_explicit(ptrUlong, memory_order_relaxed,
+                    memory_scope_all_svm_devices)) & mask) - value) >= 0)) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      break;
+
+    case 1: // EQ
+      if (ptrInt) {
+        while (!(((atomic_load_explicit(ptrInt, memory_order_relaxed,
+                   memory_scope_all_svm_devices)) & (uint)mask) == (uint)value)) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      else {
+        while (!(((atomic_load_explicit(ptrUlong, memory_order_relaxed,
+                   memory_scope_all_svm_devices)) & mask) == value)) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      break;
+
+    case 2: //AND
+      if (ptrInt) {
+        while (!(((atomic_load_explicit(ptrInt, memory_order_relaxed,
+                   memory_scope_all_svm_devices)) & (uint)mask) & (uint)value)) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      else {
+        while (!(((atomic_load_explicit(ptrUlong, memory_order_relaxed,
+                   memory_scope_all_svm_devices)) & mask) & value)) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      break;
+
+    case 3: //NOR
+      if (ptrInt) {
+        while (!(~(((atomic_load_explicit(ptrInt, memory_order_relaxed,
+                     memory_scope_all_svm_devices)) & (uint)mask) | (uint)value))) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      else {
+        while (!(~(((atomic_load_explicit(ptrUlong, memory_order_relaxed,
+                     memory_scope_all_svm_devices)) & mask) | value))) {
+          __builtin_amdgcn_s_sleep(1);
+        }
+      }
+      break;
+    }
+}
 #endif
 
