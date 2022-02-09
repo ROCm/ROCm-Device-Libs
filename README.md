@@ -1,5 +1,7 @@
 ## OVERVIEW
 
+# do not submit
+
 ROCm Device libraries.
 
 This repository contains the sources and CMake build system for a
