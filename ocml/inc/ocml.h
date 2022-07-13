@@ -179,6 +179,7 @@ DECL_CONST_OCML_BINARY_F32(pow)
 DECL_CONST_OCML_BINARY_F32(powr)
 extern __attribute__((pure)) float OCML_MANGLE_F32(pown)(float, int);
 extern __attribute__((pure)) float OCML_MANGLE_F32(rootn)(float, int);
+DECL_CONST_OCML_UNARY_F32(pred)
 DECL_CONST_OCML_BINARY_F32(remainder)
 extern float OCML_MANGLE_F32(remquo)(float, float, __private int *);
 DECL_CONST_OCML_BINARY_F32(rhypot)
@@ -197,6 +198,7 @@ DECL_CONST_OCML_UNARY_F32(sinpi)
 extern float OCML_MANGLE_F32(sincos)(float, __private float *);
 extern float OCML_MANGLE_F32(sincospi)(float, __private float *);
 DECL_CONST_OCML_UNARY_F32(sqrt)
+DECL_CONST_OCML_UNARY_F32(succ)
 DECL_OCML_UNARY_F32(tan)
 DECL_CONST_OCML_UNARY_F32(tanpi)
 DECL_CONST_OCML_UNARY_F32(tanh)
@@ -308,6 +310,7 @@ DECL_CONST_OCML_BINARY_F64(pow)
 DECL_CONST_OCML_BINARY_F64(powr)
 extern __attribute__((pure)) double OCML_MANGLE_F64(pown)(double, int);
 extern __attribute__((pure)) double OCML_MANGLE_F64(rootn)(double, int);
+DECL_CONST_OCML_UNARY_F64(pred)
 DECL_CONST_OCML_BINARY_F64(remainder)
 extern double OCML_MANGLE_F64(remquo)(double, double, __private int *);
 DECL_CONST_OCML_BINARY_F64(rhypot)
@@ -326,6 +329,7 @@ extern double OCML_MANGLE_F64(sincospi)(double, __private double *);
 DECL_CONST_OCML_UNARY_F64(sinh)
 DECL_CONST_OCML_UNARY_F64(sinpi)
 DECL_CONST_OCML_UNARY_F64(sqrt)
+DECL_CONST_OCML_UNARY_F64(succ)
 DECL_CONST_OCML_UNARY_F64(tan)
 DECL_CONST_OCML_UNARY_F64(tanh)
 DECL_CONST_OCML_UNARY_F64(tanpi)
@@ -475,6 +479,7 @@ DECL_CONST_OCML_BINARY_F16(pow)
 DECL_CONST_OCML_BINARY_F16(powr)
 extern __attribute__((pure)) half OCML_MANGLE_F16(pown)(half, int);
 extern __attribute__((pure)) half OCML_MANGLE_F16(rootn)(half, int);
+DECL_CONST_OCML_UNARY_F16(pred)
 DECL_CONST_OCML_UNARY_F16(rcbrt)
 DECL_CONST_OCML_BINARY_F16(remainder)
 extern half OCML_MANGLE_F16(remquo)(half, half, __private int *);
@@ -497,6 +502,7 @@ DECL_CONST_OCML_UNARY_F16(sqrt_rte)
 DECL_CONST_OCML_UNARY_F16(sqrt_rtp)
 DECL_CONST_OCML_UNARY_F16(sqrt_rtn)
 DECL_CONST_OCML_UNARY_F16(sqrt_rtz)
+DECL_CONST_OCML_UNARY_F16(succ)
 DECL_CONST_OCML_UNARY_F16(tan)
 DECL_CONST_OCML_UNARY_F16(tanpi)
 DECL_CONST_OCML_UNARY_F16(tanh)
@@ -725,6 +731,17 @@ extern __attribute__((const)) double2 OCML_MANGLE_F64(csqrt)(double2);
 
 extern __attribute__((const)) float2 OCML_MANGLE_F32(cdiv)(float2, float2);
 extern __attribute__((const)) double2 OCML_MANGLE_F64(cdiv)(double2, double2);
+
+extern __attribute__((const)) half OCML_MANGLE_F32(cvtrtn_f16)(float a);
+extern __attribute__((const)) half OCML_MANGLE_F32(cvtrtp_f16)(float a);
+extern __attribute__((const)) half OCML_MANGLE_F32(cvtrtz_f16)(float a);
+extern __attribute__((const)) half OCML_MANGLE_F64(cvtrte_f16)(double a);
+extern __attribute__((const)) half OCML_MANGLE_F64(cvtrtn_f16)(double a);
+extern __attribute__((const)) half OCML_MANGLE_F64(cvtrtp_f16)(double a);
+extern __attribute__((const)) half OCML_MANGLE_F64(cvtrtz_f16)(double a);
+extern __attribute__((const)) float OCML_MANGLE_F64(cvtrtn_f32)(double a);
+extern __attribute__((const)) float OCML_MANGLE_F64(cvtrtp_f32)(double a);
+extern __attribute__((const)) float OCML_MANGLE_F64(cvtrtz_f32)(double a);
 
 #pragma OPENCL EXTENSION cl_khr_fp16 : disable
 
