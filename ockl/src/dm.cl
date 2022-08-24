@@ -201,13 +201,6 @@ get_heap_ptr(void) {
     }
 }
 
-// realtime
-__attribute__((target("s-memrealtime"))) static ulong
-realtime(void)
-{
-    return __builtin_amdgcn_s_memrealtime();
-}
-
 // The actual number of blocks in a slab with blocks of kind k
 static uint
 num_blocks(kind_t k)
@@ -473,7 +466,7 @@ new_slab_wait(__global heap_t *hp, kind_t k)
     uint aid = __ockl_activelane_u32();
     if (aid == 0) {
         ulong expected = AL(&hp->salloc_time[k].value, memory_order_relaxed);
-        ulong now = realtime();
+        ulong now = __ockl_steadyctr_u64();
         ulong dt = now - expected;
         if  (dt < SLAB_TICKS)
             __ockl_rtcwait_u32(SLAB_TICKS - (uint)dt);
@@ -487,7 +480,7 @@ grow_recordable_wait(__global heap_t *hp, kind_t k)
     uint aid = __ockl_activelane_u32();
     if (aid == 0) {
         ulong expected = AL(&hp->grow_time[k].value, memory_order_relaxed);
-        ulong now = realtime();
+        ulong now = __ockl_steadyctr_u64();
         ulong dt = now - expected;
         if  (dt < GROW_TICKS)
             __ockl_rtcwait_u32(GROW_TICKS - (uint)dt);
@@ -547,7 +540,7 @@ try_grow_num_recordable_slabs(__global heap_t *hp, kind_t k)
     uint ret = GROW_BUSY;
     if (aid == 0) {
         ulong expected = AL(&hp->grow_time[k].value, memory_order_relaxed);
-        ulong now = realtime();
+        ulong now = __ockl_steadyctr_u64();
         if (now - expected >= GROW_TICKS &&
             ACE(&hp->grow_time[k].value, &expected, now, memory_order_relaxed))
                 ret = GROW_FAILURE;
@@ -694,7 +687,7 @@ try_allocate_new_slab(__global heap_t *hp, kind_t k)
 
         if (aid == 0) {
             ulong expected = AL(&hp->salloc_time[k].value, memory_order_relaxed);
-            ulong now = realtime();
+            ulong now = __ockl_steadyctr_u64();
             if (now - expected >= SLAB_TICKS &&
                 ACE(&hp->salloc_time[k].value, &expected, now, memory_order_relaxed))
                 ret = (__global sdata_t *)0;
@@ -984,6 +977,33 @@ __ockl_dm_init_v1(ulong hp, ulong sp, uint hb, uint nis)
         AS(&thp->initial_slabs, sp, memory_order_relaxed);
         thp->initial_slabs_end = sp + ((ulong)nis << 21);
     }
+}
+
+// Retrieve some info about the current state of the heap
+//   Expecting the caller to limit the number of threads executing here to 1
+void
+__ockl_dm_hinfo(ulong *rp)
+{
+    __global heap_t *hp = get_heap_ptr();
+
+    *rp++ = NUM_KINDS;
+    for (kind_t k=0; k<NUM_KINDS; ++k) {
+        uint nas = AL(&hp->num_allocated_slabs[k].value, memory_order_relaxed);
+        *rp++ = (ulong)nas;
+        ulong nubs = 0;
+        for (uint i = 0; i<nas; ++i) {
+            __global sdata_t *sdp = sdata_for(hp, k, i);
+            uint nub = AL(&sdp->num_used_blocks, memory_order_relaxed);
+            nubs += nub;
+        }
+        *rp++ = nubs;
+        *rp++ = (ulong)nas * num_usable_blocks(k);
+    }
+#if defined NON_SLAB_TRACKING
+    *rp++ = AL(&hp->num_nonslab_allocations, memory_order_relaxed);
+#else
+    *rp++ = 0;
+#endif
 }
 
 #if defined NON_SLAB_TRACKING
