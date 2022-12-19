@@ -27,6 +27,8 @@ extern __attribute__((const)) half2 __llvm_trunc_2f16(half2) __asm("llvm.trunc.v
 extern __attribute__((const)) half2 __llvm_round_2f16(half2) __asm("llvm.round.v2f16");
 extern __attribute__((const)) half2 __llvm_rint_2f16(half2) __asm("llvm.rint.v2f16");
 extern __attribute__((const)) half2 __llvm_canonicalize_2f16(half2) __asm("llvm.canonicalize.v2f16");
+extern __attribute__((const)) int __llvm_ctpop_i32(int) __asm("llvm.ctpop.i32");
+extern __attribute__((const)) long __llvm_ctpop_i64(long) __asm("llvm.ctpop.i64");
 
 #define BUILTIN_CLZ_U8(x) (uchar)(x == 0u ? 8 : __builtin_clz(x) - 24)
 #define BUILTIN_CLZ_U16(x) (ushort)(x == 0u ? 16 : __builtin_clzs(x))
