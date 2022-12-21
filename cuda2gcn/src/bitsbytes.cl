@@ -39,8 +39,8 @@ ATTR int __nv_ffs(int x) { return (32 - __nv_clz(x&(-x))); }
 ATTR int __nv_ffsll(long x) { return (int)(64 - __nv_clzll(x&(-x))); }
 
 //-------- T __nv_popc
-ATTR int __nv_popc(int x) { return __llvm_ctpop_i32(x); }
+ATTR int __nv_popc(int x) { return (int)__ockl_popcount_u32((uint)x); }
 
 //-------- T __nv_popcll
-ATTR int __nv_popcll(long x) { return (int)__llvm_ctpop_i64(x); }
+ATTR int __nv_popcll(long x) { return (long)__ockl_popcount_u64((ulong)x); }
 

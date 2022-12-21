@@ -69,6 +69,10 @@ add_subdirectory(opencl)
 add_subdirectory(hip)
 add_subdirectory(asanrtl)
 
+if(BUILD_CUDA2GCN)
+add_subdirectory(cuda2gcn)
+endif()
+
 enable_testing()
 add_subdirectory(test/compile)
 
