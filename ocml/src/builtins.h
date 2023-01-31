@@ -68,13 +68,22 @@
 #define BUILTIN_ISFINITE_F64(x) __builtin_amdgcn_class(x, CLASS_NNOR|CLASS_NSUB|CLASS_NZER|CLASS_PZER|CLASS_PSUB|CLASS_PNOR)
 #define BUILTIN_ISFINITE_F16(x) __builtin_amdgcn_classh(x, CLASS_NNOR|CLASS_NSUB|CLASS_NZER|CLASS_PZER|CLASS_PSUB|CLASS_PNOR)
 
+#define BUILTIN_ISSUBNORMAL_F32(x) __builtin_amdgcn_classf(x, CLASS_NSUB|CLASS_PSUB)
+#define BUILTIN_ISSUBNORMAL_F64(x) __builtin_amdgcn_class(x, CLASS_NSUB|CLASS_PSUB)
+#define BUILTIN_ISSUBNORMAL_F16(x) __builtin_amdgcn_classh(x, CLASS_NSUB|CLASS_PSUB)
+
+#define BUILTIN_ISZERO_F32(x) __builtin_amdgcn_classf(x, CLASS_NZER|CLASS_PZER)
+#define BUILTIN_ISZERO_F64(x) __builtin_amdgcn_class(x, CLASS_NZER|CLASS_PZER)
+#define BUILTIN_ISZERO_F16(x) __builtin_amdgcn_classh(x, CLASS_NZER|CLASS_PZER)
+
+#define BUILTIN_ISNORMAL_F32(x) __builtin_amdgcn_classf(x, CLASS_NNOR|CLASS_PNOR)
+#define BUILTIN_ISNORMAL_F64(x) __builtin_amdgcn_class(x, CLASS_NNOR|CLASS_PNOR)
+#define BUILTIN_ISNORMAL_F16(x) __builtin_amdgcn_classh(x, CLASS_NNOR|CLASS_PNOR)
+
 #define BUILTIN_COPYSIGN_F32 __builtin_copysignf
 #define BUILTIN_COPYSIGN_F64 __builtin_copysign
 #define BUILTIN_COPYSIGN_F16 __builtin_copysignf16
 #define BUILTIN_COPYSIGN_2F16 __llvm_copysign_2f16
-
-#define BUILTIN_CLZ_U32 __llvm_ctlz_i32
-#define BUILTIN_CLZ_U64 __llvm_ctlz_i64
 
 #define BUILTIN_FLOOR_F32 __builtin_floorf
 #define BUILTIN_FLOOR_F64 __builtin_floor
@@ -84,19 +93,19 @@
 #define BUILTIN_FRACTION_F32(X) ({ \
     float _fract_x = X; \
     float _fract_r = __builtin_amdgcn_fractf(_fract_x); \
-    _fract_r = __builtin_amdgcn_classf(_fract_x, CLASS_PINF|CLASS_NINF) ? 0.0f : _fract_r; \
+    _fract_r = BUILTIN_ISINF_F32(_fract_x) ? 0.0f : _fract_r; \
     _fract_r; \
 })
 #define BUILTIN_FRACTION_F64(X) ({ \
     double _fract_x = X; \
     double _fract_r = __builtin_amdgcn_fract(_fract_x); \
-    _fract_r = __builtin_amdgcn_class(_fract_x, CLASS_PINF|CLASS_NINF) ? 0.0 : _fract_r; \
+    _fract_r = BUILTIN_ISINF_F64(_fract_x) ? 0.0 : _fract_r; \
     _fract_r; \
 })
 #define BUILTIN_FRACTION_F16(X) ({ \
     half _fract_x = X; \
     half _fract_r = __builtin_amdgcn_fracth(_fract_x); \
-    _fract_r = __builtin_amdgcn_classh(_fract_x, CLASS_PINF|CLASS_NINF) ? 0.0h : _fract_r; \
+    _fract_r = BUILTIN_ISINF_F16(_fract_x) ? 0.0h : _fract_r; \
     _fract_r; \
 })
 
@@ -232,81 +241,12 @@
 #define BUILTIN_CLAMP_F32(X,L,H) __builtin_amdgcn_fmed3f(X,L,H)
 #define BUILTIN_CLAMP_F16(X,L,H) __llvm_amdgcn_fmed3_f16(X,L,H)
 
-#define BUILTIN_ADD_RTE_F32 __llvm_add_rte_f32
-#define BUILTIN_ADD_RTE_F64 __llvm_add_rte_f64
-#define BUILTIN_ADD_RTE_F16 __llvm_add_rte_f16
-#define BUILTIN_ADD_RTN_F32 __llvm_add_rtn_f32
-#define BUILTIN_ADD_RTN_F64 __llvm_add_rtn_f64
-#define BUILTIN_ADD_RTN_F16 __llvm_add_rtn_f16
-#define BUILTIN_ADD_RTP_F32 __llvm_add_rtp_f32
-#define BUILTIN_ADD_RTP_F64 __llvm_add_rtp_f64
-#define BUILTIN_ADD_RTP_F16 __llvm_add_rtp_f16
-#define BUILTIN_ADD_RTZ_F32 __llvm_add_rtz_f32
-#define BUILTIN_ADD_RTZ_F64 __llvm_add_rtz_f64
-#define BUILTIN_ADD_RTZ_F16 __llvm_add_rtz_f16
+#define ROUND_RTE 0
+#define ROUND_RTP 1
+#define ROUND_RTN 2
+#define ROUND_RTZ 3
 
-#define BUILTIN_SUB_RTE_F32 __llvm_sub_rte_f32
-#define BUILTIN_SUB_RTE_F64 __llvm_sub_rte_f64
-#define BUILTIN_SUB_RTE_F16 __llvm_sub_rte_f16
-#define BUILTIN_SUB_RTN_F32 __llvm_sub_rtn_f32
-#define BUILTIN_SUB_RTN_F64 __llvm_sub_rtn_f64
-#define BUILTIN_SUB_RTN_F16 __llvm_sub_rtn_f16
-#define BUILTIN_SUB_RTP_F32 __llvm_sub_rtp_f32
-#define BUILTIN_SUB_RTP_F64 __llvm_sub_rtp_f64
-#define BUILTIN_SUB_RTP_F16 __llvm_sub_rtp_f16
-#define BUILTIN_SUB_RTZ_F32 __llvm_sub_rtz_f32
-#define BUILTIN_SUB_RTZ_F64 __llvm_sub_rtz_f64
-#define BUILTIN_SUB_RTZ_F16 __llvm_sub_rtz_f16
-
-#define BUILTIN_MUL_RTE_F32 __llvm_mul_rte_f32
-#define BUILTIN_MUL_RTE_F64 __llvm_mul_rte_f64
-#define BUILTIN_MUL_RTE_F16 __llvm_mul_rte_f16
-#define BUILTIN_MUL_RTN_F32 __llvm_mul_rtn_f32
-#define BUILTIN_MUL_RTN_F64 __llvm_mul_rtn_f64
-#define BUILTIN_MUL_RTN_F16 __llvm_mul_rtn_f16
-#define BUILTIN_MUL_RTP_F32 __llvm_mul_rtp_f32
-#define BUILTIN_MUL_RTP_F64 __llvm_mul_rtp_f64
-#define BUILTIN_MUL_RTP_F16 __llvm_mul_rtp_f16
-#define BUILTIN_MUL_RTZ_F32 __llvm_mul_rtz_f32
-#define BUILTIN_MUL_RTZ_F64 __llvm_mul_rtz_f64
-#define BUILTIN_MUL_RTZ_F16 __llvm_mul_rtz_f16
-
-#define BUILTIN_DIV_RTE_F32 __llvm_div_rte_f32
-#define BUILTIN_DIV_RTE_F64 __llvm_div_rte_f64
-#define BUILTIN_DIV_RTE_F16 __llvm_div_rte_f16
-#define BUILTIN_DIV_RTN_F32 __llvm_div_rtn_f32
-#define BUILTIN_DIV_RTN_F64 __llvm_div_rtn_f64
-#define BUILTIN_DIV_RTN_F16 __llvm_div_rtn_f16
-#define BUILTIN_DIV_RTP_F32 __llvm_div_rtp_f32
-#define BUILTIN_DIV_RTP_F64 __llvm_div_rtp_f64
-#define BUILTIN_DIV_RTP_F16 __llvm_div_rtp_f16
-#define BUILTIN_DIV_RTZ_F32 __llvm_div_rtz_f32
-#define BUILTIN_DIV_RTZ_F64 __llvm_div_rtz_f64
-#define BUILTIN_DIV_RTZ_F16 __llvm_div_rtz_f16
-
-#define BUILTIN_SQRT_RTE_F32 __llvm_sqrt_rte_f32
-#define BUILTIN_SQRT_RTE_F64 __llvm_sqrt_rte_f64
-#define BUILTIN_SQRT_RTE_F16 __llvm_sqrt_rte_f16
-#define BUILTIN_SQRT_RTN_F32 __llvm_sqrt_rtn_f32
-#define BUILTIN_SQRT_RTN_F64 __llvm_sqrt_rtn_f64
-#define BUILTIN_SQRT_RTN_F16 __llvm_sqrt_rtn_f16
-#define BUILTIN_SQRT_RTP_F32 __llvm_sqrt_rtp_f32
-#define BUILTIN_SQRT_RTP_F64 __llvm_sqrt_rtp_f64
-#define BUILTIN_SQRT_RTP_F16 __llvm_sqrt_rtp_f16
-#define BUILTIN_SQRT_RTZ_F32 __llvm_sqrt_rtz_f32
-#define BUILTIN_SQRT_RTZ_F64 __llvm_sqrt_rtz_f64
-#define BUILTIN_SQRT_RTZ_F16 __llvm_sqrt_rtz_f16
-
-#define BUILTIN_FMA_RTE_F32 __llvm_fma_rte_f32
-#define BUILTIN_FMA_RTE_F64 __llvm_fma_rte_f64
-#define BUILTIN_FMA_RTE_F16 __llvm_fma_rte_f16
-#define BUILTIN_FMA_RTN_F32 __llvm_fma_rtn_f32
-#define BUILTIN_FMA_RTN_F64 __llvm_fma_rtn_f64
-#define BUILTIN_FMA_RTN_F16 __llvm_fma_rtn_f16
-#define BUILTIN_FMA_RTP_F32 __llvm_fma_rtp_f32
-#define BUILTIN_FMA_RTP_F64 __llvm_fma_rtp_f64
-#define BUILTIN_FMA_RTP_F16 __llvm_fma_rtp_f16
-#define BUILTIN_FMA_RTZ_F32 __llvm_fma_rtz_f32
-#define BUILTIN_FMA_RTZ_F64 __llvm_fma_rtz_f64
-#define BUILTIN_FMA_RTZ_F16 __llvm_fma_rtz_f16
-
+#define BUILTIN_GETROUND_F32() __builtin_amdgcn_s_getreg((1 << 0) | (0 << 6) | ((2-1) << 11))
+#define BUILTIN_SETROUND_F32(X) __builtin_amdgcn_s_setreg((1 << 0) | (0 << 6) | ((2-1) << 11), X)
+#define BUILTIN_GETROUND_F16F64() __builtin_amdgcn_s_getreg((1 << 0) | (2 << 6) | ((2-1) << 11))
+#define BUILTIN_SETROUND_F16F64(X) __builtin_amdgcn_s_setreg((1 << 0) | (2 << 6) | ((2-1) << 11), X)

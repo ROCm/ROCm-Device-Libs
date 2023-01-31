@@ -24,24 +24,23 @@ MATH_MANGLE(csinh)(float2 z)
     float cy;
     float sy = MATH_MANGLE(sincos)(z.y, &cy);
 
-    float cxhi, sxhi;
-    if (FINITE_ONLY_OPT()) {
-        cxhi = cx.hi;
-        sxhi = sx.hi;
-    } else {
+    float cxhi = cx.hi;
+    float sxhi = sx.hi;
+
+    if (!FINITE_ONLY_OPT()) {
         bool b = x >= 0x1.686fc0p+6f;
-        cxhi = b ? AS_FLOAT(PINFBITPATT_SP32) : cx.hi;
-        sxhi = b ? AS_FLOAT(PINFBITPATT_SP32) : sx.hi;
+        cxhi = b ? AS_FLOAT(PINFBITPATT_SP32) : cxhi;
+        sxhi = b ? AS_FLOAT(PINFBITPATT_SP32) : sxhi;
     }
 
     bool s = x >= 0x1.0p-12f;
     float rr = BUILTIN_FLDEXP_F32(BUILTIN_COPYSIGN_F32(s ? sxhi : x, z.x) * cy, s);
     float ri = BUILTIN_FLDEXP_F32(cxhi * sy, 1);
-    
+
     if (!FINITE_ONLY_OPT()) {
-        rr = (BUILTIN_CLASS_F32(x, CLASS_PZER|CLASS_NZER|CLASS_PINF|CLASS_NINF) &
-              BUILTIN_CLASS_F32(z.y,  CLASS_PINF|CLASS_NINF|CLASS_QNAN|CLASS_SNAN)) ? z.x : rr;
-        ri = (BUILTIN_CLASS_F32(x, CLASS_PINF|CLASS_NINF|CLASS_QNAN|CLASS_SNAN) & (z.y == 0.0f)) ? z.y : ri;
+        rr = (!BUILTIN_CLASS_F32(x, CLASS_PZER|CLASS_NZER|CLASS_PINF|CLASS_NINF) |
+              BUILTIN_ISFINITE_F32(z.y)) ? rr : z.x;
+        ri = (BUILTIN_ISFINITE_F32(x) | (z.y != 0.0f)) ? ri : z.y;
     }
 
     return (float2)(rr, ri);

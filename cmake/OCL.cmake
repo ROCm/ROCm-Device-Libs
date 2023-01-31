@@ -21,7 +21,8 @@ endif()
 # potential mis-aligned atomic ops detected by clang
 set(CLANG_OCL_FLAGS -fcolor-diagnostics -Werror -Wno-error=atomic-alignment -x cl -Xclang
   -cl-std=CL2.0 -target "${AMDGPU_TARGET_TRIPLE}" -fvisibility=protected -fomit-frame-pointer
-  -Xclang -finclude-default-header -nogpulib -cl-no-stdinc "${CLANG_OPTIONS_APPEND}")
+  -Xclang -finclude-default-header -Xclang -fexperimental-strict-floating-point
+  -nogpulib -cl-no-stdinc "${CLANG_OPTIONS_APPEND}")
 
 # For compatibility with the MSVC headers we use a 32-bit wchar. Users linking
 # against us must also use a short wchar.
@@ -135,7 +136,7 @@ macro(opencl_bc_lib)
     # Extra link step with internalize
     COMMAND $<TARGET_FILE:llvm-link> -internalize -only-needed "${name}.link0${LIB_SUFFIX}"
       -o "${OUT_NAME}${LIB_SUFFIX}" ${internal_link_libs}
-    COMMAND $<TARGET_FILE:opt> -strip
+    COMMAND $<TARGET_FILE:opt> -passes=amdgpu-unify-metadata,strip
       -o "${OUT_NAME}${STRIP_SUFFIX}" "${OUT_NAME}${LIB_SUFFIX}"
     COMMAND "${PREPARE_BUILTINS}"
       -o ${OUTPUT_BC_LIB} "${OUT_NAME}${STRIP_SUFFIX}"

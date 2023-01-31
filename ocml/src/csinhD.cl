@@ -24,24 +24,23 @@ MATH_MANGLE(csinh)(double2 z)
     double cy;
     double sy = MATH_MANGLE(sincos)(z.y, &cy);
 
-    double cxhi, sxhi;
-    if (FINITE_ONLY_OPT()) {
-        cxhi = cx.hi;
-        sxhi = sx.hi;
-    } else {
+    double cxhi = cx.hi;
+    double sxhi = sx.hi;
+
+    if (!FINITE_ONLY_OPT()) {
         bool b = x >= 0x1.6395a2079b70cp+9;
-        cxhi = b ? AS_DOUBLE(PINFBITPATT_DP64) : cx.hi;
-        sxhi = b ? AS_DOUBLE(PINFBITPATT_DP64) : sx.hi;
+        cxhi = b ? AS_DOUBLE(PINFBITPATT_DP64) : cxhi;
+        sxhi = b ? AS_DOUBLE(PINFBITPATT_DP64) : sxhi;
     }
 
     bool s = x >= 0x1.0p-27;
     double rr = BUILTIN_FLDEXP_F64(BUILTIN_COPYSIGN_F64(s ? sxhi : x, z.x) * cy, s);
     double ri = BUILTIN_FLDEXP_F64(cxhi * sy, 1);
-    
+
     if (!FINITE_ONLY_OPT()) {
-        rr = (BUILTIN_CLASS_F64(x, CLASS_PZER|CLASS_NZER|CLASS_PINF|CLASS_NINF) &
-              BUILTIN_CLASS_F64(z.y,  CLASS_PINF|CLASS_NINF|CLASS_QNAN|CLASS_SNAN)) ? z.x : rr;
-        ri = (BUILTIN_CLASS_F64(x, CLASS_PINF|CLASS_NINF|CLASS_QNAN|CLASS_SNAN) & (z.y == 0.0)) ? z.y : ri;
+        rr = (!BUILTIN_CLASS_F64(x, CLASS_PZER|CLASS_NZER|CLASS_PINF|CLASS_NINF) |
+              BUILTIN_ISFINITE_F64(z.y)) ? rr : z.x;
+        ri = (BUILTIN_ISFINITE_F64(x) | (z.y != 0.0)) ? ri : z.y;
     }
 
     return (double2)(rr, ri);
