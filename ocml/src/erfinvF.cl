@@ -48,8 +48,8 @@ MATH_MANGLE(erfinv)(float x)
     float ret = p*ax;
 
     if (!FINITE_ONLY_OPT()) {
-        ret = ax > 1.0f ? AS_FLOAT(QNANBITPATT_SP32) : ret;
-        ret = ax == 1.0f ? AS_FLOAT(PINFBITPATT_SP32) : ret;
+        ret = ax > 1.0f ? QNAN_F32 : ret;
+        ret = ax == 1.0f ? PINF_F32 : ret;
     }
 
     return BUILTIN_COPYSIGN_F32(ret, x);

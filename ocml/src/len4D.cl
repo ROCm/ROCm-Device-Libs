@@ -39,12 +39,12 @@ MATH_MANGLE(len4)(double x, double y, double z, double w)
     double ret = BUILTIN_FLDEXP_F64(MATH_FAST_SQRT(MATH_MAD(a, a, MATH_MAD(b, b, MATH_MAD(c, c, d*d)))), e);
 
     if (!FINITE_ONLY_OPT()) {
-        ret = (BUILTIN_ISNAN_F64(x) | BUILTIN_ISNAN_F64(y) |
-               BUILTIN_ISNAN_F64(z) | BUILTIN_ISNAN_F64(w)) ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
+        ret = (BUILTIN_ISUNORDERED_F64(x, y) |
+               BUILTIN_ISUNORDERED_F64(z, w)) ? QNAN_F64 : ret;
         ret = (BUILTIN_ISINF_F64(x) |
                BUILTIN_ISINF_F64(y) |
                BUILTIN_ISINF_F64(z) |
-               BUILTIN_ISINF_F64(w)) ? AS_DOUBLE(PINFBITPATT_DP64) : ret;
+               BUILTIN_ISINF_F64(w)) ? PINF_F64 : ret;
     }
 
     return ret;
