@@ -43,11 +43,11 @@ MATH_MANGLE(catanh)(double2 z)
     }
 
     if (!FINITE_ONLY_OPT()) {
-        rr = ((x == 1.0) & (y == 0.0)) ? AS_DOUBLE(PINFBITPATT_DP64)  : rr;
+        rr = ((x == 1.0) & (y == 0.0)) ? PINF_F64  : rr;
         rr = x == 0.0 ? 0.0 : rr;
         rr = BUILTIN_ISINF_F64(x) ? 0.0 : rr;
         rr = (BUILTIN_ISNAN_F64(x) & BUILTIN_ISINF_F64(y)) ? 0.0 : rr;
-        ri = (BUILTIN_ISNAN_F64(x) & BUILTIN_ISFINITE_F64(y)) ? AS_DOUBLE(QNANBITPATT_DP64) : ri;
+        ri = (BUILTIN_ISNAN_F64(x) & BUILTIN_ISFINITE_F64(y)) ? QNAN_F64 : ri;
         ri = BUILTIN_ISNAN_F64(y) ? y : ri;
     }
 

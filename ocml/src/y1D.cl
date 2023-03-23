@@ -145,14 +145,14 @@ MATH_MANGLE(y1)(double x)
                 ret = MATH_DIV(-twobypi, BUILTIN_ABS_F64(x));
             else
                 ret = MATH_MAD(ret, x, twobypi*(MATH_MANGLE(j1)(x) * MATH_MANGLE(log)(x) - MATH_RCP(x)));
-            ret = x < 0.0 ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
+            ret = x < 0.0 ? QNAN_F64 : ret;
         }
     } else {
         double r = MATH_RCP(x);
         double r2 = r*r;
         double p = MATH_PRIVATE(bp1)(r2) * r;
         ret = 0x1.9884533d43651p-1 * MATH_FAST_SQRT(r) * MATH_PRIVATE(ba1)(r2) * MATH_PRIVATE(sinb)(x, 1, p);
-        ret = BUILTIN_CLASS_F64(x, CLASS_PINF) ? 0.0 : ret;
+        ret = x == PINF_F64 ? 0.0 : ret;
     }
 
     return ret;

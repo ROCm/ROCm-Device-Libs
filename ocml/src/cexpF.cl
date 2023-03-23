@@ -24,13 +24,13 @@ MATH_MANGLE(cexp)(float2 z)
 
     if (!FINITE_ONLY_OPT()) {
         bool finite = BUILTIN_ISFINITE_F32(y);
-        if (BUILTIN_CLASS_F32(x, CLASS_NINF)) {
+        if (x == NINF_F32) {
             rr = 0.0f;
             ri = finite ? ri : 0.0f;
         }
-        if (BUILTIN_CLASS_F32(x, CLASS_PINF)) {
-            rr = finite ? rr : AS_FLOAT(PINFBITPATT_SP32);
-            ri = finite ? ri : AS_FLOAT(QNANBITPATT_SP32);
+        if (x == PINF_F32) {
+            rr = finite ? rr : PINF_F32;
+            ri = finite ? ri : QNAN_F32;
             ri = y == 0.0f ? y : ri;
         }
         ri = (BUILTIN_ISNAN_F32(x) & (y == 0.0f)) ? y : ri;

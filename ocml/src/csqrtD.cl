@@ -15,7 +15,7 @@ MATH_MANGLE(csqrt)(double2 z)
     double t = BUILTIN_MAX_F64(a, b);
 
     if (!FINITE_ONLY_OPT()) {
-        t = (BUILTIN_ISNAN_F64(a) | BUILTIN_ISNAN_F64(b)) ? AS_DOUBLE(QNANBITPATT_DP64) : t;
+        t = BUILTIN_ISUNORDERED_F64(a, b) ? QNAN_F64 : t;
     }
 
     int e = BUILTIN_FREXP_EXP_F64(t);
@@ -38,8 +38,8 @@ MATH_MANGLE(csqrt)(double2 z)
         bool i = BUILTIN_ISINF_F64(b);
         rr = i ? b : rr;
         ri = i ? b : ri;
-        ri = BUILTIN_CLASS_F64(z.x, CLASS_NINF) ? a : ri;
-        rr = BUILTIN_CLASS_F64(z.x, CLASS_PINF) ? a : rr;
+        ri = z.x == NINF_F64 ? a : ri;
+        rr = z.x == PINF_F64 ? a : rr;
     }
 
     return (double2)(rr, BUILTIN_COPYSIGN_F64(ri, z.y));
