@@ -7,5 +7,5 @@
 
 #include "oclc.h"
 
-__attribute__((always_inline, const)) int __oclc_finite_only_opt(void) { return 1; }
+const __constant bool __oclc_finite_only_opt = 1;
 

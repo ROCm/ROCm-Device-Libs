@@ -10,20 +10,18 @@
 
 UGEN(sin)
 
-INLINEATTR half
+REQUIRES_16BIT_INSTS half
 MATH_MANGLE(sin)(half x)
 {
-    half r;
-    short i = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
+    half ax = BUILTIN_ABS_F16(x);
+    struct redret r = MATH_PRIVATE(trigred)(ax);
+    struct scret sc =  MATH_PRIVATE(sincosred)(r.hi);
 
-    half cc;
-    half ss = MATH_PRIVATE(sincosred)(r, &cc);
-
-    short s = AS_SHORT((i & (short)1) == (short)0 ? ss : cc);
-    s ^= (i > (short)1 ? (short)0x8000 : 0) ^ (AS_SHORT(x) & (short)0x8000);
+    short s = AS_SHORT((r.i & (short)1) == (short)0 ? sc.s : sc.c);
+    s ^= (r.i > (short)1 ? (short)0x8000 : (short)0) ^ (AS_SHORT(x) & (short)0x8000);
 
     if (!FINITE_ONLY_OPT()) {
-        s = BUILTIN_CLASS_F16(x, CLASS_SNAN|CLASS_QNAN|CLASS_NINF|CLASS_PINF) ? (short)QNANBITPATT_HP16 : s;
+        s = BUILTIN_ISFINITE_F16(ax) ? s : (short)QNANBITPATT_HP16;
     }
 
     return AS_HALF(s);

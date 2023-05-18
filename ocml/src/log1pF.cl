@@ -10,17 +10,17 @@
 #define FLOAT_SPECIALIZATION
 #include "ep.h"
 
-extern CONSTATTR float MATH_PRIVATE(lnep)(float2 x);
+extern CONSTATTR float MATH_PRIVATE(lnep)(float2 a, int ea);
 
-CONSTATTR INLINEATTR float
+CONSTATTR float
 MATH_MANGLE(log1p)(float x)
 {
-    float z = MATH_PRIVATE(lnep)(add(1.0, x));
+    float z = MATH_PRIVATE(lnep)(add(1.0f, x), 0);
 
     if (!FINITE_ONLY_OPT()) {
-        z = BUILTIN_CLASS_F32(x, CLASS_PINF) ? x : z;
-        z = x < -1.0f ? AS_FLOAT(QNANBITPATT_SP32) : z;
-        z = x == -1.0f ? AS_FLOAT(NINFBITPATT_SP32) : z;
+        z = x == PINF_F32 ? x : z;
+        z = x < -1.0f ? QNAN_F32 : z;
+        z = x == -1.0f ? NINF_F32 : z;
     }
 
     return BUILTIN_ABS_F32(x) < 0x1.0p-24f ? x : z;

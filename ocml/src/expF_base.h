@@ -32,7 +32,7 @@
 // 
 //    e^x = (2^m) * ( (2^(j/64)) + q*(2^(j/64)) ) 
 
-PUREATTR INLINEATTR float
+PUREATTR float
 #if defined COMPILING_EXP2
 MATH_MANGLE(exp2)(float x)
 #elif defined COMPILING_EXP10
@@ -80,14 +80,16 @@ MATH_MANGLE(exp)(float x)
                 pl = MATH_MAD(xh, cl, MATH_MAD(xl, ch, xl*cl));
             }
 
-            float r = BUILTIN_EXP2_F32(pl) * BUILTIN_EXP2_F32(ph);
+            float e = BUILTIN_RINT_F32(ph);
+            float a = ph - e + pl;
+            float r = BUILTIN_FLDEXP_F32(BUILTIN_EXP2_F32(a), (int)e);
 
 #if defined COMPILING_EXP
             r = x < -0x1.5d58a0p+6f ? 0.0f : r;
-            r = x > 0x1.62e430p+6f ? AS_FLOAT(PINFBITPATT_SP32) : r;
+            r = x > 0x1.62e430p+6f ? PINF_F32 : r;
 #else
             r = x < -0x1.2f7030p+5f ? 0.0f : r;
-            r = x > 0x1.344136p+5f ? AS_FLOAT(PINFBITPATT_SP32): r;
+            r = x > 0x1.344136p+5f ? PINF_F32 : r;
 #endif
             return r;
 #endif
@@ -114,14 +116,6 @@ MATH_MANGLE(exp)(float x)
 #else
             float ph, pl;
 
-#if defined COMPILING_EXP
-            bool s = x < -0x1.5d58a0p+6f;
-            x += s ? 0x1.0p+6f : 0.0f;
-#else
-            bool s = x < -0x1.2f7030p+5f;
-            x += s ? 0x1.0p+5f : 0.0f;
-#endif
-
             if (HAVE_FAST_FMA32()) {
 #if defined COMPILING_EXP
                 const float c = 0x1.715476p+0f;
@@ -146,16 +140,16 @@ MATH_MANGLE(exp)(float x)
                 pl = MATH_MAD(xh, cl, MATH_MAD(xl, ch, xl*cl));
             }
 
-            float r = BUILTIN_EXP2_F32(pl) * BUILTIN_EXP2_F32(ph);
+            float e = BUILTIN_RINT_F32(ph);
+            float a = ph - e + pl;
+            float r = BUILTIN_FLDEXP_F32(BUILTIN_EXP2_F32(a), (int)e);
 
 #if defined COMPILING_EXP
-            r *= s ? 0x1.969d48p-93f : 1.0f;
             r = x < -0x1.9d1da0p+6f ? 0.0f : r;
-            r = x > 0x1.62e430p+6f ? AS_FLOAT(PINFBITPATT_SP32) : r;
+            r = x > 0x1.62e430p+6f ? PINF_F32 : r;
 #else
-            r *= s ? 0x1.9f623ep-107f : 1.0f;
             r = x < -0x1.66d3e8p+5f ? 0.0f : r;
-            r = x > 0x1.344136p+5f ? AS_FLOAT(PINFBITPATT_SP32): r;
+            r = x > 0x1.344136p+5f ? PINF_F32 : r;
 #endif
             return r;
 #endif

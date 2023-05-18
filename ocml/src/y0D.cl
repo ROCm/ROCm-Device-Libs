@@ -11,7 +11,7 @@ extern double MATH_PRIVATE(sinb)(double, int, double);
 extern CONSTATTR double MATH_PRIVATE(bp0)(double);
 extern CONSTATTR double MATH_PRIVATE(ba0)(double);
 
-double
+CONSTATTR double
 MATH_MANGLE(y0)(double x)
 {
     const double b0  = 0.3125;
@@ -140,13 +140,13 @@ MATH_MANGLE(y0)(double x)
                p[11]), p[10]), p[9]), p[8]),
                p[7]), p[6]), p[5]), p[4]),
                p[3]), p[2]), p[1]), p[0]);
-              
+
     } else {
         double r = MATH_RCP(x);
         double r2 = r*r;
         double p = MATH_PRIVATE(bp0)(r2) * r;
         ret = 0x1.9884533d43651p-1 * MATH_FAST_SQRT(r) * MATH_PRIVATE(ba0)(r2) * MATH_PRIVATE(sinb)(x, 0, p);
-        ret = BUILTIN_CLASS_F64(x, CLASS_PINF) ? 0.0 : ret;
+        ret = x == PINF_F64 ? 0.0 : ret;
     }
 
     return ret;

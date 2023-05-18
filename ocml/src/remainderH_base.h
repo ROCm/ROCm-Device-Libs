@@ -12,13 +12,13 @@ samesign(half x, half y)
 }
 
 #if defined(COMPILING_FMOD)
-CONSTATTR half
+REQUIRES_16BIT_INSTS CONSTATTR half
 MATH_MANGLE(fmod)(half x, half y)
 #elif defined(COMPILING_REMQUO)
-half
+REQUIRES_16BIT_INSTS half
 MATH_MANGLE(remquo)(half x, half y, __private int *q7p)
 #else
-CONSTATTR half
+REQUIRES_16BIT_INSTS CONSTATTR half
 MATH_MANGLE(remainder)(half x, half y)
 #endif
 {
@@ -59,7 +59,7 @@ MATH_MANGLE(remainder)(half x, half y)
             iq -= clt;
             qacc = (qacc << bits) | iq;
 #endif
-            ax = BUILTIN_FLDEXP_F32(ax, bits); 
+            ax = BUILTIN_FLDEXP_F32(ax, bits);
             nb -= bits;
         }
 
@@ -123,16 +123,15 @@ MATH_MANGLE(remainder)(half x, half y)
     }
 
     if (!FINITE_ONLY_OPT()) {
-        ret = y == 0.0h ? AS_HALF((short)QNANBITPATT_HP16) : ret;
+        ret = y == 0.0h ? QNAN_F16 : ret;
 #if defined(COMPILING_REMQUO)
         q7 = y == 0.0h ? 0 : q7;
 #endif
 
-        bool c = BUILTIN_CLASS_F16(y, CLASS_QNAN|CLASS_SNAN) |
-                 BUILTIN_CLASS_F16(x, CLASS_NINF|CLASS_PINF|CLASS_SNAN|CLASS_QNAN);
-        ret = c ? AS_HALF((short)QNANBITPATT_HP16) : ret;
+        bool c = !BUILTIN_ISNAN_F16(y) && BUILTIN_ISFINITE_F16(x);
+        ret = c ? ret : QNAN_F16;
 #if defined(COMPILING_REMQUO)
-        q7 = c ? 0 : q7;
+        q7 = c ? q7 : 0;
 #endif
     }
 

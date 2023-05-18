@@ -7,7 +7,27 @@
 
 #include "mathF.h"
 
-PUREATTR float
+#if !defined EXTRA_ACCURACY
+CONSTATTR float
+MATH_MANGLE(ncdf)(float x)
+{
+    const float chi = -0x1.6a09e6p-1f;
+    const float clo = -0x1.9fcef4p-27f;
+    const float b = 0x1.c57228p+3f;
+    x = BUILTIN_ABS_F32(x) > b ? BUILTIN_COPYSIGN_F32(b, x) : x;
+    float thi = chi * x;
+    float tlo = BUILTIN_FMA_F32(clo, x, BUILTIN_FMA_F32(chi, x, -thi));
+    float yhi = thi + tlo;
+    float ylo = tlo - (yhi - thi);
+    float r = MATH_MANGLE(erfc)(yhi);
+    float dr = -2.0f * yhi * r;
+    dr = x >= -1.0f ? 0.0f : dr;
+    r = BUILTIN_FMA_F32(ylo, dr, r);
+    return 0.5f * r;
+}
+
+#else
+CONSTATTR float
 MATH_MANGLE(ncdf)(float x)
 {
     float ret;
@@ -85,10 +105,11 @@ MATH_MANGLE(ncdf)(float x)
             ret = MATH_FAST_DIV(MATH_MANGLE(exp)(MATH_MAD(x - xh,  -0.5f*(x + xh), ret)), -x) *
                   MATH_MANGLE(exp)(MATH_MAD(xh, -0.5f*xh, -0.9140625f));
         } else {
-            ret = BUILTIN_CLASS_F32(x, CLASS_QNAN|CLASS_SNAN) ? x : 0.0f;
+            ret = BUILTIN_ISNAN_F32(x) ? x : 0.0f;
         }
     }
 
     return ret;
 }
+#endif
 

@@ -6,8 +6,9 @@
  *===------------------------------------------------------------------------*/
 
 #include "int.h"
+#include "irif.h"
 
-#define UEXPATTR __attribute__((always_inline, overloadable, const))
+#define UEXPATTR __attribute__((overloadable, const))
 UEXP(char,ctz)
 UEXP(uchar,ctz)
 UEXP(short,ctz)
@@ -20,53 +21,48 @@ UEXP(ulong,ctz)
 UEXPATTR char
 ctz(char x)
 {
-    uint y = (uint)(uchar)x;
-    return (char)min(__ockl_ctz_u32(y), 8u);
+    return (char)BUILTIN_CTZ_U8((uchar)x);
 }
 
 UEXPATTR uchar
 ctz(uchar x)
 {
-    uint y = (uint)x;
-    return (uchar)min(__ockl_ctz_u32(y), 8u);
+    return BUILTIN_CTZ_U8(x);
 }
 
 UEXPATTR short
 ctz(short x)
 {
-    uint y = (uint)(ushort)x;
-    return (short)min(__ockl_ctz_u32(y), 16u);
+    return (short)BUILTIN_CTZ_U16((ushort)x);
 }
 
 UEXPATTR ushort
 ctz(ushort x)
 {
-    uint y = (uint)x;
-    return (ushort)min(__ockl_ctz_u32(y), 16u);
+    return BUILTIN_CTZ_U16(x);
 }
 
 UEXPATTR int
 ctz(int x)
 {
-    return (int)__ockl_ctz_u32((uint)x);
+    return (int)BUILTIN_CTZ_U32((uint)x);
 }
 
 UEXPATTR uint
 ctz(uint x)
 {
-    return __ockl_ctz_u32(x);
+    return BUILTIN_CTZ_U32(x);
 }
 
-__attribute__((always_inline, const)) static ulong
-ctz_u64(ulong x)
+UEXPATTR long
+ctz(long x)
 {
-    uint xlo = (uint)x;
-    uint xhi = (uint)(x >> 32);
-    uint zlo = __ockl_ctz_u32(xlo);
-    uint zhi = __ockl_ctz_u32(xhi) + 32u;
-    return (ulong)(xlo == 0 ? zhi : zlo);
+    return (long)BUILTIN_CTZ_U64((ulong)x);
 }
 
-extern __attribute__((overloadable, always_inline, const, alias("ctz_u64"))) ulong ctz(ulong);
-extern __attribute__((overloadable, always_inline, const, alias("ctz_u64")))  long ctz(long);
+UEXPATTR ulong
+ctz(ulong x)
+{
+    return BUILTIN_CTZ_U64(x);
+}
 

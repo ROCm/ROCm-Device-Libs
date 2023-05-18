@@ -7,8 +7,8 @@
 
 #include "mathF.h"
 
-CONSTATTR INLINEATTR int
+CONSTATTR int
 MATH_MANGLE(isnormal)(float x)
 {
-    return BUILTIN_CLASS_F32(x, CLASS_PNOR|CLASS_NNOR);
+    return BUILTIN_ISNORMAL_F32(x);
 }

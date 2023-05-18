@@ -19,21 +19,25 @@ MATH_MANGLE(fma)(half a, half b, half c)
     return BUILTIN_FMA_F16(a, b, c);
 }
 
-#if defined ENABLE_ROUNDED
-#if defined HSAIL_BUILD
-
-#define GEN(NAME,ROUND)\
-CONSTATTR INLINEATTR half \
-MATH_MANGLE(NAME)(half a, half b, half c) \
-{ \
-    return BUILTIN_FULL_TERNARY(ffmah, false, ROUND, a, b, c); \
+CONSTATTR half
+MATH_MANGLE(fma_rte)(half a, half b, half c)
+{
+    return BUILTIN_FMA_F16(a, b, c);
 }
 
-GEN(fma_rte, ROUND_TO_NEAREST_EVEN)
-GEN(fma_rtp, ROUND_TO_POSINF)
-GEN(fma_rtn, ROUND_TO_NEGINF)
-GEN(fma_rtz, ROUND_TO_ZERO)
+#pragma STDC FENV_ACCESS ON
 
-#endif // HSAIL_BUILD
-#endif // ENABLE_ROUNDED
+#define GEN(LN,RM) \
+CONSTATTR half \
+MATH_MANGLE(LN)(half a, half b, half c) \
+{ \
+    BUILTIN_SETROUND_F16F64(RM); \
+    half ret = BUILTIN_FMA_F64(a, b, c); \
+    BUILTIN_SETROUND_F16F64(ROUND_RTE); \
+    return ret; \
+}
+
+GEN(fma_rtn, ROUND_RTN)
+GEN(fma_rtp, ROUND_RTP)
+GEN(fma_rtz, ROUND_RTZ)
 

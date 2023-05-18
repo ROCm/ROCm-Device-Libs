@@ -7,20 +7,20 @@
 
 #include "mathD.h"
 
-extern CONSTATTR double MATH_PRIVATE(lnep)(double2 x);
+extern CONSTATTR double MATH_PRIVATE(lnep)(double2 a, int ea);
 
 #define DOUBLE_SPECIALIZATION
 #include "ep.h"
 
-CONSTATTR INLINEATTR double
+CONSTATTR double
 MATH_MANGLE(log1p)(double x)
 {
-    double z = MATH_PRIVATE(lnep)(add(1.0, x));
+    double z = MATH_PRIVATE(lnep)(add(1.0, x), 0);
 
     if (!FINITE_ONLY_OPT()) {
-        z = BUILTIN_CLASS_F64(x, CLASS_PINF) ? x : z;
-        z = x < -1.0 ? AS_DOUBLE(QNANBITPATT_DP64) : z;
-        z = x == -1.0 ? AS_DOUBLE(NINFBITPATT_DP64) : z;
+        z = x == PINF_F64 ? x : z;
+        z = x < -1.0 ? QNAN_F64 : z;
+        z = x == -1.0 ? NINF_F64 : z;
     }
 
     return z;

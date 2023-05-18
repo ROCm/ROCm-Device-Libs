@@ -5,50 +5,61 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
+#include "oclc.h"
 #include "ockl.h"
 
-#define CATTR __attribute__((overloadable, always_inline, const))
-
-// XXX assumes wavefront size is 64
+#define CATTR __attribute__((overloadable, const))
 
 CATTR uint
 get_sub_group_size(void)
 {
     uint wgs = mul24((uint)get_local_size(2), mul24((uint)get_local_size(1), (uint)get_local_size(0)));
     uint lid = (uint)get_local_linear_id();
-    return min(64U, wgs - (lid & ~63U));
+    if (__oclc_wavefrontsize64)
+        return min(64U, wgs - (lid & ~63U));
+    else
+        return min(32U, wgs - (lid & ~31U));
 }
 
 CATTR uint
 get_max_sub_group_size(void)
 {
     uint wgs = mul24((uint)get_enqueued_local_size(2), mul24((uint)get_enqueued_local_size(1), (uint)get_enqueued_local_size(0)));
-    return min(64U, wgs);
+    return min(__oclc_wavefrontsize64 ? 64u : 32u, wgs);
 }
 
 CATTR uint
 get_num_sub_groups(void)
 {
     uint wgs = mul24((uint)get_local_size(2), mul24((uint)get_local_size(1), (uint)get_local_size(0)));
-    return (wgs + 63U) >> 6U;
+    if (__oclc_wavefrontsize64)
+        return (wgs + 63U) >> 6U;
+    else
+        return (wgs + 31U) >> 5U;
 }
 
 CATTR uint
 get_enqueued_num_sub_groups(void)
 {
     uint wgs = mul24((uint)get_enqueued_local_size(2), mul24((uint)get_enqueued_local_size(1), (uint)get_enqueued_local_size(0)));
-    return (wgs + 63U) >> 6U;
+    if (__oclc_wavefrontsize64)
+        return (wgs + 63U) >> 6U;
+    else
+        return (wgs + 31U) >> 5U;
 }
 
 CATTR uint
 get_sub_group_id(void)
 {
-    return (uint)get_local_linear_id() >> 6U;
+    if (__oclc_wavefrontsize64)
+        return (uint)get_local_linear_id() >> 6U;
+    else
+        return (uint)get_local_linear_id() >> 5U;
 }
 
 CATTR uint
 get_sub_group_local_id(void)
 {
-    return __ockl_activelane_u32();
+    return __ockl_lane_u32();
 }
 

@@ -7,9 +7,9 @@
 
 #include "mathD.h"
 
-CONSTATTR INLINEATTR int
+CONSTATTR int
 MATH_MANGLE(isfinite)(double x)
 {
-    return BUILTIN_CLASS_F64(x, CLASS_NNOR|CLASS_NSUB|CLASS_NZER|CLASS_PZER|CLASS_PSUB|CLASS_PNOR);
+    return BUILTIN_ISFINITE_F64(x);
 }
 

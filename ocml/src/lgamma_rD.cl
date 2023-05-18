@@ -16,19 +16,19 @@
  *
  * Developed at SunSoft, a Sun Microsystems, Inc. business.
  * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice 
+ * software is freely granted, provided that this notice
  * is preserved.
  * ====================================================
  *
  */
 
 /* __ieee754_lgamma_r(x, signgamp)
- * Reentrant version of the logarithm of the Gamma function 
- * with user provide pointer for the sign of Gamma(x). 
+ * Reentrant version of the logarithm of the Gamma function
+ * with user provide pointer for the sign of Gamma(x).
  *
  * Method:
  *   1. Argument Reduction for 0 < x <= 8
- *      Since gamma(1+s)=s*gamma(s), for x in [0,8], we may 
+ *      Since gamma(1+s)=s*gamma(s), for x in [0,8], we may
  *      reduce x to a number in [1.5,2.5] by
  *              lgamma(1+s) = log(s) + lgamma(s)
  *      for example,
@@ -66,33 +66,37 @@
  *      by
  *                                  3       5             11
  *              w = w0 + w1*z + w2*z  + w3*z  + ... + w6*z
- *      where 
+ *      where
  *              |w - f(z)| < 2**-58.74
- *              
+ *
  *   4. For negative x, since (G is gamma function)
  *              -x*G(-x)*G(x) = pi/sin(pi*x),
  *      we have
  *              G(x) = pi/(sin(pi*x)*(-x)*G(-x))
  *      since G(-x) is positive, sign(G(x)) = sign(sin(pi*x)) for x<0
- *      Hence, for x<0, signgam = sign(sin(pi*x)) and 
+ *      Hence, for x<0, signgam = sign(sin(pi*x)) and
  *              lgamma(x) = log(|Gamma(x)|)
  *                        = log(pi/(|x*sin(pi*x)|)) - lgamma(-x);
- *      Note: one should avoid compute pi*(-x) directly in the 
+ *      Note: one should avoid compute pi*(-x) directly in the
  *            computation of sin(pi*(-x)).
- *              
+ *
  *   5. Special Cases
  *              lgamma(2+s) ~ s*(1-Euler) for tiny s
  *              lgamma(1)=lgamma(2)=0
  *              lgamma(x) ~ -log(x) for tiny x
  *              lgamma(0) = lgamma(inf) = inf
  *              lgamma(-integer) = +-inf
- *      
+ *
  */
 
 
+struct ret_t {
+    double result;
+    int signp;
+};
 
-double
-MATH_MANGLE(lgamma_r)(double x, __private int *signp)
+static struct ret_t
+MATH_MANGLE(lgamma_r_impl)(double x)
 {
     const double two52=  4.50359962737049600000e+15;
     const double pi  =  3.14159265358979311600e+00;
@@ -225,7 +229,7 @@ MATH_MANGLE(lgamma_r)(double x, __private int *signp)
             p = MATH_MAD(z, p1, -MATH_MAD(w, -MATH_MAD(y, p3,p2), tt));
             ret += tf + p;
             break;
-        case 2:   
+        case 2:
             p1 = y * MATH_MAD(y, MATH_MAD(y, MATH_MAD(y, MATH_MAD(y, MATH_MAD(y, u5, u4), u3), u2), u1), u0);
             p2 = MATH_MAD(y, MATH_MAD(y, MATH_MAD(y, MATH_MAD(y, MATH_MAD(y, v5, v4), v3), v2), v1), 1.0);
             ret += MATH_MAD(y, -0.5, MATH_DIV(p1, p2));
@@ -264,25 +268,39 @@ MATH_MANGLE(lgamma_r)(double x, __private int *signp)
 
     int s = 0;
     if (x >= 0.0) {
-        ret = x == 1.0 | x == 2.0 ? 0.0 : ret;
+        ret = (x == 1.0 | x == 2.0) ? 0.0 : ret;
         s = x == 0.0 ? 0 : 1;
     } else if (hax < 0x43300000) { // x > -0x1.0p+52
-        double t = MATH_MANGLE(sinpi)(x);
-        double negadj = MATH_MANGLE(log)(MATH_DIV(pi, BUILTIN_ABS_F64(t * x)));
-        ret = negadj - ret;
-        bool z = BUILTIN_FRACTION_F64(x) == 0.0;
-        ret = z ? AS_DOUBLE(PINFBITPATT_DP64) : ret;
-        s = t < 0.0 ? -1 : 1;
-        s = z ? 0 : s;
+        if (hax > 0x3cd00000) { // x < -0x1.0p-50
+            double t = MATH_MANGLE(sinpi)(x);
+            double negadj = MATH_MANGLE(log)(MATH_DIV(pi, BUILTIN_ABS_F64(t * x)));
+            ret = negadj - ret;
+            bool z = BUILTIN_FRACTION_F64(x) == 0.0;
+            ret = z ? PINF_F64 : ret;
+            s = t < 0.0 ? -1 : 1;
+            s = z ? 0 : s;
+        } else {
+            s = -1;
+        }
     }
 
     if (!FINITE_ONLY_OPT()) {
         // Handle negative integer, Inf, NaN
-        ret = BUILTIN_CLASS_F64(ax, CLASS_NZER|CLASS_PZER|CLASS_PINF) | (x < 0.0f & hax >= 0x43300000) ? AS_DOUBLE(PINFBITPATT_DP64) : ret;
-        ret = BUILTIN_CLASS_F64(x, CLASS_SNAN|CLASS_QNAN) ? x : ret;
+        ret = BUILTIN_CLASS_F64(ax, CLASS_NZER|CLASS_PZER|CLASS_PINF) | (x < 0.0f & hax >= 0x43300000) ? PINF_F64 : ret;
+        ret = BUILTIN_ISNAN_F64(x) ? x : ret;
     }
 
-    *signp = s;
-    return ret;
+    struct ret_t result;
+    result.result = ret;
+    result.signp = s;
+    return result;
 }
 
+
+double
+MATH_MANGLE(lgamma_r)(double x, __private int *signp)
+{
+    struct ret_t ret = MATH_MANGLE(lgamma_r_impl)(x);
+    *signp = ret.signp;
+    return ret.result;
+}

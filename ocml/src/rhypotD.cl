@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-CONSTATTR INLINEATTR double
+CONSTATTR double
 MATH_MANGLE(rhypot)(double x, double y)
 {
     double a = BUILTIN_ABS_F64(x);
@@ -23,13 +23,11 @@ MATH_MANGLE(rhypot)(double x, double y)
     double ret = BUILTIN_FLDEXP_F64(z, -e);
 
     if (!FINITE_ONLY_OPT()) {
-        ret = t == 0.0 ? AS_DOUBLE(PINFBITPATT_DP64) : ret;
+        ret = t == 0.0 ? PINF_F64 : ret;
 
-        ret = BUILTIN_CLASS_F64(x, CLASS_QNAN|CLASS_SNAN) |
-              BUILTIN_CLASS_F64(y, CLASS_QNAN|CLASS_SNAN) ?  AS_DOUBLE(QNANBITPATT_DP64) : ret;
+        ret = BUILTIN_ISUNORDERED_F64(x, y) ? QNAN_F64 : ret;
 
-        ret = BUILTIN_CLASS_F64(x, CLASS_NINF|CLASS_PINF) |
-              BUILTIN_CLASS_F64(y, CLASS_NINF|CLASS_PINF) ?  0.0 : ret;
+        ret = (BUILTIN_ISINF_F64(x) | BUILTIN_ISINF_F64(y)) ? 0.0 : ret;
     }
 
     return ret;

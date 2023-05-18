@@ -7,33 +7,37 @@
 
 #include "mathF.h"
 
+CONSTATTR float2
+MATH_MANGLE2(fma)(float2 a, float2 b, float2 c)
+{
+    return BUILTIN_FMA_2F32(a, b, c);
+}
+
 CONSTATTR float
 MATH_MANGLE(fma)(float a, float b, float c)
 {
     return BUILTIN_FMA_F32(a, b, c);
 }
 
-#if defined ENABLE_ROUNDED
-#if defined HSAIL_BUILD
+CONSTATTR float
+MATH_MANGLE(fma_rte)(float a, float b, float c)
+{
+    return BUILTIN_FMA_F32(a, b, c);
+}
 
-#define GEN(NAME,ROUND)\
-CONSTATTR INLINEATTR float \
-MATH_MANGLE(NAME)(float a, float b, float c) \
+#pragma STDC FENV_ACCESS ON
+
+#define GEN(LN,RM) \
+CONSTATTR float \
+MATH_MANGLE(LN)(float a, float b, float c) \
 { \
-    float ret; \
-    if (DAZ_OPT()) { \
-        ret = BUILTIN_FULL_TERNARY(ffmaf, true, ROUND, a, b, c); \
-    } else { \
-        ret = BUILTIN_FULL_TERNARY(ffmaf, false, ROUND, a, b, c); \
-    } \
+    BUILTIN_SETROUND_F32(RM); \
+    float ret = BUILTIN_FMA_F32(a, b, c); \
+    BUILTIN_SETROUND_F32(ROUND_RTE); \
     return ret; \
 }
 
-GEN(fma_rte, ROUND_TO_NEAREST_EVEN)
-GEN(fma_rtp, ROUND_TO_POSINF)
-GEN(fma_rtn, ROUND_TO_NEGINF)
-GEN(fma_rtz, ROUND_TO_ZERO)
-
-#endif // HSAIL_BUILD
-#endif // ENABLE_ROUNDED
+GEN(fma_rtn, ROUND_RTN)
+GEN(fma_rtp, ROUND_RTP)
+GEN(fma_rtz, ROUND_RTZ)
 

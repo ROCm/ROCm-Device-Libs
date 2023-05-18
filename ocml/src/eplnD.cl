@@ -10,7 +10,7 @@
 #define DOUBLE_SPECIALIZATION
 #include "ep.h"
 
-INLINEATTR CONSTATTR double2
+CONSTATTR double2
 MATH_PRIVATE(epln)(double a)
 {
     double m = BUILTIN_FREXP_MANT_F64(a);
@@ -18,7 +18,7 @@ MATH_PRIVATE(epln)(double a)
     m = BUILTIN_FLDEXP_F64(m, b);
     int e = BUILTIN_FREXP_EXP_F64(a) - b;
 
-    double2 x = div(m - 1.0, add(m, 1.0));
+    double2 x = div(m - 1.0, fadd(1.0, m));
     double2 s = sqr(x);
     double t = s.hi;
     double p = MATH_MAD(t, MATH_MAD(t, MATH_MAD(t, MATH_MAD(t, 

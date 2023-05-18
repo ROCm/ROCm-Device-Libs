@@ -7,9 +7,9 @@
 
 #include "mathH.h"
 
-PUREATTR UGEN(acosh)
+CONSTATTR UGEN(acosh)
 
-PUREATTR INLINEATTR half
+CONSTATTR half
 MATH_MANGLE(acosh)(half hx)
 {
     half ret;
@@ -18,7 +18,7 @@ MATH_MANGLE(acosh)(half hx)
     ret =  (half)(BUILTIN_LOG2_F32(t) * 0x1.62e430p-1f);
 
     if (!FINITE_ONLY_OPT()) {
-        ret = hx < 1.0h ? AS_HALF((short)QNANBITPATT_HP16) : ret;
+        ret = hx < 1.0h ? QNAN_F16 : ret;
     }
 
     return ret;

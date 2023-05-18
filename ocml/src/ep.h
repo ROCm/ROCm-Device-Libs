@@ -1,5 +1,5 @@
 
-#define ATTR __attribute__((always_inline, const, overloadable))
+#define ATTR __attribute__((const, overloadable))
 
 #if defined FLOAT_SPECIALIZATION
 #define T float
@@ -9,10 +9,11 @@
 #define DIV(X,Y) MATH_FAST_DIV(X,Y)
 #define LDEXP BUILTIN_FLDEXP_F32
 #define SQRT MATH_FAST_SQRT
-#define ISINF(X) BUILTIN_CLASS_F32(X, CLASS_PINF|CLASS_NINF)
+#define ISINF(X) BUILTIN_ISINF_F32(X)
 #define USE_FMA HAVE_FAST_FMA32()
 #define HIGH(X) AS_FLOAT(AS_UINT(X) & 0xfffff000U)
-#define COPYSIGN BUILTIN_COPYSIGN_F64
+#define SIGNBIT(X) (AS_INT(X) < 0)
+#define SAMESIGN(X,Y) ((AS_INT(X)& 0x80000000) == (AS_INT(Y) & 0x80000000))
 #endif
 
 #if defined DOUBLE_SPECIALIZATION
@@ -23,10 +24,11 @@
 #define DIV(X,Y) MATH_FAST_DIV(X,Y)
 #define LDEXP BUILTIN_FLDEXP_F64
 #define SQRT MATH_FAST_SQRT
-#define ISINF(X) BUILTIN_CLASS_F64(X, CLASS_PINF|CLASS_NINF)
+#define ISINF(X) BUILTIN_ISINF_F64(X)
 #define USE_FMA true
 #define HIGH(X) AS_DOUBLE(AS_ULONG(X) & 0xfffffffff8000000UL)
-#define COPYSIGN BUILTIN_COPYSIGN_F32
+#define SIGNBIT(X) (AS_INT2(X).hi < 0)
+#define SAMESIGN(X,Y) ((AS_INT2(X).hi & 0x80000000) == (AS_INT2(Y).hi & 0x80000000))
 #endif
 
 #if defined HALF_SPECIALIZATION
@@ -37,28 +39,29 @@
 #define DIV(X,Y) MATH_FAST_DIV(X,Y)
 #define LDEXP BUILTIN_FLDEXP_F16
 #define SQRT MATH_FAST_SQRT
-#define ISINF(X) BUILTIN_CLASS_F16(X, CLASS_PINF|CLASS_NINF)
+#define ISINF(X) BUILTIN_ISINF_F16(X)
 #define USE_FMA true
 #define HIGH(X) AS_HALF(AS_USHORT(X) & (ushort)0xffc0U)
-#define COPYSIGN BUILTIN_COPYSIGN_F16
+#define SIGNBIT(X) (AS_SHORT(X) < (short)0)
+#define SAMESIGN(X,Y) ((AS_USHORT(X) & (ushort)0x8000) == (AS_USHORT(Y) & (ushort)0x8000))
 #endif
 
 static ATTR T2
-con(T a, T b)
+absv(T2 a)
 {
-    return (T2)(b, a);
-}
-
-static ATTR T2
-csgn(T2 a, T b)
-{
-    return con(COPYSIGN(a.hi, b), COPYSIGN(a.lo, b));
+    return SIGNBIT(a.hi) ? -a : a;
 }
 
 static ATTR T2
 csgn(T2 a, T2 b)
 {
-    return con(COPYSIGN(a.hi, b.hi), COPYSIGN(a.lo, b.lo));
+    return SAMESIGN(a.hi, b.hi) ? a : -a;
+}
+
+static ATTR T2
+con(T a, T b)
+{
+    return (T2)(b, a);
 }
 
 static ATTR T2
@@ -296,7 +299,7 @@ mul(T2 a, T2 b)
 {
     T2 p = mul(a.hi, b.hi);
     if (USE_FMA) {
-        p.lo += FMA(a.hi, b.lo, a.lo*b.hi);
+        p.lo = FMA(a.lo, b.hi, FMA(a.hi, b.lo, p.lo));
     } else {
         p.lo += a.hi*b.lo + a.lo*b.hi;
     }
@@ -417,11 +420,11 @@ sqr(T2 a)
 {
     T2 p = sqr(a.hi);
     if (USE_FMA) {
-        p.lo = FMA(a.lo, a.lo, FMA(a.hi, (T)2*a.lo, p.lo));
+        p.lo = FMA(a.hi, (T)2 * a.lo, p.lo);
     } else {
-        p.lo = p.lo + a.hi * a.lo * (T)2 + a.lo * a.lo;
+        p.lo = p.lo + (T)2 * a.lo * a.hi;
     }
-    return fadd(p.hi, p.lo);
+    return nrm(p);
 }
 
 static ATTR T2
@@ -430,7 +433,7 @@ root2(T a)
     T shi = SQRT(a);
     T2 e = fsub(a, sqr(shi));
     T slo = DIV(e.hi, (T)2 * shi);
-    return fadd(shi, slo);
+    return fadd(shi, a == (T)0 ? (T)0 : slo);
 }
 
 static ATTR T2
@@ -439,7 +442,7 @@ root2(T2 a)
     T shi = SQRT(a.hi);
     T2 e = fsub(a, sqr(shi));
     T slo = DIV(e.hi, (T)2 * shi);
-    return fadd(shi, slo);
+    return fadd(shi, a.hi == (T)0 ? (T)0 : slo);
 }
 
 #undef ATTR
@@ -454,4 +457,6 @@ root2(T2 a)
 #undef USE_FMA
 #undef HIGH
 #undef COPYSIGN
+#undef SIGNBIT
+#undef SAMESIGN
 

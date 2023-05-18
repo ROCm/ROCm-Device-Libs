@@ -77,22 +77,13 @@ int main(int argc, char **argv) {
   for (Module::iterator i = M->begin(), e = M->end(); i != e; ++i) {
     if (!i->isDeclaration() && i->getLinkage() == GlobalValue::ExternalLinkage) {
         i->setLinkage(GlobalValue::LinkOnceODRLinkage);
-        i->setVisibility(GlobalValue::ProtectedVisibility);
     }
-    if (!i->isDeclaration() && i->getLinkage() == GlobalValue::WeakAnyLinkage) {
-        i->setVisibility(GlobalValue::ProtectedVisibility);
-    }
-
   }
 
   for (Module::global_iterator i = M->global_begin(), e = M->global_end();
        i != e; ++i) {
     if (!i->isDeclaration() && i->getLinkage() == GlobalValue::ExternalLinkage) {
         i->setLinkage(GlobalValue::LinkOnceODRLinkage);
-        i->setVisibility(GlobalValue::ProtectedVisibility);
-    }
-    if (!i->isDeclaration() && i->getLinkage() == GlobalValue::WeakAnyLinkage) {
-        i->setVisibility(GlobalValue::ProtectedVisibility);
     }
   }
 
@@ -100,10 +91,6 @@ int main(int argc, char **argv) {
        i != e; ++i) {
     if (!i->isDeclaration() && i->getLinkage() == GlobalValue::ExternalLinkage) {
         i->setLinkage(GlobalValue::LinkOnceODRLinkage);
-        i->setVisibility(GlobalValue::ProtectedVisibility);
-    }
-    if (!i->isDeclaration() && i->getLinkage() == GlobalValue::WeakAnyLinkage) {
-        i->setVisibility(GlobalValue::ProtectedVisibility);
     }
   }
 
@@ -114,14 +101,14 @@ int main(int argc, char **argv) {
   }
 
   std::error_code EC;
-  std::unique_ptr<tool_output_file> Out
-  (new tool_output_file(OutputFilename, EC, sys::fs::F_None));
+  std::unique_ptr<ToolOutputFile> Out
+  (new ToolOutputFile(OutputFilename, EC, sys::fs::OF_None));
   if (EC) {
     errs() << EC.message() << '\n';
     exit(1);
   }
 
-  WriteBitcodeToFile(M, Out->os());
+  WriteBitcodeToFile(*M, Out->os());
 
   // Declare success.
   Out->keep();

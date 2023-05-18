@@ -12,7 +12,7 @@
 
 extern CONSTATTR double2 MATH_PRIVATE(epexpep)(double2 x);
 
-CONSTATTR INLINEATTR double
+CONSTATTR double
 MATH_MANGLE(sinh)(double x)
 {
     double y = BUILTIN_ABS_F64(x);
@@ -21,7 +21,7 @@ MATH_MANGLE(sinh)(double x)
     double z = s.hi;
 
     if (!FINITE_ONLY_OPT()) {
-        z = y >= 0x1.633ce8fb9f87ep+9 ? AS_DOUBLE(PINFBITPATT_DP64) : z;
+        z = y >= 0x1.633ce8fb9f87ep+9 ? PINF_F64 : z;
     }
 
     z = y < 0x1.0p-27 ? y : z;

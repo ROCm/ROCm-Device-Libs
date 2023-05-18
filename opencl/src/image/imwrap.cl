@@ -235,10 +235,10 @@ static __constant int channel_data_type_map[32] = {
 #define _2Dad_gpars float2 dx, float2 dy
 #define _3D_gpars float4 dx, float4 dy
 
-#define RATTR __attribute__((overloadable, always_inline, pure))
-#define WATTR __attribute__((overloadable, always_inline))
-#define GATTR __attribute__((overloadable, always_inline, const))
-#define FATTR __attribute__((always_inline, pure))
+#define RATTR __attribute__((overloadable, pure))
+#define WATTR __attribute__((overloadable))
+#define GATTR __attribute__((overloadable, const))
+#define FATTR __attribute__((pure))
 
 #define SGEN(IT,PT,CT) \
 RATTR IT##_##PT##_pty \
@@ -626,7 +626,7 @@ FATTR int4
 amd_fetch4_if(read_only image2d_t im, float2 coord, int comp)
 {
     sampler_t s = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_NONE;
-    if (__oclc_ISA_version() < 900) {
+    if (__oclc_ISA_version < 9000) {
         coord -= 0.5f;
     }
     switch (comp) {
@@ -640,7 +640,7 @@ amd_fetch4_if(read_only image2d_t im, float2 coord, int comp)
 FATTR int4
 amd_fetch4_isf(read_only image2d_t im, sampler_t s, float2 coord, int comp)
 {
-    if (__oclc_ISA_version() < 900) {
+    if (__oclc_ISA_version < 9000) {
         coord -= 0.5f;
     }
     switch (comp) {
@@ -656,7 +656,7 @@ amd_fetch4_ii(read_only image2d_t im, int2 coord, int comp)
 {
     sampler_t s = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_NONE;
     float2 fcoord = convert_float2(coord);
-    if (__oclc_ISA_version() < 900) {
+    if (__oclc_ISA_version < 9000) {
         fcoord -= 0.5f;
     }
     switch (comp) {
@@ -671,7 +671,7 @@ FATTR int4
 amd_fetch4_isi(read_only image2d_t im, sampler_t s, int2 coord, int comp)
 {
     float2 fcoord = convert_float2(coord);
-    if (__oclc_ISA_version() < 900) {
+    if (__oclc_ISA_version < 9000) {
         fcoord -= 0.5f;
     }
     switch (comp) {

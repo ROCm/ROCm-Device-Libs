@@ -5,7 +5,10 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#include "wg.h"
+#include "wgscratch.h"
+
+#pragma OPENCL EXTENSION cl_khr_fp16 : enable
+
 
 #define GEN_BROADCAST(T) \
 __attribute__((overloadable, always_inline)) T \

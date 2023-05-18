@@ -7,13 +7,13 @@
 
 #pragma OPENCL EXTENSION cl_khr_fp16 : enable
 
-#define ATTR __attribute__((always_inline, overloadable, const))
+#define ATTR __attribute__((overloadable, const))
 
 #define GENN(N,T) \
 ATTR T##N \
 sign(T##N x) \
 { \
-    return copysign(isnan(x) | (x == (T##N)0) ? (T##N)0 : (T##N)1, x); \
+    return copysign((isnan(x) | (x == (T##N)0)) ? (T##N)0 : (T##N)1, x); \
 }
 
 #define GEN(T) \

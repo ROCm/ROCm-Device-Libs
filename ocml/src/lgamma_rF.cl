@@ -87,8 +87,13 @@
  *
  */
 
-float
-MATH_MANGLE(lgamma_r)(float x, __private int *signp)
+struct ret_t {
+    float result;
+    int signp;
+};
+
+static struct ret_t
+MATH_MANGLE(lgamma_r_impl)(float x)
 {
     const float two52 =  4.50359962737049600000e+15f;
     const float pi  =  3.14159265358979311600e+00f;
@@ -158,16 +163,13 @@ MATH_MANGLE(lgamma_r)(float x, __private int *signp)
     const float z3  = -0x1.9a4d56p-2f;
     const float z4  =  0x1.151322p-2f;
 
-    uint ux = AS_UINT(x);
-    uint uax = ux & EXSIGNBIT_SP32;
-
-    float ax = AS_FLOAT(uax);
+    float ax = BUILTIN_ABS_F32(x);
     float ret;
 
     if (ax < 0x1.0p-6f) {
         ret = MATH_MAD(ax, MATH_MAD(ax, MATH_MAD(ax, MATH_MAD(ax, z4, z3), z2), z1),
                        -MATH_MANGLE(log)(ax));
-    } else if (ax < 2.0) {
+    } else if (ax < 2.0f) {
         int i;
         bool c;
         float y, t;
@@ -257,24 +259,40 @@ MATH_MANGLE(lgamma_r)(float x, __private int *signp)
 
     int s = 0;
     if (x >= 0.0f) {
-        ret = (x == 1.0f) | (x == 2.0f) ? 0.0f : ret;
+        ret = ((x == 1.0f) | (x == 2.0f)) ? 0.0f : ret;
         s = x == 0.0f ? 0 : 1;
-    } else if (uax < 0x4b000000) { // x > -0x1.0p+23
-        float t = MATH_MANGLE(sinpi)(x);
-        float negadj = MATH_MANGLE(log)(MATH_DIV(pi, BUILTIN_ABS_F32(t * x)));
-        ret = negadj - ret;
-        bool z = BUILTIN_FRACTION_F32(x) == 0.0f;
-        ret = z ? AS_FLOAT(PINFBITPATT_SP32) : ret;
-        s = t < 0.0f ? -1 : 1;
-        s = z ? 0 : s;
+    } else if (ax < 0x1.0p+23f) { // x > -0x1.0p+23
+        if (ax > 0x1.0p-21f) {
+            float t = MATH_MANGLE(sinpi)(x);
+            float negadj = MATH_MANGLE(log)(MATH_DIV(pi, BUILTIN_ABS_F32(t * x)));
+            ret = negadj - ret;
+            bool z = BUILTIN_FRACTION_F32(x) == 0.0f;
+            ret = z ? PINF_F32 : ret;
+            s = t < 0.0f ? -1 : 1;
+            s = z ? 0 : s;
+        } else {
+            s = -1;
+        }
     }
 
     if (!FINITE_ONLY_OPT()) {
-        ret = (uax == 0) | (uax == PINFBITPATT_SP32) | ((x < 0.0f) & (uax >= 0x4b000000)) ? AS_FLOAT(PINFBITPATT_SP32) : ret;
-        ret = uax > PINFBITPATT_SP32 ? x : ret;
+        ret = ((ax != 0.0f) && !BUILTIN_ISINF_F32(ax) &&
+              ((x >= 0.0f) || (ax < 0x1.0p+23f))) ? ret : PINF_F32;
+
+        ret = BUILTIN_ISNAN_F32(x) ? x : ret;
     }
 
-    *signp = s;
-    return ret;
+    struct ret_t result;
+    result.result = ret;
+    result.signp = s;
+
+    return result;
 }
 
+float
+MATH_MANGLE(lgamma_r)(float x, __private int *signp)
+{
+    struct ret_t ret = MATH_MANGLE(lgamma_r_impl)(x);
+    *signp = ret.signp;
+    return ret.result;
+}

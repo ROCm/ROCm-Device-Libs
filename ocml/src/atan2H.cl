@@ -12,7 +12,7 @@ extern CONSTATTR half MATH_PRIVATE(atanred)(half);
 
 CONSTATTR BGEN(atan2)
 
-CONSTATTR half
+REQUIRES_16BIT_INSTS CONSTATTR half
 MATH_MANGLE(atan2)(half y, half x)
 {
     const half pi = 0x1.921fb6p+1h;
@@ -40,14 +40,10 @@ MATH_MANGLE(atan2)(half y, half x)
     if (!FINITE_ONLY_OPT()) {
         // x and y are +- Inf
         t = x < 0.0h ? threepiby4 : piby4;
-        a = BUILTIN_CLASS_F16(x, CLASS_PINF|CLASS_NINF) &
-            BUILTIN_CLASS_F16(y, CLASS_PINF|CLASS_NINF) ?
-            t : a;
+        a = (BUILTIN_ISINF_F16(x) & BUILTIN_ISINF_F16(y)) ? t : a;
 
         // x or y is NaN
-        a = BUILTIN_CLASS_F16(x, CLASS_SNAN|CLASS_QNAN) |
-            BUILTIN_CLASS_F16(y, CLASS_SNAN|CLASS_QNAN) ?
-            AS_HALF((short)QNANBITPATT_HP16) : a;
+        a = BUILTIN_ISUNORDERED_F16(x, y) ? QNAN_F16 : a;
     }
 
     return BUILTIN_COPYSIGN_F16(a, y);

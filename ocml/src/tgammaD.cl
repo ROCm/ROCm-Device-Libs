@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-double
+CONSTATTR double
 MATH_MANGLE(tgamma)(double x)
 {
     const double pi = 3.14159265358979323846;
@@ -24,7 +24,7 @@ MATH_MANGLE(tgamma)(double x)
         double dterm = 1.0;
         double z = ax;
         if (ax < 4.5) {
-            if (ax < 1.0) { 
+            if (ax < 1.0) {
                 dterm = z;
                 z += 1.0;
             } else if (ax < 3.0) {
@@ -45,9 +45,9 @@ MATH_MANGLE(tgamma)(double x)
         if (x < 0.0) {
             negadj = -x * MATH_MANGLE(sinpi)(x);
         }
-    
+
         double etonegz = MATH_MANGLE(exp)(-z);
-            
+
         if (z < 4.5) {
             const double rn0 =     297.312130630940277;
             const double rn1 =   16926.1409177878806;
@@ -98,7 +98,7 @@ MATH_MANGLE(tgamma)(double x)
                 ret = etonegz * zpow * MATH_DIV(num,den);
             } else {
                 ret = MATH_DIV(den*pi, negadj*etonegz*zpow*num);
-                ret = BUILTIN_FRACTION_F64(x) == 0.0 ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
+                ret = BUILTIN_FRACTION_F64(x) == 0.0 ? QNAN_F64 : ret;
             }
         } else {
             const double c0  =  2.5066282746310007;
@@ -132,7 +132,7 @@ MATH_MANGLE(tgamma)(double x)
             double zpow = MATH_MANGLE(powr)(z, MATH_MAD(0.5, z, -0.25));
             if (x >= 0.0) {
                 ret = MATH_DIV(etonegz*zpow*zpow*poly, dterm);
-                ret = x > 0x1.573fae561f647p+7 ? AS_DOUBLE(PINFBITPATT_DP64) : ret;
+                ret = x > 0x1.573fae561f647p+7 ? PINF_F64 : ret;
             } else if (x < 0.0) {
                 if (x >= -170.5) {
                     ret = MATH_DIV(pi*dterm, etonegz*zpow*zpow*poly*negadj);
@@ -141,7 +141,7 @@ MATH_MANGLE(tgamma)(double x)
                 } else {
                     ret = BUILTIN_COPYSIGN_F64(0.0, negadj);
                 }
-                ret = BUILTIN_FRACTION_F64(x) == 0.0 ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
+                ret = BUILTIN_FRACTION_F64(x) == 0.0 ? QNAN_F64 : ret;
             } else {
                 ret = x;
             }

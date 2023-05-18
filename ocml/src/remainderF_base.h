@@ -18,7 +18,7 @@
         CLO = MATH_MAD(__ta, __tb, MATH_MAD(__ta, __hb, MATH_MAD(__ha, __tb, MATH_MAD(__ha, __hb, -CHI)))); \
     } while (0)
 
-CONSTATTR static inline float
+CONSTATTR static float
 fnma(float a, float b, float c)
 {
     float d;
@@ -85,7 +85,7 @@ MATH_MANGLE(remainder)(float x, float y)
             iq -= clt;
             qacc = (qacc << bits) | iq;
 #endif
-            ax = BUILTIN_FLDEXP_F32(ax, bits); 
+            ax = BUILTIN_FLDEXP_F32(ax, bits);
             nb -= bits;
         }
 
@@ -147,16 +147,15 @@ MATH_MANGLE(remainder)(float x, float y)
     }
 
     if (!FINITE_ONLY_OPT()) {
-        ret = y == 0.0f ? AS_FLOAT(QNANBITPATT_SP32) : ret;
+        ret = y == 0.0f ? QNAN_F32 : ret;
 #if defined(COMPILING_REMQUO)
         q7 = y == 0.0f ? 0 : q7;
 #endif
 
-        bool c = BUILTIN_CLASS_F32(y, CLASS_QNAN|CLASS_SNAN) |
-                 BUILTIN_CLASS_F32(x, CLASS_NINF|CLASS_PINF|CLASS_SNAN|CLASS_QNAN);
-        ret = c ? AS_FLOAT(QNANBITPATT_SP32) : ret;
+        bool c = !BUILTIN_ISNAN_F32(y) && BUILTIN_ISFINITE_F32(x);
+        ret = c ? ret : QNAN_F32;
 #if defined(COMPILING_REMQUO)
-        q7 = c ? 0 : q7;
+        q7 = c ? q7 : 0;
 #endif
     }
 

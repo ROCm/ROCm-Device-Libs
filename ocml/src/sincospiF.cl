@@ -8,29 +8,26 @@
 #include "mathF.h"
 #include "trigpiredF.h"
 
-INLINEATTR float
+float
 MATH_MANGLE(sincospi)(float x, __private float *cp)
 {
-    int ix = AS_INT(x);
-    int ax = ix & 0x7fffffff;
+    float ax = BUILTIN_ABS_F32(x);
 
-    float t;
-    int i = MATH_PRIVATE(trigpired)(AS_FLOAT(ax), &t);
+    struct redret r = MATH_PRIVATE(trigpired)(ax);
+    struct scret sc = MATH_PRIVATE(sincospired)(r.hi);
 
-    float cc;
-    float ss = MATH_PRIVATE(sincospired)(t, &cc);
-
-    int flip = i > 1 ? 0x80000000 : 0;
-    bool odd = (i & 1) != 0;
-    float s = odd ? cc : ss;
-    s = AS_FLOAT(AS_INT(s) ^ flip ^ (ax ^ ix));
-    ss = -ss;
-    float c = odd ? ss : cc;
+    int flip = r.i > 1 ? 0x80000000 : 0;
+    bool odd = (r.i & 1) != 0;
+    float s = odd ? sc.c : sc.s;
+    s = AS_FLOAT(AS_INT(s) ^ flip ^ (AS_INT(ax) ^ AS_INT(x)));
+    sc.s = -sc.s;
+    float c = odd ? sc.s : sc.c;
     c = AS_FLOAT(AS_INT(c) ^ flip);
 
     if (!FINITE_ONLY_OPT()) {
-        c = ax >= PINFBITPATT_SP32 ? AS_FLOAT(QNANBITPATT_SP32) : c;
-        s = ax >= PINFBITPATT_SP32 ? AS_FLOAT(QNANBITPATT_SP32) : s;
+        bool finite = BUILTIN_ISFINITE_F32(ax);
+        c = finite ? c : QNAN_F32;
+        s = finite ? s : QNAN_F32;
     }
 
     *cp = c;

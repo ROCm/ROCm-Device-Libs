@@ -7,7 +7,7 @@
 
 #include "mathF.h"
 
-CONSTATTR INLINEATTR float
+CONSTATTR float
 MATH_MANGLE(len3)(float x, float y, float z)
 {
     float a = BUILTIN_ABS_F32(x);
@@ -31,9 +31,9 @@ MATH_MANGLE(len3)(float x, float y, float z)
     float ret = BUILTIN_FLDEXP_F32(MATH_FAST_SQRT(MATH_MAD(a, a, MATH_MAD(b, b, c*c))), e);
 
     if (!FINITE_ONLY_OPT()) {
-        ret = (BUILTIN_CLASS_F32(x, CLASS_PINF|CLASS_NINF) |
-               BUILTIN_CLASS_F32(y, CLASS_PINF|CLASS_NINF) |
-               BUILTIN_CLASS_F32(z, CLASS_PINF|CLASS_NINF)) ? AS_FLOAT(PINFBITPATT_SP32) : ret;
+        ret = (BUILTIN_ISINF_F32(x) |
+               BUILTIN_ISINF_F32(y) |
+               BUILTIN_ISINF_F32(z)) ? PINF_F32 : ret;
     }
 
     return ret;

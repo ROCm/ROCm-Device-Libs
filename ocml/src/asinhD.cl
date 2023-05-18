@@ -10,10 +10,10 @@
 #define DOUBLE_SPECIALIZATION
 #include "ep.h"
 
-extern CONSTATTR double MATH_PRIVATE(lnep)(double2 x);
+extern CONSTATTR double MATH_PRIVATE(lnep)(double2 a, int ea);
 
 
-CONSTATTR INLINEATTR double
+CONSTATTR double
 MATH_MANGLE(asinh)(double x)
 {
     double y = BUILTIN_ABS_F64(x);
@@ -21,10 +21,11 @@ MATH_MANGLE(asinh)(double x)
     double s = b ? 0x1.0p-512 : 1.0;
     double sy = y * s;
     double2 a = add(sy, root2(add(sqr(sy), s*s)));
-    double z = MATH_PRIVATE(lnep)(a) + (b ? 0x1.62e42fefa39efp+8 : 0.0);
+    double z = MATH_PRIVATE(lnep)(a, b ? 512 : 0);
+    z = y < 0x1.0p-27 ? y : z;
 
     if (!FINITE_ONLY_OPT()) {
-        z = BUILTIN_CLASS_F64(y, CLASS_PINF) ? y : z;
+        z = y == PINF_F64 ? y : z;
     }
 
     return BUILTIN_COPYSIGN_F64(z, x);

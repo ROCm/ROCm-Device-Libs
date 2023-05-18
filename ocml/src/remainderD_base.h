@@ -60,7 +60,7 @@ MATH_MANGLE(remainder)(double x, double y)
             iq -= clt;
             qacc = (qacc << bits) | iq;
 #endif
-            ax = BUILTIN_FLDEXP_F64(ax, bits); 
+            ax = BUILTIN_FLDEXP_F64(ax, bits);
             nb -= bits;
         }
 
@@ -121,16 +121,15 @@ MATH_MANGLE(remainder)(double x, double y)
     }
 
     if (!FINITE_ONLY_OPT()) {
-        ret = y == 0.0 ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
+        ret = y == 0.0 ? QNAN_F64 : ret;
 #if defined(COMPILING_REMQUO)
         q7 = y == 0.0 ? 0 : q7;
 #endif
 
-        bool c = BUILTIN_CLASS_F64(y, CLASS_QNAN|CLASS_SNAN) |
-                 BUILTIN_CLASS_F64(x, CLASS_NINF|CLASS_PINF|CLASS_QNAN|CLASS_SNAN);
-        ret = c ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
+        bool c = !BUILTIN_ISNAN_F64(y) && BUILTIN_ISFINITE_F64(x);
+        ret = c ? ret : QNAN_F64;
 #if defined(COMPILING_REMQUO)
-        q7 = c ? 0 : q7;
+        q7 = c ? q7 : 0;
 #endif
     }
 

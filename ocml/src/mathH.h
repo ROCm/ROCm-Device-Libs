@@ -53,16 +53,18 @@
 #define MANTLENGTH_HP16   11
 #define BASEDIGITS_HP16   5
 
+#define QNAN_F16 __builtin_nanf16("")
+#define PINF_F16 __builtin_inff16()
+#define NINF_F16 (-__builtin_inff16())
+
 #define UGEN(N) \
-INLINEATTR half2 \
-MATH_MANGLE2(N)(half2 x) \
+half2 MATH_MANGLE2(N)(half2 x) \
 { \
     return (half2)(MATH_MANGLE(N)(x.lo), MATH_MANGLE(N)(x.hi)); \
 }
 
 #define BGEN(N) \
-INLINEATTR half2 \
-MATH_MANGLE2(N)(half2 x, half2 y) \
+half2 MATH_MANGLE2(N)(half2 x, half2 y) \
 { \
     return (half2)(MATH_MANGLE(N)(x.lo, y.lo), MATH_MANGLE(N)(x.hi, y.hi)); \
 }

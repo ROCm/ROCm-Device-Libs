@@ -9,27 +9,19 @@ file(GLOB sources
   ${CMAKE_CURRENT_SOURCE_DIR}/src/*.ll
 )
 
-if (GENERIC_IS_ZERO)
-  # HCC: Move .ll files to build directory and
-  # adopt generic addr space as addr space 0
-  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/transformed_src)
-  set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_CURRENT_BINARY_DIR}/transformed_src)
-  foreach(f ${sources} )
-    file(COPY ${f}
-         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/transformed_src)
-  endforeach(f)
+set(irif_lib_file ${CMAKE_CURRENT_BINARY_DIR}/irif.bc)
 
-  # Perform transformation
-  execute_process(COMMAND "${CMAKE_SOURCE_DIR}/utils/change-addr-space.sh" "${AMDGPU_TARGET_TRIPLE}" "${CMAKE_SOURCE_DIR}/utils"
-                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(OUTPUT ${irif_lib_file}
+  COMMAND $<TARGET_FILE:llvm-link> ${sources} -o ${irif_lib_file}
+  DEPENDS ${sources})
 
-  file(GLOB srcs
-    ${CMAKE_CURRENT_BINARY_DIR}/transformed_src/*.ll
-  )
-else (GENERIC_IS_ZERO)
-  file(GLOB srcs
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.ll
-  )
-endif (GENERIC_IS_ZERO)
+add_custom_target(irif DEPENDS ${irif_lib_file}
+                       SOURCES ${sources})
+set_target_properties(irif PROPERTIES
+  OUTPUT_NAME ${irif_lib_file}
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+  ARCHIVE_OUTPUT_NAME "irif")
 
-opencl_bc_lib(irif ${srcs})
+if(NOT ROCM_DEVICELIB_STANDALONE_BUILD)
+  add_dependencies(irif llvm-link)
+endif()

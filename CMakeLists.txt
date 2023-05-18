@@ -5,93 +5,133 @@
 ## License. See LICENSE.TXT for details.
 ##===--------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.13.4)
+
+project(ROCm-Device-Libs VERSION "1.0.0")
+cmake_policy(SET CMP0011 NEW)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-project(ROCm-Device-Libs)
+  include(CMakePackageConfigHelpers)
+  include(GNUInstallDirs)
 
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE INTERNAL "Prefix prepended to install directories")
+  find_package(ROCM)
+  if (ROCM_FOUND)
+    include(ROCMSetupVersion)
+    rocm_setup_version(VERSION "${PROJECT_VERSION}")
+  endif()
 endif()
 
-find_package(LLVM REQUIRED CONFIG PATHS ${LLVM_DIR} NO_DEFAULT_PATH)
-list(APPEND CMAKE_MODULE_PATH ${LLVM_CMAKE_DIR})
-include(AddLLVM)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
- set(ROCM_DEVICELIB_STANDALONE_BUILD ON)
+# Optionally, build Device Libs with ccache.
+set(ROCM_CCACHE_BUILD OFF CACHE BOOL "Set to ON for a ccache enabled build")
+if (ROCM_CCACHE_BUILD)
+  find_program(CCACHE_PROGRAM ccache)
+  if (CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+  else()
+    message(WARNING "Unable to find ccache. Falling back to real compiler")
+  endif() # if (CCACHE_PROGRAM)
+endif() # if (ROCM_CCACHE_BUILD)
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  find_package(LLVM REQUIRED)
+  find_package(Clang HINTS ${LLVM_DIR}/../clang)
+
+  list(APPEND CMAKE_MODULE_PATH ${LLVM_DIR})
+
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist CACHE INTERNAL "Prefix prepended to install directories")
+  endif()
+
+  set(ROCM_DEVICELIB_STANDALONE_BUILD ON)
 endif(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 
+
 if (NOT DEFINED AMDGPU_TARGET_TRIPLE)
-  set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa")
-endif (NOT DEFINED AMDGPU_TARGET_TRIPLE)
-
-# Introduce GENERIC_IS_ZERO CMake option
-option(GENERIC_IS_ZERO "Teach LLVM/Clang that generic address space IS address space 0 for AMDGPU target" OFF)
-if (GENERIC_IS_ZERO)
-  # set the target triple to amdgizcl to show to the compiler
-  # that we are using a newer address space mapping
-  set(AMDGPU_TARGET_TRIPLE "amdgcn--amdhsa-amdgizcl")
-  # HCC will execute utils/change-addr-space.sh
-  # and apply utils/add_amdgiz.sed on all .ll files in subdirectory hc/, irif/, opencl/
-  if (CUDA_TRIPLE)
-    set(AMDGPU_TARGET_TRIPLE "amdgcn--cuda")
-  endif (CUDA_TRIPLE)
-
-endif (GENERIC_IS_ZERO)
-
-option(BUILD_HC_LIB "Build Heterogeneous Compute built-in library (hc)" ON)
-option(ROCM_DEVICELIB_INCLUDE_TESTS "Build tests" ON)
+  set(AMDGPU_TARGET_TRIPLE "amdgcn-amd-amdhsa")
+endif()
 
 if (NOT PREPARE_BUILTINS)
   add_subdirectory(utils/prepare-builtins)
   set (PREPARE_BUILTINS $<TARGET_FILE:prepare-builtins>)
 endif()
 
-include(OCL.cmake)
+include(OCL)
 
 set(AMDGCN_LIB_LIST)
+set(AMDGCN_DEP_LIST)
 add_subdirectory(irif)
 add_subdirectory(oclc)
 add_subdirectory(ocml)
 add_subdirectory(ockl)
 add_subdirectory(opencl)
-if (CUDA_TRIPLE)
-  add_subdirectory(cuda2gcn)
-endif (CUDA_TRIPLE)
+add_subdirectory(hip)
+add_subdirectory(asanrtl)
 
-if(BUILD_HC_LIB)
-  add_subdirectory(hc)
-endif(BUILD_HC_LIB)
+enable_testing()
+add_subdirectory(test/compile)
 
-if(AMDGCN_TARGETS_LIB_LIST)
-  set(${AMDGCN_TARGETS_LIB_LIST} ${AMDGCN_LIB_LIST} PARENT_SCOPE)
-endif(AMDGCN_TARGETS_LIB_LIST)
+include(Packages)
 
-if(ROCM_DEVICELIB_INCLUDE_TESTS)
-  if (NOT AMDHSACOD)
-    message(WARNING "amdhsacod is not found, testing disabled")
-    message(WARNING "Specify amdhsacod executable with -DAMDHSACOD=<...>")
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  ## CPack standard variables
+  set ( CPACK_PACKAGE_NAME "rocm-device-libs" )
+  set ( CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" )
+  set ( CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}" )
+  set ( CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}" )
+  set ( CPACK_PACKAGE_VERSION "${PROJECT_VERSION}" )
+  set ( CPACK_PACKAGE_CONTACT "Advanced Micro Devices Inc." )
+  set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Radeon Open Compute - device libraries" )
+  set ( CPACK_PACKAGE_DESCRIPTION "This package includes LLVM bitcode libraries." )
+  set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.TXT" )
+  set ( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/RadeonOpenCompute/ROCm-Device-Libs" )
+
+  # Install License file
+  install ( FILES "${CPACK_RESOURCE_FILE_LICENSE}"
+          DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+  set ( CPACK_GENERATOR "DEB;RPM" CACHE STRING "Default packaging generators." )
+
+  ## ROCM version updates as per naming convention
+  set ( ROCM_VERSION_FOR_PACKAGE "99999" )
+  if( DEFINED ENV{ROCM_LIBPATCH_VERSION} )
+    set ( ROCM_VERSION_FOR_PACKAGE $ENV{ROCM_LIBPATCH_VERSION} )
   endif()
-  enable_testing()
-  add_subdirectory(test/opencl)
-  add_subdirectory(test/opencl_conformance)
-endif(ROCM_DEVICELIB_INCLUDE_TESTS)
+  ## Debian package values
+  set ( CPACK_DEBIAN_PACKAGE_MAINTAINER "ROCm Compiler Support <rocm.compiler.support@amd.com>" )
 
-## CPack standard variables
-set ( CPACK_PACKAGE_NAME "rocm-device-libs" )
-set ( CPACK_PACKAGE_VERSION_MAJOR "0" )
-set ( CPACK_PACKAGE_VERSION_MINOR "0" )
-set ( CPACK_PACKAGE_VERSION_PATCH "1" )
-set ( CPACK_PACKAGE_CONTACT "" )
-set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Radeon Open Compute - device libraries" )
-set ( CPACK_PACKAGE_DESCRIPTION "This package includes LLVM bitcode libraries." )
-set ( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/RadeonOpenCompute/ROCm-Device-Libs" )
+  set ( CPACK_DEBIAN_PACKAGE_RELEASE "local" )
+  if( DEFINED ENV{CPACK_DEBIAN_PACKAGE_RELEASE} )
+    set ( CPACK_DEBIAN_PACKAGE_RELEASE $ENV{CPACK_DEBIAN_PACKAGE_RELEASE} )
+  endif()
+  ## RPM package variables
+  set ( CPACK_RPM_PACKAGE_RELEASE "local" )
+  if( DEFINED ENV{CPACK_RPM_PACKAGE_RELEASE} )
+    set ( CPACK_RPM_PACKAGE_RELEASE $ENV{CPACK_RPM_PACKAGE_RELEASE} )
+  endif()
+  ## get distro for RPM package using dist
+  message("device-libs CPACK_RPM_PACKAGE_RELEASE now is ${CPACK_RPM_PACKAGE_RELEASE}")
+  set( CPACK_RPM_PACKAGE_LICENSE "NCSA" )
 
-set ( CPACK_GENERATOR DEB RPM )
+  execute_process( COMMAND rpm --eval %{?dist}
+                 RESULT_VARIABLE _result_var
+                 OUTPUT_VARIABLE _output_var
+                 OUTPUT_STRIP_TRAILING_WHITESPACE )
+  if( _result_var EQUAL "0" AND NOT _output_var STREQUAL "" )
+    string (APPEND CPACK_RPM_PACKAGE_RELEASE ${_output_var})
+  endif()
+  # set package name as per standard
+  set ( CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}.${ROCM_VERSION_FOR_PACKAGE}" )
 
-## Debian package values
-set ( CPACK_DEBIAN_PACKAGE_MAINTAINER "AMD" )
-set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt/rocm" )
-set ( CPACK_DEBIAN_PACKAGE_DEPENDS "" )
-
-include ( CPack )
+  set ( CPACK_RPM_FILE_NAME "RPM-DEFAULT" )
+  set ( CPACK_RPM_PACKAGE_REQUIRES "rocm-core" )
+  set ( CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT" )
+  set ( CPACK_DEBIAN_PACKAGE_DEPENDS "rocm-core" )
+  # Remove dependency on rocm-core if -DROCM_DEP_ROCMCORE=ON not given to cmake
+  if(NOT ROCM_DEP_ROCMCORE)
+      string(REGEX REPLACE ",? ?rocm-core" "" CPACK_RPM_PACKAGE_REQUIRES ${CPACK_RPM_PACKAGE_REQUIRES})
+      string(REGEX REPLACE ",? ?rocm-core" "" CPACK_DEBIAN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS})
+  endif()
+  include( CPack )
+endif()

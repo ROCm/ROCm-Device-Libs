@@ -7,9 +7,9 @@
 
 #include "mathH.h"
 
-PUREATTR UGEN(asinh)
+CONSTATTR UGEN(asinh)
 
-PUREATTR INLINEATTR half
+REQUIRES_16BIT_INSTS CONSTATTR half
 MATH_MANGLE(asinh)(half hx)
 {
     half ret;
@@ -18,7 +18,7 @@ MATH_MANGLE(asinh)(half hx)
     ret = BUILTIN_COPYSIGN_F16((half)(BUILTIN_LOG2_F32(t) * 0x1.62e430p-1f), hx);
 
     if (!FINITE_ONLY_OPT()) {
-        ret = BUILTIN_CLASS_F16(hx, CLASS_NINF|CLASS_PINF|CLASS_QNAN|CLASS_SNAN) ? hx : ret;
+        ret = BUILTIN_ISFINITE_F16(hx) ? ret : hx;
     }
 
     return ret;

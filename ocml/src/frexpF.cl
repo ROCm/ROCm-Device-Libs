@@ -7,13 +7,19 @@
 
 #include "mathF.h"
 
-INLINEATTR float
+float
 MATH_MANGLE(frexp)(float x, __private int *ep)
 {
     int e = BUILTIN_FREXP_EXP_F32(x);
     float r = BUILTIN_FREXP_MANT_F32(x);
-    bool c = BUILTIN_CLASS_F32(x, CLASS_PINF|CLASS_NINF|CLASS_SNAN|CLASS_QNAN);
-    *ep = c ? 0 : e;
-    return c ? x : r;
+
+    if (HAVE_BUGGY_FREXP_INSTRUCTIONS()) {
+        bool isfinite = BUILTIN_ISFINITE_F32(x);
+        *ep = isfinite ? e : 0;
+        return isfinite ? r : x;
+    }
+
+    *ep = e;
+    return r;
 }
 

@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-CONSTATTR INLINEATTR double
+CONSTATTR double
 MATH_MANGLE(hypot)(double x, double y)
 {
     double a = BUILTIN_ABS_F64(x);
@@ -17,14 +17,11 @@ MATH_MANGLE(hypot)(double x, double y)
     a = BUILTIN_FLDEXP_F64(a, -e);
     b = BUILTIN_FLDEXP_F64(b, -e);
     double ret = BUILTIN_FLDEXP_F64(MATH_FAST_SQRT(MATH_MAD(a, a, b*b)), e);
-    ret = t == 0.0 ? 0.0 : ret;
 
     if (!FINITE_ONLY_OPT()) {
-        ret = BUILTIN_CLASS_F64(x, CLASS_QNAN|CLASS_SNAN) |
-              BUILTIN_CLASS_F64(y, CLASS_QNAN|CLASS_SNAN) ?  AS_DOUBLE(QNANBITPATT_DP64) : ret;
+        ret = BUILTIN_ISUNORDERED_F64(x, y) ? QNAN_F64 : ret;
 
-        ret = BUILTIN_CLASS_F64(x, CLASS_NINF|CLASS_PINF) |
-              BUILTIN_CLASS_F64(y, CLASS_NINF|CLASS_PINF) ?  AS_DOUBLE(PINFBITPATT_DP64) : ret;
+        ret = (BUILTIN_ISINF_F64(x) | BUILTIN_ISINF_F64(y)) ? PINF_F64 : ret;
     }
 
     return ret;

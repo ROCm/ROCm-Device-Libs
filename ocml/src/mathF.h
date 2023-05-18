@@ -16,6 +16,7 @@
 
 // Mangling
 #define MATH_MANGLE(N) OCML_MANGLE_F32(N)
+#define MATH_MANGLE2(N) OCML_MANGLE_2F32(N)
 #define MATH_PRIVATE(N) MANGLE3(__ocmlpriv,N,f32)
 
 // Optimization Controls
@@ -51,3 +52,6 @@
 #define MANTLENGTH_SP32   24
 #define BASEDIGITS_SP32   7
 
+#define QNAN_F32 __builtin_nanf("")
+#define PINF_F32 __builtin_inff()
+#define NINF_F32 (-__builtin_inff())

@@ -9,24 +9,18 @@
 
 CONSTATTR BGEN(rhypot)
 
-CONSTATTR INLINEATTR half
+CONSTATTR half
 MATH_MANGLE(rhypot)(half x, half y)
 {
     float fx = (float)x;
     float fy = (float)y;
 
-    float d2;
-    if (HAVE_FAST_FMA32()) {
-        d2 = BUILTIN_FMA_F32(fx, fx, fy*fy);
-    } else {
-        d2 = fx*fx + fy*fy;
-    }
+    float d2 = BUILTIN_MAD_F32(fx, fx, fy*fy);
 
     half ret = (half)BUILTIN_RSQRT_F32(d2);
 
     if (!FINITE_ONLY_OPT()) {
-        ret = BUILTIN_CLASS_F16(x, CLASS_PINF|CLASS_NINF) |
-              BUILTIN_CLASS_F16(y, CLASS_PINF|CLASS_NINF) ?
+        ret = (BUILTIN_ISINF_F16(x) | BUILTIN_ISINF_F16(y)) ?
               0.0h : ret;
     }
 

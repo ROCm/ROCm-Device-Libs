@@ -8,20 +8,19 @@
 #include "mathD.h"
 #include "trigpiredD.h"
 
-INLINEATTR double
+double
 MATH_MANGLE(cospi)(double x)
 {
-    double t;
-    int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x), &t);
+    double ax = BUILTIN_ABS_F64(x);
+    struct redret r = MATH_PRIVATE(trigpired)(ax);
+    struct scret sc = MATH_PRIVATE(sincospired)(r.hi);
+    sc.s = -sc.s;
 
-    double cc;
-    double ss = -MATH_PRIVATE(sincospired)(t, &cc);
-
-    int2 c = AS_INT2((i & 1) == 0 ? cc : ss);
-    c.hi ^= i > 1 ? (int)0x80000000 : 0;
+    int2 c = AS_INT2((r.i & 1) == 0 ? sc.c : sc.s);
+    c.hi ^= r.i > 1 ? (int)0x80000000 : 0;
 
     if (!FINITE_ONLY_OPT()) {
-        c = BUILTIN_CLASS_F64(x, CLASS_SNAN|CLASS_QNAN|CLASS_NINF|CLASS_PINF) ? AS_INT2(QNANBITPATT_DP64) : c;
+        c = BUILTIN_ISFINITE_F64(ax) ? c : AS_INT2(QNANBITPATT_DP64);
     }
 
     return AS_DOUBLE(c);

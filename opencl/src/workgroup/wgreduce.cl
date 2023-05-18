@@ -5,14 +5,18 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#include "wg.h"
+#include "wgscratch.h"
+
+#pragma OPENCL EXTENSION cl_khr_fp16 : enable
+#pragma OPENCL EXTENSION cl_khr_int64_base_atomics : enable
+#pragma OPENCL EXTENSION cl_khr_int64_extended_atomics : enable
 
 #define reduce_add atomic_fetch_add_explicit
 #define reduce_min atomic_fetch_min_explicit
 #define reduce_max atomic_fetch_max_explicit
 
 #define AGEN(T,OP) \
-__attribute__((overloadable, always_inline)) T \
+__attribute__((overloadable)) T \
 work_group_reduce_##OP(T a) \
 { \
     uint n = get_num_sub_groups(); \
@@ -61,7 +65,7 @@ AGEN(ulong,min)
 #define add(X,Y) (X + Y)
 
 #define SGEN(T,OP,ID) \
-__attribute__((overloadable, always_inline)) T \
+__attribute__((overloadable)) T \
 work_group_reduce_##OP(T a) \
 { \
     uint n = get_num_sub_groups(); \

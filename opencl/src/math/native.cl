@@ -5,18 +5,9 @@
  * License. See LICENSE.TXT for details.
  *===------------------------------------------------------------------------*/
 
-#include "irif.h"
+#include "ocml.h"
 
-// Value of log2(10)
-#define M_LOG2_10_F 0x1.a934f0p+1f
-
-// Value of 1 / log2(10)
-#define M_RLOG2_10_F 0x1.344136p-2f
-
-// Value of 1 / M_LOG2E_F = 1 / log2(e)
-#define M_RLOG2_E_F 0x1.62e430p-1f
-
-#define ATTR __attribute__((always_inline, overloadable, const))
+#define ATTR __attribute__((overloadable, const))
 
 #if !defined USE_CLP
 #define LISTU2(F) F(x.s0), F(x.s1)
@@ -100,61 +91,61 @@ native_tan(float x)
 ATTR float
 native_cos(float x)
 {
-    return __llvm_cos_f32(x);
+    return __ocml_native_cos_f32(x);
 }
 
 ATTR float
 native_exp2(float x)
 {
-    return __llvm_exp2_f32(x);
+    return __ocml_native_exp2_f32(x);
 }
 
 ATTR float
 native_exp(float f) {
-    return __llvm_exp2_f32(M_LOG2E_F * f);
+    return __ocml_native_exp_f32(f);
 }
 
 ATTR float
 native_exp10(float f)
 {
-    return __llvm_exp2_f32(M_LOG2_10_F * f);
+    return __ocml_native_exp10_f32(f);
 }
 
 ATTR float
 native_log2(float x) {
-    return __llvm_log2_f32(x);
+    return __ocml_native_log2_f32(x);
 }
 
 ATTR float
 native_log(float f)
 {
-    return __llvm_log2_f32(f) * M_RLOG2_E_F;
+    return __ocml_native_log_f32(f);
 }
 
 ATTR float
 native_log10(float f)
 {
-    return __llvm_log2_f32(f) * M_RLOG2_10_F;
+    return __ocml_native_log10_f32(f);
 }
 
 ATTR float
 native_recip(float x) {
-    return __llvm_amdgcn_rcp_f32(x);
+    return __ocml_native_recip_f32(x);
 }
 
 ATTR float
 native_rsqrt(float x)
 {
-    return __llvm_amdgcn_rsq_f32(x);
+    return __ocml_native_rsqrt_f32(x);
 }
 
 ATTR float
 native_sin(float x) {
-    return __llvm_sin_f32(x);
+    return __ocml_native_sin_f32(x);
 }
 
 ATTR float
 native_sqrt(float x) {
-    return __llvm_sqrt_f32(x);
+    return __ocml_native_sqrt_f32(x);
 }
 

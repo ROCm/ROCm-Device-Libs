@@ -12,7 +12,7 @@
 #define _C(X,Y) X##Y
 #define C(X,Y) _C(X,Y)
 
-#define ATTR __attribute__((always_inline, overloadable))
+#define ATTR __attribute__((overloadable))
 
 #define float_ssuf _f32
 #define double_ssuf _f64
@@ -106,23 +106,35 @@ F(T##2 x, A P##2 * v) \
     WRAP2TAP(F,T,A,P) \
     WRAP1TAP(F,T,A,P)
 
-SWRAPTAP(fract,float,,float)
-SWRAPTAP(fract,double,,double)
-PWRAPTAP(fract,half,,half)
+#define SWRAPTP(F,T,P) \
+    SWRAPTAP(F,T,__private,P) \
+    SWRAPTAP(F,T,__local,P) \
+    SWRAPTAP(F,T,__global,P) \
+    SWRAPTAP(F,T,,P)
 
-SWRAPTAP(frexp,float,,int)
-SWRAPTAP(frexp,double,,int)
-PWRAPTAP(frexp,half,,int)
+#define PWRAPTP(F,T,P) \
+    PWRAPTAP(F,T,__private,P) \
+    PWRAPTAP(F,T,__local,P) \
+    PWRAPTAP(F,T,__global,P) \
+    PWRAPTAP(F,T,,P)
 
-SWRAPTAP(lgamma_r,float,,int)
-SWRAPTAP(lgamma_r,double,,int)
-PWRAPTAP(lgamma_r,half,,int)
+SWRAPTP(fract,float,float)
+SWRAPTP(fract,double,double)
+PWRAPTP(fract,half,half)
 
-SWRAPTAP(modf,float,,float)
-SWRAPTAP(modf,double,,double)
-PWRAPTAP(modf,half,,half)
+SWRAPTP(frexp,float,int)
+SWRAPTP(frexp,double,int)
+PWRAPTP(frexp,half,int)
 
-SWRAPTAP(sincos,float,,float)
-SWRAPTAP(sincos,double,,double)
-PWRAPTAP(sincos,half,,half)
+SWRAPTP(lgamma_r,float,int)
+SWRAPTP(lgamma_r,double,int)
+PWRAPTP(lgamma_r,half,int)
+
+SWRAPTP(modf,float,float)
+SWRAPTP(modf,double,double)
+PWRAPTP(modf,half,half)
+
+SWRAPTP(sincos,float,float)
+SWRAPTP(sincos,double,double)
+PWRAPTP(sincos,half,half)
 

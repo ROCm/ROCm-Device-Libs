@@ -7,7 +7,7 @@
 
 #include "mathD.h"
 
-PUREATTR double
+CONSTATTR double
 MATH_MANGLE(erfinv)(double x)
 {
     double ax = BUILTIN_ABS_F64(x);
@@ -90,8 +90,8 @@ MATH_MANGLE(erfinv)(double x)
     }
 
     if (!FINITE_ONLY_OPT()) {
-        ret = ax > 1.0 ? AS_DOUBLE(QNANBITPATT_DP64) : ret;
-        ret = ax == 1.0 ? AS_DOUBLE(PINFBITPATT_DP64) : ret;
+        ret = ax > 1.0 ? QNAN_F64 : ret;
+        ret = ax == 1.0 ? PINF_F64 : ret;
     }
 
     return BUILTIN_COPYSIGN_F64(ret, x);

@@ -8,21 +8,9 @@
 #include "mathF.h"
 #include "trigredF.h"
 
-#define FULL_MUL(A, B, HI, LO) \
-    LO = A * B; \
-    HI = BUILTIN_MULHI_U32(A, B)
 
-#define FULL_MAD(A, B, C, HI, LO) \
-    LO = BUILTIN_MAD_U32(A, B, C); \
-    HI = BUILTIN_MULHI_U32(A, B); \
-    HI += LO < C
-
-int
-#if defined EXTRA_PRECISION
-MATH_PRIVATE(trigredlarge)(__private float *r, __private float *rr, float x)
-#else
-MATH_PRIVATE(trigredlarge)(__private float *r, float x)
-#endif
+CONSTATTR struct redret
+MATH_PRIVATE(trigredlarge)(float x)
 {
     int xe = (int)(AS_UINT(x) >> 23) - 127;
     uint xm = 0x00800000U | (AS_UINT(x) & 0x7fffffU);
@@ -36,15 +24,16 @@ MATH_PRIVATE(trigredlarge)(__private float *r, float x)
     const uint b1 = 0x3C439041U;
     const uint b0 = 0xFE5163ABU;
 
-    uint p0, p1, p2, p3, p4, p5, p6, p7, c0, c1;
+    uint p0, p1, p2, p3, p4, p5, p6, p7;
+    ulong a;
 
-    FULL_MUL(xm, b0, c0, p0);
-    FULL_MAD(xm, b1, c0, c1, p1);
-    FULL_MAD(xm, b2, c1, c0, p2);
-    FULL_MAD(xm, b3, c0, c1, p3);
-    FULL_MAD(xm, b4, c1, c0, p4);
-    FULL_MAD(xm, b5, c0, c1, p5);
-    FULL_MAD(xm, b6, c1, p7, p6);
+    a = (ulong)xm * (ulong)b0;      p0 = a; a >>= 32;
+    a = (ulong)xm * (ulong)b1 + a;  p1 = a; a >>= 32;
+    a = (ulong)xm * (ulong)b2 + a;  p2 = a; a >>= 32;
+    a = (ulong)xm * (ulong)b3 + a;  p3 = a; a >>= 32;
+    a = (ulong)xm * (ulong)b4 + a;  p4 = a; a >>= 32;
+    a = (ulong)xm * (ulong)b5 + a;  p5 = a; a >>= 32;
+    a = (ulong)xm * (ulong)b6 + a;  p6 = a; p7 = a >> 32;
 
     uint fbits = 224 + 23 - xe;
 
@@ -53,24 +42,14 @@ MATH_PRIVATE(trigredlarge)(__private float *r, float x)
     uint shift = 256U - 2 - fbits;
 
     // Shift by up to 134/32 = 4 words
-    int c = shift > 31;
-    p7 = c ? p6 : p7;
-    p6 = c ? p5 : p6;
-    p5 = c ? p4 : p5;
-    p4 = c ? p3 : p4;
-    p3 = c ? p2 : p3;
-    p2 = c ? p1 : p2;
-    p1 = c ? p0 : p1;
-    shift -= (-c) & 32;
-
-    c = shift > 31;
-    p7 = c ? p6 : p7;
-    p6 = c ? p5 : p6;
-    p5 = c ? p4 : p5;
-    p4 = c ? p3 : p4;
-    p3 = c ? p2 : p3;
-    p2 = c ? p1 : p2;
-    shift -= (-c) & 32;
+    int c = shift > 63;
+    p7 = c ? p5 : p7;
+    p6 = c ? p4 : p6;
+    p5 = c ? p3 : p5;
+    p4 = c ? p2 : p4;
+    p3 = c ? p1 : p3;
+    p2 = c ? p0 : p2;
+    shift -= (-c) & 64;
 
     c = shift > 31;
     p7 = c ? p6 : p7;
@@ -113,7 +92,7 @@ MATH_PRIVATE(trigredlarge)(__private float *r, float x)
     p5 = p5 ^ flip;
 
     // Find exponent and shift away leading zeroes and hidden bit
-    xe = MATH_CLZI(p7) + 1;
+    xe = BUILTIN_CLZ_U32(p7) + 1;
     shift = 32 - xe;
     p7 = BUILTIN_BITALIGN_B32(p7, p6, shift);
     p6 = BUILTIN_BITALIGN_B32(p6, p5, shift);
@@ -125,7 +104,7 @@ MATH_PRIVATE(trigredlarge)(__private float *r, float x)
     p7 = BUILTIN_BITALIGN_B32(p7, p6, 32-23);
 
     // Get 24 more bits of fraction in another float, there are not long strings of zeroes here
-    int xxe = MATH_CLZI(p7) + 1;
+    int xxe = BUILTIN_CLZ_U32(p7) + 1;
     p7 = BUILTIN_BITALIGN_B32(p7, p6, 32-xxe);
     float q0 = AS_FLOAT(sign | ((127 - (xe + 23 + xxe)) << 23) | (p7 >> 9));
 
@@ -152,16 +131,18 @@ MATH_PRIVATE(trigredlarge)(__private float *r, float x)
              MATH_MAD(q0, pio2h, q1*pio2t);
     }
 
+    struct redret ret;
 #if defined EXTRA_PRECISION
     float t = rh + rt;
     rt = rt - (t - rh);
 
-    *r = t;
-    *rr = rt;
+    ret.hi = t;
+    ret.lo = rt;
 #else
-    *r = rh + rt;
+    ret.hi  = rh + rt;
 #endif
 
-    return ((i >> 1) + (i & 1)) & 0x3;
+    ret.i = ((i >> 1) + (i & 1)) & 0x3;
+    return ret;
 }
 

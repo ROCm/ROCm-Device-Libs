@@ -8,28 +8,25 @@
 #include "mathD.h"
 #include "trigpiredD.h"
 
-INLINEATTR double
+double
 MATH_MANGLE(sincospi)(double x, __private double * cp)
 {
-    double t;
-    int i = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x), &t);
+    struct redret r = MATH_PRIVATE(trigpired)(BUILTIN_ABS_F64(x));
+    struct scret sc = MATH_PRIVATE(sincospired)(r.hi);
 
-    double cc;
-    double ss = MATH_PRIVATE(sincospired)(t, &cc);
+    int flip = r.i > 1 ? (int)0x80000000 : 0;
+    bool odd = (r.i & 1) != 0;
 
-    int flip = i > 1 ? (int)0x80000000 : 0;
-    bool odd = (i & 1) != 0;
-
-    int2 s = AS_INT2(odd ? cc : ss);
+    int2 s = AS_INT2(odd ? sc.c : sc.s);
     s.hi ^= flip ^ (AS_INT2(x).hi & 0x80000000);
-    ss = -ss;
-    int2 c = AS_INT2(odd ? ss : cc);
+    sc.s = -sc.s;
+    int2 c = AS_INT2(odd ? sc.s : sc.c);
     c.hi ^= flip;
 
     if (!FINITE_ONLY_OPT()) {
-        bool nori = BUILTIN_CLASS_F64(x, CLASS_SNAN|CLASS_QNAN|CLASS_NINF|CLASS_PINF);
-        s = nori ? AS_INT2(QNANBITPATT_DP64) : s;
-        c = nori ? AS_INT2(QNANBITPATT_DP64) : c;
+        bool finite = BUILTIN_ISFINITE_F64(x);
+        s = finite ? s : AS_INT2(QNANBITPATT_DP64);
+        c = finite ? c : AS_INT2(QNANBITPATT_DP64);
     }
 
     *cp = AS_DOUBLE(c);

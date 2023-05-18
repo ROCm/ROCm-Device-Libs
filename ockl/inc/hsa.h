@@ -1502,7 +1502,7 @@ typedef struct hsa_queue_s {
 
 #ifdef HSA_LARGE_MODEL
 #ifdef DEVICE_COMPILER
-  __constant
+  __global
 #endif
   void *base_address;
 #elif defined HSA_LITTLE_ENDIAN
@@ -1511,7 +1511,7 @@ typedef struct hsa_queue_s {
    * packets. Must be aligned to the size of an AQL packet.
    */
 #ifdef DEVICE_COMPILER
-  __constant
+  __global
 #endif
   void *base_address;
   /**
@@ -1521,7 +1521,7 @@ typedef struct hsa_queue_s {
 #else
   uint32_t reserved0;
 #ifdef DEVICE_COMPILER
-  __constant
+  __global
 #endif
   void *base_address;
 #endif
@@ -2125,11 +2125,17 @@ typedef struct hsa_kernel_dispatch_packet_s {
    * Opaque handle to a code object that includes an implementation-defined
    * executable code for the kernel.
    */
-  uint64_t kernel_object;
+    union {
+#ifdef DEVICE_COMPILER
+        __global
+#endif
+        void *kernel_object;
+        uint64_t kernel_object_padding;
+    };
 
 #ifdef HSA_LARGE_MODEL
 #ifdef DEVICE_COMPILER
-  __constant
+  __global
 #endif
   void *kernarg_address;
 #elif defined HSA_LITTLE_ENDIAN
@@ -2141,7 +2147,7 @@ typedef struct hsa_kernel_dispatch_packet_s {
    * completed execution.
    */
 #ifdef DEVICE_COMPILER
-  __constant
+  __global
 #endif
   void *kernarg_address;
   /**
@@ -2151,7 +2157,7 @@ typedef struct hsa_kernel_dispatch_packet_s {
 #else
   uint32_t reserved1;
 #ifdef DEVICE_COMPILER
-  __constant
+  __global
 #endif
   void *kernarg_address;
 #endif

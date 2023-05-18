@@ -9,8 +9,10 @@
 #define OCKL_H
 
 // This C header declares the functions provided by the OCKL library
-// Aspects of this library's behavior can be controlled via the 
+// Aspects of this library's behavior can be controlled via the
 // oclc library.  See the oclc header for further information
+
+#define OCKL_DEPRECATED __attribute__((deprecated))
 
 #define _MANGLE3x(P,N,S) P##_##N##S
 #define MANGLE3x(P,N,S) _MANGLE3x(P,N,S)
@@ -29,6 +31,11 @@
 #define _DECL_X_OCKL_NULLARY_U32(A,N) extern __attribute__((A)) uint OCKL_MANGLE_U32(N)(void);
 #define DECL_PURE_OCKL_NULLARY_U32(N) _DECL_X_OCKL_NULLARY_U32(pure, N)
 #define DECL_CONST_OCKL_NULLARY_U32(N) _DECL_X_OCKL_NULLARY_U32(const, N)
+
+#define DECL_OCKL_NULLARY_U64(N) extern ulong OCKL_MANGLE_U64(N)(void);
+#define _DECL_X_OCKL_NULLARY_U64(A,N) extern __attribute__((A)) ulong OCKL_MANGLE_U64(N)(void);
+#define DECL_PURE_OCKL_NULLARY_U64(N) _DECL_X_OCKL_NULLARY_U64(pure, N)
+#define DECL_CONST_OCKL_NULLARY_U64(N) _DECL_X_OCKL_NULLARY_U64(const, N)
 
 #define DECL_OCKL_UNARY_I32(N) extern int OCKL_MANGLE_I32(N)(int);
 #define _DECL_X_OCKL_UNARY_I32(A,N) extern __attribute__((A)) int OCKL_MANGLE_I32(N)(int);
@@ -102,9 +109,18 @@
 
 #pragma OPENCL EXTENSION cl_khr_fp16 : enable
 
+extern __attribute__((const)) uchar OCKL_MANGLE_T(clz,u8)(uchar);
+extern __attribute__((const)) ushort OCKL_MANGLE_T(clz,u16)(ushort);
 DECL_CONST_OCKL_UNARY_U32(clz)
+DECL_CONST_OCKL_UNARY_U64(clz)
+
+extern __attribute__((const)) uchar OCKL_MANGLE_T(ctz,u8)(uchar);
+extern __attribute__((const)) ushort OCKL_MANGLE_T(ctz,u16)(ushort);
 DECL_CONST_OCKL_UNARY_U32(ctz)
+DECL_CONST_OCKL_UNARY_U64(ctz)
+
 DECL_CONST_OCKL_UNARY_U32(popcount)
+DECL_CONST_OCKL_UNARY_U64(popcount)
 
 DECL_CONST_OCKL_BINARY_I32(add_sat)
 DECL_CONST_OCKL_BINARY_U32(add_sat)
@@ -124,7 +140,16 @@ DECL_CONST_OCKL_BINARY_U64(mul_hi)
 DECL_CONST_OCKL_BINARY_I32(mul24)
 DECL_CONST_OCKL_BINARY_U32(mul24)
 
+DECL_OCKL_NULLARY_U32(lane)
 DECL_OCKL_NULLARY_U32(activelane)
+
+OCKL_DEPRECATED
+DECL_OCKL_NULLARY_U64(memtime)
+
+OCKL_DEPRECATED
+DECL_OCKL_NULLARY_U64(memrealtime)
+DECL_OCKL_NULLARY_U64(cyclectr)
+DECL_OCKL_NULLARY_U64(steadyctr)
 
 
 extern half OCKL_MANGLE_T(wfred_add,f16)(half x);
@@ -196,9 +221,9 @@ extern ulong OCKL_MANGLE_T(wfscan_xor,u64)(ulong x, bool inclusive);
 extern uint OCKL_MANGLE_U32(wfbcast)(uint x, uint i);
 extern ulong OCKL_MANGLE_U64(wfbcast)(ulong x, uint i);
 
-extern __attribute__((const)) bool OCKL_MANGLE_I32(wfany)(int e);
-extern __attribute__((const)) bool OCKL_MANGLE_I32(wfall)(int e);
-extern __attribute__((const)) bool OCKL_MANGLE_I32(wfsame)(int e);
+extern bool OCKL_MANGLE_I32(wfany)(int e);
+extern bool OCKL_MANGLE_I32(wfall)(int e);
+extern bool OCKL_MANGLE_I32(wfsame)(int e);
 
 DECL_CONST_OCKL_BINARY_U32(bfm)
 extern __attribute__((const)) int OCKL_MANGLE_I32(bfe)(int, uint, uint);
@@ -424,12 +449,19 @@ extern __attribute__((const)) uint __ockl_get_work_dim(void);
 extern __attribute__((const)) size_t __ockl_get_enqueued_local_size(uint);
 extern __attribute__((const)) size_t __ockl_get_global_linear_id(void);
 extern __attribute__((const)) size_t __ockl_get_local_linear_id(void);
+extern __attribute__((const)) int  __ockl_readuplane_i32(int, int);
+extern __attribute__((const)) long  __ockl_readuplane_i64(long, int);
 
 extern __attribute__((const)) bool OCKL_MANGLE_T(is_local,addr)(const void *);
 extern __attribute__((const)) bool OCKL_MANGLE_T(is_private,addr)(const void *);
 extern __attribute__((const)) __global void * OCKL_MANGLE_T(to,global)(void *);
 extern __attribute__((const)) __local void * OCKL_MANGLE_T(to,local)(void *);
 extern __attribute__((const)) __private void * OCKL_MANGLE_T(to,private)(void *);
+
+extern void OCKL_MANGLE_T(rtcwait,u32)(uint);
+extern void __ockl_sanitizer_report(ulong, ulong, ulong, ulong, ulong, ulong, ulong, ulong);
+
+extern uint OCKL_MANGLE_U32(alisa)(uint);
 
 #pragma OPENCL EXTENSION cl_khr_fp16 : disable
 

@@ -10,17 +10,16 @@
 
 UGEN(tan)
 
-INLINEATTR half
+REQUIRES_16BIT_INSTS half
 MATH_MANGLE(tan)(half x)
 {
-    half r;
-    short i = MATH_PRIVATE(trigred)(&r, BUILTIN_ABS_F16(x));
-
-    short t = AS_SHORT(MATH_PRIVATE(tanred)(r, i & 1));
+    half ax = BUILTIN_ABS_F16(x);
+    struct redret r = MATH_PRIVATE(trigred)(ax);
+    short t = AS_SHORT(MATH_PRIVATE(tanred)(r.hi, r.i & (short)1));
     t ^= AS_SHORT(x) & (short)0x8000;
 
     if (!FINITE_ONLY_OPT()) {
-        t = BUILTIN_CLASS_F16(x, CLASS_SNAN|CLASS_QNAN|CLASS_NINF|CLASS_PINF) ? (short)QNANBITPATT_HP16 : t;
+        t = BUILTIN_ISFINITE_F16(ax) ? t : (short)QNANBITPATT_HP16;
     }
 
     return AS_HALF(t);
