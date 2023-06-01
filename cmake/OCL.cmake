@@ -57,6 +57,12 @@ set (STRIP_SUFFIX ".strip${BC_EXT}")
 set (FINAL_SUFFIX "${BC_EXT}")
 set (INSTALL_ROOT_SUFFIX "amdgcn/bitcode")
 
+# Get clang install directory for installation
+execute_process (
+  COMMAND ${LLVM_TOOLS_BINARY_DIR}/clang${EXE_SUFFIX} --print-resource-dir
+  OUTPUT_VARIABLE CLANG_RESOURCE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 # Set `inc_options` to contain Clang command-line for include directories for
 # current source directory.
 macro(set_inc_options)
@@ -177,7 +183,7 @@ macro(opencl_bc_lib)
     ADDITIONAL_MAKE_CLEAN_FILES "${clean_files}")
 
   install(FILES ${OUTPUT_BC_LIB}
-    DESTINATION ${INSTALL_ROOT_SUFFIX}
+    DESTINATION ${CLANG_RESOURCE_DIR}/${INSTALL_ROOT_SUFFIX}
     COMPONENT device-libs)
 endmacro()
 

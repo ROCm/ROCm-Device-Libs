@@ -16,20 +16,21 @@ configure_file(AMDDeviceLibsConfig.cmake.in
   @ONLY)
 
 
+if (WIN32)
+  set(EXE_SUFFIX ".exe")
+else()
+  set(EXE_SUFFIX)
+endif()
+# Get clang install directory for installation
+execute_process (
+  COMMAND ${LLVM_TOOLS_BINARY_DIR}/clang${EXE_SUFFIX} --print-resource-dir
+  OUTPUT_VARIABLE CLANG_RESOURCE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 set(install_path_suffix "amdgcn/bitcode")
 
 # Generate the install-tree package.
-# We do not know the absolute path to the intall tree until we are installed,
-# so we calculate it dynamically in AMD_DEVICE_LIBS_PREFIX_CODE and use
-# relative paths in the target imports in AMD_DEVICE_LIBS_TARGET_CODE.
 set(AMD_DEVICE_LIBS_PREFIX_CODE "
-# Derive absolute install prefix from config file path.
-get_filename_component(AMD_DEVICE_LIBS_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)")
-string(REGEX REPLACE "/" ";" count "${PACKAGE_PREFIX}")
-foreach(p ${count})
-  set(AMD_DEVICE_LIBS_PREFIX_CODE "${AMD_DEVICE_LIBS_PREFIX_CODE}
-get_filename_component(AMD_DEVICE_LIBS_PREFIX \"\${AMD_DEVICE_LIBS_PREFIX}\" PATH)")
-endforeach()
+set(AMD_DEVICE_LIBS_PREFIX \"${CLANG_RESOURCE_DIR}\")")
 set(AMD_DEVICE_LIBS_TARGET_CODE)
 foreach(target ${AMDGCN_LIB_LIST})
   get_target_property(target_name ${target} ARCHIVE_OUTPUT_NAME)
