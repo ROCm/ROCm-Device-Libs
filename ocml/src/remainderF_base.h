@@ -37,18 +37,13 @@ fnma(float a, float b, float c)
 CONSTATTR float
 MATH_MANGLE(fmod)(float x, float y)
 #elif defined(COMPILING_REMQUO)
-float
-MATH_MANGLE(remquo)(float x, float y, __private int *q7p)
+__ocml_remquo_f32_result
+MATH_MANGLE(remquo2)(float x, float y)
 #else
 CONSTATTR float
 MATH_MANGLE(remainder)(float x, float y)
 #endif
 {
-    if (DAZ_OPT()) {
-        x = BUILTIN_CANONICALIZE_F32(x);
-        y = BUILTIN_CANONICALIZE_F32(y);
-    }
-
     // How many bits of the quotient per iteration
     const int bits = 12;
     float ax = BUILTIN_ABS_F32(x);
@@ -134,7 +129,7 @@ MATH_MANGLE(remainder)(float x, float y)
 
         int qsgn = 1 + (((AS_INT(x) ^ AS_INT(y)) >> 31) << 1);
         float t = MATH_MAD(y, -(float)qsgn, x);
-        ret = c ? t : ret;
+        ret = c ? t : (DAZ_OPT() ? BUILTIN_CANONICALIZE_F32(x) : x);
 #if defined(COMPILING_REMQUO)
         q7 = c ? qsgn : q7;
 #endif
@@ -160,8 +155,19 @@ MATH_MANGLE(remainder)(float x, float y)
     }
 
 #if defined(COMPILING_REMQUO)
-    *q7p = q7;
-#endif
+    __ocml_remquo_f32_result result = { ret, q7 };
+    return result;
+#else
     return ret;
+#endif
+
 }
 
+#if defined(COMPILING_REMQUO)
+float
+MATH_MANGLE(remquo)(float x, float y, __private int *q7p) {
+    __ocml_remquo_f32_result result = MATH_MANGLE(remquo2)(x, y);
+    *q7p = result.quo;
+    return result.rem;
+}
+#endif
