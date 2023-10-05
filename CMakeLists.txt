@@ -68,10 +68,14 @@ add_subdirectory(opencl)
 add_subdirectory(hip)
 add_subdirectory(asanrtl)
 
-enable_testing()
-add_subdirectory(test/compile)
-
-include(Packages)
+# Conditionally enable testing.
+if(NOT DEFINED ROCM_DEVICELIB_ENABLE_TESTING)
+  set(ROCM_DEVICELIB_ENABLE_TESTING ON)
+endif()
+if(ROCM_DEVICELIB_ENABLE_TESTING)
+  enable_testing()
+  add_subdirectory(test/compile)
+endif()
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   ## CPack standard variables
