@@ -7,7 +7,7 @@
 
 #include "mathH.h"
 
-CONSTATTR half
+REQUIRES_16BIT_INSTS CONSTATTR half
 MATH_MANGLE(pred)(half x)
 {
     short ix = AS_SHORT(x);
