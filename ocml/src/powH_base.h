@@ -27,12 +27,12 @@ MATH_MANGLE(pow)(half x, half y)
 #if defined(COMPILING_POWN)
     float fy = (float)ny;
 #elif defined(COMPILING_ROOTN)
-    float fy = BUILTIN_RCP_F32((float)ny);
+    float fy = BUILTIN_AMDGPU_RCP_F32((float)ny);
 #else
     float fy = (float)y;
 #endif
 
-    float p = BUILTIN_EXP2_F32(fy * BUILTIN_LOG2_F32((float)ax));
+    float p = BUILTIN_AMDGPU_EXP2_F32(fy * BUILTIN_AMDGPU_LOG2_F32((float)ax));
 
     // Classify y:
     //   inty = 0 means not an integer.
@@ -73,7 +73,7 @@ MATH_MANGLE(pow)(half x, half y)
     if (x == 1.0h)
         ret = BUILTIN_ISINF_F16(y) ? QNAN_F16 : 1.0h;
 
-    if (x < 0.0h || BUILTIN_ISNAN_F16(x) || BUILTIN_ISNAN_F16(y))
+    if (x < 0.0h || BUILTIN_ISUNORDERED_F16(x, y))
         ret = QNAN_F16;
 #elif defined COMPILING_POWN
     if (BUILTIN_ISINF_F16(ax) || x == 0.0h)
@@ -103,7 +103,7 @@ MATH_MANGLE(pow)(half x, half y)
         ret = BUILTIN_COPYSIGN_F16((x == 0.0h) ^ (y < 0.0h) ? 0.0h : PINF_F16,
                                    inty == 1 ? x : 0.0h);
 
-    if (BUILTIN_ISNAN_F16(x) || BUILTIN_ISNAN_F16(y))
+    if (BUILTIN_ISUNORDERED_F16(x, y))
         ret = QNAN_F16;
 
     if (x == 1.0h || y == 0.0h)

@@ -23,16 +23,16 @@
 #define AS_HALF2(X) __builtin_astype(X, half2)
 
 // Class mask bits
-#define CLASS_SNAN 0x001
-#define CLASS_QNAN 0x002
-#define CLASS_NINF 0x004
-#define CLASS_NNOR 0x008
-#define CLASS_NSUB 0x010
-#define CLASS_NZER 0x020
-#define CLASS_PZER 0x040
-#define CLASS_PSUB 0x080
-#define CLASS_PNOR 0x100
-#define CLASS_PINF 0x200
+#define CLASS_SNAN __FPCLASS_SNAN
+#define CLASS_QNAN __FPCLASS_QNAN
+#define CLASS_NINF __FPCLASS_NEGINF
+#define CLASS_NNOR __FPCLASS_NEGNORMAL
+#define CLASS_NSUB __FPCLASS_NEGSUBNORMAL
+#define CLASS_NZER __FPCLASS_NEGZERO
+#define CLASS_PZER __FPCLASS_POSZERO
+#define CLASS_PSUB __FPCLASS_POSSUBNORMAL
+#define CLASS_PNOR __FPCLASS_POSNORMAL
+#define CLASS_PINF __FPCLASS_POSINF
 
 #include "irif.h"
 
@@ -48,9 +48,9 @@
 #define BUILTIN_CEIL_F16 __builtin_ceilf16
 #define BUILTIN_CEIL_2F16 __builtin_elementwise_ceil
 
-#define BUILTIN_CLASS_F32 __builtin_amdgcn_classf
-#define BUILTIN_CLASS_F64 __builtin_amdgcn_class
-#define BUILTIN_CLASS_F16 __builtin_amdgcn_classh
+#define BUILTIN_CLASS_F32 __builtin_isfpclass
+#define BUILTIN_CLASS_F64 __builtin_isfpclass
+#define BUILTIN_CLASS_F16 __builtin_isfpclass
 
 #define BUILTIN_ISNAN_F32(x) __builtin_isnan(x)
 #define BUILTIN_ISNAN_F64(x) __builtin_isnan(x)
@@ -64,21 +64,21 @@
 #define BUILTIN_ISINF_F64(x) __builtin_isinf(x)
 #define BUILTIN_ISINF_F16(x) __builtin_isinf(x)
 
-#define BUILTIN_ISFINITE_F32(x) __builtin_amdgcn_classf(x, CLASS_NNOR|CLASS_NSUB|CLASS_NZER|CLASS_PZER|CLASS_PSUB|CLASS_PNOR)
-#define BUILTIN_ISFINITE_F64(x) __builtin_amdgcn_class(x, CLASS_NNOR|CLASS_NSUB|CLASS_NZER|CLASS_PZER|CLASS_PSUB|CLASS_PNOR)
-#define BUILTIN_ISFINITE_F16(x) __builtin_amdgcn_classh(x, CLASS_NNOR|CLASS_NSUB|CLASS_NZER|CLASS_PZER|CLASS_PSUB|CLASS_PNOR)
+#define BUILTIN_ISFINITE_F32(x) __builtin_isfinite(x)
+#define BUILTIN_ISFINITE_F64(x) __builtin_isfinite(x)
+#define BUILTIN_ISFINITE_F16(x) __builtin_isfinite(x)
 
-#define BUILTIN_ISSUBNORMAL_F32(x) __builtin_amdgcn_classf(x, CLASS_NSUB|CLASS_PSUB)
-#define BUILTIN_ISSUBNORMAL_F64(x) __builtin_amdgcn_class(x, CLASS_NSUB|CLASS_PSUB)
-#define BUILTIN_ISSUBNORMAL_F16(x) __builtin_amdgcn_classh(x, CLASS_NSUB|CLASS_PSUB)
+#define BUILTIN_ISSUBNORMAL_F32(x) __builtin_isfpclass(x, CLASS_NSUB|CLASS_PSUB)
+#define BUILTIN_ISSUBNORMAL_F64(x) __builtin_isfpclass(x, CLASS_NSUB|CLASS_PSUB)
+#define BUILTIN_ISSUBNORMAL_F16(x) __builtin_isfpclass(x, CLASS_NSUB|CLASS_PSUB)
 
-#define BUILTIN_ISZERO_F32(x) __builtin_amdgcn_classf(x, CLASS_NZER|CLASS_PZER)
-#define BUILTIN_ISZERO_F64(x) __builtin_amdgcn_class(x, CLASS_NZER|CLASS_PZER)
-#define BUILTIN_ISZERO_F16(x) __builtin_amdgcn_classh(x, CLASS_NZER|CLASS_PZER)
+#define BUILTIN_ISZERO_F32(x) __builtin_isfpclass(x, CLASS_NZER|CLASS_PZER)
+#define BUILTIN_ISZERO_F64(x) __builtin_isfpclass(x, CLASS_NZER|CLASS_PZER)
+#define BUILTIN_ISZERO_F16(x) __builtin_isfpclass(x, CLASS_NZER|CLASS_PZER)
 
-#define BUILTIN_ISNORMAL_F32(x) __builtin_amdgcn_classf(x, CLASS_NNOR|CLASS_PNOR)
-#define BUILTIN_ISNORMAL_F64(x) __builtin_amdgcn_class(x, CLASS_NNOR|CLASS_PNOR)
-#define BUILTIN_ISNORMAL_F16(x) __builtin_amdgcn_classh(x, CLASS_NNOR|CLASS_PNOR)
+#define BUILTIN_ISNORMAL_F32(x) __builtin_isnormal(x)
+#define BUILTIN_ISNORMAL_F64(x) __builtin_isnormal(x)
+#define BUILTIN_ISNORMAL_F16(x) __builtin_isnormal(x)
 
 #define BUILTIN_COPYSIGN_F32 __builtin_copysignf
 #define BUILTIN_COPYSIGN_F64 __builtin_copysign
@@ -90,23 +90,38 @@
 #define BUILTIN_FLOOR_F16 __builtin_floorf16
 #define BUILTIN_FLOOR_2F16 __builtin_elementwise_floor
 
-#define BUILTIN_FRACTION_F32(X) ({ \
-    float _fract_x = X; \
-    float _fract_r = __builtin_amdgcn_fractf(_fract_x); \
-    _fract_r = BUILTIN_ISINF_F32(_fract_x) ? 0.0f : _fract_r; \
-    _fract_r; \
+// These will codegen to v_fract_{f16|f32|f64} as appropriate.
+#define BUILTIN_FRACTION_F32(X) ({                              \
+    const float _x = X;                                         \
+    const float _floor_x = BUILTIN_FLOOR_F32(_x);               \
+    float _f = BUILTIN_MIN_F32(_x - _floor_x, 0x1.fffffep-1f);  \
+    if (!FINITE_ONLY_OPT()) {                                   \
+        _f = BUILTIN_ISNAN_F32(_x) ? _x : _f;                   \
+        _f = BUILTIN_ISINF_F32(_x) ? 0.0f : _f;                  \
+    }                                                           \
+    _f;                                                         \
 })
-#define BUILTIN_FRACTION_F64(X) ({ \
-    double _fract_x = X; \
-    double _fract_r = __builtin_amdgcn_fract(_fract_x); \
-    _fract_r = BUILTIN_ISINF_F64(_fract_x) ? 0.0 : _fract_r; \
-    _fract_r; \
+
+#define BUILTIN_FRACTION_F64(X) ({                                      \
+    const double _x = X;                                                \
+    const double _floor_x = BUILTIN_FLOOR_F64(_x);                       \
+    double _f = BUILTIN_MIN_F64(_x - _floor_x, 0x1.fffffffffffffp-1);   \
+    if (!FINITE_ONLY_OPT()) {                                           \
+        _f = BUILTIN_ISNAN_F64(_x) ? _x : _f;                            \
+        _f = BUILTIN_ISINF_F64(_x) ? 0.0 : _f;                           \
+    }                                                                   \
+    _f;                                                                 \
 })
-#define BUILTIN_FRACTION_F16(X) ({ \
-    half _fract_x = X; \
-    half _fract_r = __builtin_amdgcn_fracth(_fract_x); \
-    _fract_r = BUILTIN_ISINF_F16(_fract_x) ? 0.0h : _fract_r; \
-    _fract_r; \
+
+#define BUILTIN_FRACTION_F16(X) ({                                      \
+    const half _x = X;                                                  \
+    const half _floor_x = BUILTIN_FLOOR_F16(_x);                        \
+    half _f = BUILTIN_MIN_F16(_x - _floor_x, 0x1.ffcp-1h);              \
+    if (!FINITE_ONLY_OPT()) {                                           \
+        _f = BUILTIN_ISNAN_F16(_x) ? _x : _f;                           \
+        _f = BUILTIN_ISINF_F16(_x) ? 0.0h : _f;                         \
+    }                                                                   \
+    _f;                                                                 \
 })
 
 #define BUILTIN_MAD_U32(A,B,C) ((A)*(B)+(C))
@@ -133,28 +148,35 @@
 
 #define BUILTIN_MULHI_U32(A,B) (((ulong)(A) * (ulong)(B)) >> 32)
 
-#define BUILTIN_COS_F32 __builtin_amdgcn_cosf
+#define BUILTIN_AMDGPU_COS_F32 __builtin_amdgcn_cosf
 
+#define BUILTIN_AMDGPU_EXP2_F32 __builtin_amdgcn_exp2f
 #define BUILTIN_EXP2_F32 __builtin_exp2f
 #define BUILTIN_EXP2_F16 __builtin_exp2f16
 
+#define BUILTIN_EXP_F32 __builtin_expf
+
+#define BUILTIN_AMDGPU_LOG2_F32 __builtin_amdgcn_logf
 #define BUILTIN_LOG2_F32 __builtin_log2f
 #define BUILTIN_LOG2_F16 __builtin_log2f16
 
-#define BUILTIN_RCP_F32 __builtin_amdgcn_rcpf
-#define BUILTIN_RCP_F64 __builtin_amdgcn_rcp
-#define BUILTIN_RCP_F16 __builtin_amdgcn_rcph
+#define BUILTIN_LOG_F32 __builtin_logf
+#define BUILTIN_LOG10_F32 __builtin_log10f
 
-#define BUILTIN_RSQRT_F32 __builtin_amdgcn_rsqf
-#define BUILTIN_RSQRT_F64 __builtin_amdgcn_rsq
-#define BUILTIN_RSQRT_F16 __builtin_amdgcn_rsqh
+#define BUILTIN_AMDGPU_RCP_F32 __builtin_amdgcn_rcpf
+#define BUILTIN_AMDGPU_RCP_F64 __builtin_amdgcn_rcp
+#define BUILTIN_RCP_F16(X) (1.0h / (X))
 
-#define BUILTIN_SIN_F32 __builtin_amdgcn_sinf
+#define BUILTIN_AMDGPU_RSQRT_F32 __builtin_amdgcn_rsqf
+#define BUILTIN_AMDGPU_RSQRT_F64 __builtin_amdgcn_rsq
+#define BUILTIN_RSQRT_F16(X) (1.0h / __builtin_sqrtf16(X))
+
+#define BUILTIN_AMDGPU_SIN_F32 __builtin_amdgcn_sinf
 
 #define BUILTIN_RINT_F32 __builtin_rintf
 #define BUILTIN_RINT_F64 __builtin_rint
 #define BUILTIN_RINT_F16 __builtin_rintf16
-#define BUILTIN_RINT_2F16 __llvm_rint_2f16
+#define BUILTIN_RINT_2F16 __builtin_elementwise_rint
 
 #define BUILTIN_SQRT_F32(X) __builtin_sqrtf(X)
 #define BUILTIN_SQRT_F64(X) __builtin_sqrt(X)
@@ -168,7 +190,7 @@
 #define BUILTIN_ROUND_F32 __builtin_roundf
 #define BUILTIN_ROUND_F64 __builtin_round
 #define BUILTIN_ROUND_F16 __builtin_roundf16
-#define BUILTIN_ROUND_2F16 __llvm_round_2f16
+#define BUILTIN_ROUND_2F16 __builtin_elementwise_round
 
 #define BUILTIN_DIV_F32(X,Y) ({ \
     float _div_x = X; \
@@ -192,10 +214,10 @@
 })
 
 #define BUILTIN_FMA_F32 __builtin_fmaf
-#define BUILTIN_FMA_2F32 __llvm_fma_2f32
+#define BUILTIN_FMA_2F32 __builtin_elementwise_fma
 #define BUILTIN_FMA_F64 __builtin_fma
 #define BUILTIN_FMA_F16 __builtin_fmaf16
-#define BUILTIN_FMA_2F16 __llvm_fma_2f16
+#define BUILTIN_FMA_2F16 __builtin_elementwise_fma
 
 #define BUILTIN_FLDEXP_F32 __builtin_amdgcn_ldexpf
 #define BUILTIN_FLDEXP_F64 __builtin_amdgcn_ldexp
@@ -219,7 +241,7 @@
 #define BUILTIN_CMIN_F16 __builtin_fminf16
 #define BUILTIN_CMIN_2F16 __builtin_elementwise_min
 
-#define BUILTIN_TRIG_PREOP_F64 __builtin_amdgcn_trig_preop
+#define BUILTIN_AMDGPU_TRIG_PREOP_F64 __builtin_amdgcn_trig_preop
 
 #define BUILTIN_MAD_F32 __ocml_fmuladd_f32
 #define BUILTIN_MAD_2F32 __ocml_fmuladd_2f32

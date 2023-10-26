@@ -11,6 +11,14 @@
 # we `file(WRITE)` a file with an @variable reference and `configure_file` it.
 cmake_policy(SET CMP0053 OLD)
 
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20.0")
+  # The policy change was for handling of relative paths for
+  # DEPFILE. We only use absolute paths but cmake still feels the need
+  # to complain without setting this.
+  cmake_policy(SET CMP0116 NEW)
+endif()
+
+
 if (WIN32)
   set(EXE_SUFFIX ".exe")
 else()
@@ -22,6 +30,7 @@ endif()
 set(CLANG_OCL_FLAGS -fcolor-diagnostics -Werror -Wno-error=atomic-alignment -x cl -Xclang
   -cl-std=CL2.0 -target "${AMDGPU_TARGET_TRIPLE}" -fvisibility=protected -fomit-frame-pointer
   -Xclang -finclude-default-header -Xclang -fexperimental-strict-floating-point
+  -Xclang -fdenormal-fp-math=dynamic
   -nogpulib -cl-no-stdinc "${CLANG_OPTIONS_APPEND}")
 
 # For compatibility with the MSVC headers we use a 32-bit wchar. Users linking
@@ -70,8 +79,6 @@ macro(opencl_bc_lib)
   set(sources ${OPENCL_BC_LIB_SOURCES})
   set(internal_link_libs ${OPENCL_BC_LIB_INTERNAL_LINK_LIBS})
 
-  get_target_property(irif_lib_output irif OUTPUT_NAME)
-
   # Mirror the install layout structure.
   set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/${INSTALL_ROOT_SUFFIX})
   file(MAKE_DIRECTORY ${OUTPUT_DIR})
@@ -90,21 +97,23 @@ macro(opencl_bc_lib)
   set_inc_options()
   set(deps)
   foreach(file ${OPENCL_BC_LIB_SOURCES})
+    get_filename_component(fname "${file}" NAME)
     get_filename_component(fname_we "${file}" NAME_WE)
     get_filename_component(fext "${file}" EXT)
     if (fext STREQUAL ".cl")
       set(output "${CMAKE_CURRENT_BINARY_DIR}/${fname_we}${BC_EXT}")
+      set(depfile "${CMAKE_CURRENT_BINARY_DIR}/${fname}.d")
+
+      get_property(file_specific_flags SOURCE "${file}" PROPERTY COMPILE_FLAGS)
+
       add_custom_command(OUTPUT "${output}"
         COMMAND $<TARGET_FILE:clang> ${inc_options} ${CLANG_OCL_FLAGS}
-          -emit-llvm -Xclang -mlink-builtin-bitcode -Xclang "${irif_lib_output}"
-          -c "${file}" -o "${output}"
-        DEPENDS "${file}" "${irif_lib_output}" "$<TARGET_FILE:clang>"
-        # FIXME: Currently IMPLICIT_DEPENDS is only supported for GNU Makefile,
-        # so as an overly-conservatively workaround to cover all generators
-        # we just assume all .cl sources require irif.h. If all the generators
-        # we care about begin to support IMPLICIT_DEPENDS we won't need this.
-        "${CMAKE_CURRENT_SOURCE_DIR}/../irif/inc/irif.h"
-        IMPLICIT_DEPENDS C "${file}")
+          ${file_specific_flags}
+          -emit-llvm -c "${file}" -o "${output}"
+          -MD -MF ${depfile}
+         MAIN_DEPENDENCY "${file}"
+         DEPENDS "$<TARGET_FILE:clang>"
+         DEPFILE ${depfile})
       list(APPEND deps "${output}")
       list(APPEND clean_files "${output}")
     endif()
@@ -158,7 +167,6 @@ macro(opencl_bc_lib)
   if (TARGET prepare-builtins)
     add_dependencies("${name}" prepare-builtins)
   endif()
-  add_dependencies("${name}" irif)
 
   set_directory_properties(PROPERTIES
     ADDITIONAL_MAKE_CLEAN_FILES "${clean_files}")

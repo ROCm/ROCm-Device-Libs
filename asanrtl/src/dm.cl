@@ -6,7 +6,6 @@
  *===------------------------------------------------------------------------*/
 
 #include "oclc.h"
-#include "irif.h"
 #include "asan_util.h"
 #include "shadow_mapping.h"
 
@@ -114,14 +113,12 @@ first(__global void * v)
 }
 
 // The number of active lanes at this point
-REQUIRES_WAVE64
 static uint
 active_lane_count_w64(void)
 {
     return __builtin_popcountl(__builtin_amdgcn_read_exec());
 }
 
-REQUIRES_WAVE32
 static uint
 active_lane_count_w32(void)
 {
@@ -647,6 +644,12 @@ __ockl_dm_init_v1(ulong ha, ulong sa, uint hb, uint nis)
         AS(&hp->num_nonslab_allocations, 0UL);
 #endif
     }
+}
+
+NO_SANITIZE_ADDR
+void
+__ockl_dm_trim(int *mem)
+{
 }
 
 #if defined NON_SLAB_TRACKING
